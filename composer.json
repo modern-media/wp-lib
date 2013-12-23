@@ -8,6 +8,6 @@
 	},
 	"require": {
 		"monolog/monolog": "1.7.*@dev",
-		"ccampbell/chromephp": "dev-master"
+		"ccampbell/chromephp": "*"
 	}
 }

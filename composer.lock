@@ -3,11 +3,11 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "82bbd08efa5f4ae5f63d8b3793b59d5f",
+    "hash": "b48ea59e3fcb167b4e917994a1afaac5",
     "packages": [
         {
             "name": "ccampbell/chromephp",
-            "version": "dev-master",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ccampbell/chromephp.git",
@@ -162,8 +162,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "monolog/monolog": 20,
-        "ccampbell/chromephp": 20
+        "monolog/monolog": 20
     },
     "platform": [
 
