@@ -3,7 +3,7 @@
 	"description": "WordPress patterns and utilities.",
 	"autoload": {
 		"psr-0": {
-			"ModernMedia\\WPLib": "src/"
+			"ModernMedia\\": "src/"
 		}
 	}
 }
