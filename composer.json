@@ -5,5 +5,9 @@
 		"psr-0": {
 			"ModernMedia\\": "src/"
 		}
+	},
+	"require": {
+		"monolog/monolog": "1.7.*@dev",
+		"ccampbell/chromephp": "dev-master"
 	}
 }
