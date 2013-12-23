@@ -105,7 +105,7 @@ abstract class BaseAdminElement {
 			'panel_screen_icon' => strtolower(str_replace('\\', '_', get_class($this))),
 			'panel_is_top' => false,
 			'panel_position' => 200,
-			'panel_parent' => 'settings.php',
+			'panel_parent' => 'options-general.php',
 			'metabox_context' => 'side',
 			'metabox_priority' => 'default',
 
