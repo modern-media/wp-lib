@@ -1,0 +1,9 @@
+{
+	"name": "modern-media/wp-lib",
+	"description": "WordPress patterns and utilities.",
+	"autoload": {
+		"psr-0": {
+			"ModernMedia\\": "src/"
+		}
+	}
+}
