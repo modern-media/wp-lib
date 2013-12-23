@@ -202,7 +202,7 @@ abstract class BaseAdminElement {
 
 						if (! empty($this->message)){
 							printf(
-								'<div class="alert alert-success"><p>%s</p></div>',
+								'<div class="updated alert alert-success"><p>%s</p></div>',
 								$this->message
 							);
 						}
