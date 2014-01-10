@@ -184,4 +184,11 @@ class Utils {
 		if (! is_array($labels)) $labels = array();
 		return array_merge($defaults, $labels);
 	}
+
+	public static function member_or_default($key, $arr, $default = null){
+		return isset($arr[$key]) ? $arr[$key] : $default;
+	}
+	public static function request_or_default($key, $default = null){
+		return self::member_or_default($key, $_REQUEST, $default);
+	}
 } 
