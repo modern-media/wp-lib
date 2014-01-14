@@ -129,7 +129,8 @@ class SingleLink extends BaseWidget  {
 	protected function print_form_fields($instance) {
 		/** @noinspection PhpUnusedLocalVariableInspection */
 		$widget = &$this;
-		require Utils::get_lib_path('/includes/widget/single_link_form.php');
+		$path = Utils::get_lib_path('includes/widget/single_link_form.php');
+		echo($path);
 
 	}
 
