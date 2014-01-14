@@ -49,7 +49,7 @@ class ClientTimezone {
 				var o = d.getTimezoneOffset();
 				d.setTime(d.getTime() + ( 30 * 24 * 60 * 60 * 1000) );
 				var expires = "expires=" + d.toGMTString();
-				document.cookie = %s + "=" + o + "; " + expires + ";path=/";
+				document.cookie = "%s=" + o + "; " + expires + ";path=/";
 
 			});
 			</script>
