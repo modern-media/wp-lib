@@ -34,8 +34,10 @@ class ClientTimezone {
 	 */
 	public function utc_to_local($utc){
 		$local = $utc->copy();
+
 		$off = is_null($this->offset) ? 0 : intval($this->offset);
-		$local->setTimestamp($utc->getTimestamp() - $off);
+
+		$local->setTimestamp($utc->getTimestamp() - ($off * 60));
 		return $local;
 	}
 
