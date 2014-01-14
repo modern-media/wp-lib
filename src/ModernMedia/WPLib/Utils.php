@@ -191,4 +191,65 @@ class Utils {
 	public static function request_or_default($key, $default = null){
 		return self::member_or_default($key, $_REQUEST, $default);
 	}
+
+	/**
+	 * @param \WP_Query $query
+	 * @param $args
+	 * @return string|null
+	 */
+	public static function post_type_dropdown($query, $args){
+
+
+		$default = array(
+			'depth' => 0,
+			'selected' => 0,
+			'echo' => false,
+			'name' => 'post_id',
+			'id' => 'post_id',
+			'show_option_none' => 'Please select...',
+			'option_none_value' => ''
+		);
+		$args = wp_parse_args($args, $default);
+
+
+		$out = sprintf(
+			'<select name="%s" id="%s">
+			%s
+			%s
+			</select>',
+			$args['name'],
+			$args['id'],
+			empty($args['show_option_none']) ?
+				'' :
+				sprintf(
+					'<option value="%s">%s</option>',
+					$args['option_none_value'],
+					$args['show_option_none']
+				),
+			walk_page_dropdown_tree($query->posts, $args['depth'], $args)
+		);
+		if ($args['echo']) echo $out;
+		return $out;
+
+	}
+
+	/**
+	 * @param string $p
+	 * @return string
+	 */
+	public static function get_lib_path($p = ''){
+		$path = require dirname(dirname(dirname(__DIR__)));
+		$p = trim(trim($p), DIRECTORY_SEPARATOR);
+		if (! empty($p)) $path .= DIRECTORY_SEPARATOR . $p;
+		return $path;
+	}
+
+	/**
+	 * @param string $path
+	 * @return string
+	 */
+	public static  function get_lib_uri($path = ''){
+		$dummy = self::get_lib_path('dummy');
+		return plugins_url($path, $dummy);
+	}
 } 
