@@ -238,7 +238,7 @@ class Utils {
 	 * @return string
 	 */
 	public static function get_lib_path($p = ''){
-		$path = require dirname(dirname(dirname(__DIR__)));
+		$path = dirname(dirname(dirname(__DIR__)));
 		$p = trim(trim($p), DIRECTORY_SEPARATOR);
 		if (! empty($p)) $path .= DIRECTORY_SEPARATOR . $p;
 		return $path;

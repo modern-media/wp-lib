@@ -130,7 +130,7 @@ class SingleLink extends BaseWidget  {
 		/** @noinspection PhpUnusedLocalVariableInspection */
 		$widget = &$this;
 		$path = Utils::get_lib_path('includes/widget/single_link_form.php');
-		echo($path);
+		require($path);
 
 	}
 

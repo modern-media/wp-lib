@@ -1,10 +1,11 @@
 <?php
 namespace ModernMedia\MustUse\Widget;
+use ModernMedia\WPLib\Widget\SingleLink;
 /**
  * @var SingleLink $widget
  * @var $instance
  */
-use ModernMedia\MustUse\Helper\HTML;
+use ModernMedia\WPLib\Helper\HTML;
 $ctr_id = $widget->get_field_id('single_link_controls');
 ?>
 
