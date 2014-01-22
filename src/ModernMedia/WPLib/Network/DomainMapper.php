@@ -37,7 +37,6 @@ class DomainMapper {
 			$current_site = $wpdb->get_row($sql);
 			$current_site->blog_id = 1;
 			$current_site = get_current_site_name( $current_site );
-			define( 'DOMAIN_MAPPING', 1 );
 			add_action('plugins_loaded', array($this, '_action_plugins_loaded'));
 		}
 
