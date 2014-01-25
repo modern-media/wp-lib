@@ -20,6 +20,10 @@ This package includes various base classes, patterns and utilities that we use a
 
 ## Elements
 
+### Scripts
+
+The Scripts class
+
 ### Image Uploader JavaScript
 
 This script adds the WordPress uploader functionality to elements of class `mm-wp-lib-uploader`.

@@ -50,6 +50,9 @@ class SiteMetaTagsSettingsPanel extends BaseAdminElement {
 		MetaTags::inst()->set_option_site_meta($_POST);
 	}
 
+	/**
+	 * enqueue the counter and the image uploader js
+	 */
 	protected function on_admin_enqueue_scripts(){
 		wp_enqueue_media();
 		$s = Scripts::inst();

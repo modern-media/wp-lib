@@ -32,6 +32,13 @@ class Scripts {
 				'dependencies' => array('jquery'),
 			)
 		);
+		$this->add_script(
+			self::CHAR_COUNT,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/char-count.js'),
+				'dependencies' => array('jquery'),
+			)
+		);
 
 	}
 
