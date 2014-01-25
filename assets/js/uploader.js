@@ -1,12 +1,34 @@
+/**
+ * This script adds the WordPress uploader
+ * functionality to elements of class 'mm-wp-lib-uploader'.
+ *
+ * Example:
+ * <div class="mm-wp-lib-uploader" data-label="Choose Image" data-preview-size="medium">
+ *		<input type="hidden" name="image_id" value="34">
+ *		<div class="holder"></div>
+ *		<p><a href="#" class="choose button">Upload/Choose Site Image</a></p>
+ *		<p><a href="#" class="remove">Remove Image</a></p>
+ *	</div>
+ *
+ * The input element should be a hidden element with the image's post ID as the value.
+ * The .holder element displays a preview of the image.
+ * The .choose element pops up the WordPress Image Uploader
+ * The .remove element remove the image (sets the value of the input to '').
+ *
+ * Data attributes:
+ * 		data-label: sets the title and button text for the WordPress uploader.
+ * 		data-size: sets the size of the preview image
+ *
+ */
 jQuery(document).ready(function($){
-
 	var body = $('body');
+	var ctl_selector_string = '.mm-wp-lib-uploader';
 	var find_ctl = function(sel){
-		return sel.parents('.uploader');
+		return sel.parents(ctl_selector_string);
 	};
 	var update = function(ctl){
 		var input = $('input', ctl);
-		var preview = $('.preview', ctl);
+		var holder = $('.holder', ctl);
 		var remove = $('.remove', ctl);
 		var image_id = parseInt(input.val());
 		if (! isNaN(image_id) && image_id > 0){
@@ -16,17 +38,17 @@ jQuery(document).ready(function($){
 				image_id: image_id
 			};
 			$.post(ajaxurl, o, function(data){
-				preview.html('<img>');
-				$('img', preview).attr('src', data.data[0]);
+				holder.html('<a href="#" class="choose"><img></a>');
+				$('img', holder).attr('src', data.data[0]);
 				remove.show();
 			}, 'json');
 		} else {
 			remove.hide();
-			preview.html('');
+			holder.html('');
 		}
 	};
 
-	body.on('click', '.uploader .choose', function(){
+	body.on('click', ctl_selector_string + ' .choose', function(){
 		var ctl = find_ctl($(this));
 		var input = $('input', ctl);
 		if (ctl.data('file_frame')){
@@ -54,7 +76,7 @@ jQuery(document).ready(function($){
 
 	});
 
-	body.on('click', '.uploader .remove', function(evt){
+	body.on('click', ctl_selector_string + ' .remove', function(evt){
 		evt.preventDefault();
 		var ctl = find_ctl($(this));
 		var input = $('input', ctl);
@@ -63,7 +85,7 @@ jQuery(document).ready(function($){
 
 	});
 
-	$('.uploader').each(function(){
+	$(ctl_selector_string).each(function(){
 		update($(this));
 	});
 });

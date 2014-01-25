@@ -114,12 +114,12 @@ $data = $this->form_data;
 			</th>
 			<td>
 				<div
-					class="uploader"
+					class="mm-wp-lib-uploader"
 					data-label="<?php _e('Choose Site Image')?>"
 					data-preview-size="medium"
 				>
 					<input type="hidden" name="default_site_og_image_id" value="<?php echo $data->default_site_og_image_id?>">
-					<div class="preview"></div>
+					<div class="holder"></div>
 					<p><a href="#" class="choose button">
 						<?php _e('Upload/Choose Site Image')?>
 					</a></p>
