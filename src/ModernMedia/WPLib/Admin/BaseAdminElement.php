@@ -194,7 +194,6 @@ abstract class BaseAdminElement {
 					if (! current_user_can($this->get_cap())) return;
 					$func = function(){
 						echo '<div class="wrap">' . PHP_EOL;
-						screen_icon($this->get_panel_screen_icon());
 						printf(
 							'<h2>%s</h2>',
 							$this->get_title()

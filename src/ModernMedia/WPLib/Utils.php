@@ -249,7 +249,8 @@ class Utils {
 	 * @return string
 	 */
 	public static  function get_lib_uri($path = ''){
-		$dummy = self::get_lib_path('dummy');
-		return plugins_url($path, $dummy);
+		$uri = get_bloginfo('url') . '/vendor/modern-media/wp-lib';
+		if (! empty($path)) $uri .= '/' . $path;
+		return $uri;
 	}
 } 
