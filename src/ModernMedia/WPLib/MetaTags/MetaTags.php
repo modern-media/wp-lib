@@ -31,6 +31,9 @@ class MetaTags {
 		return self::$instance;
 	}
 
+	/**
+	 * Constructor
+	 */
 	private function __construct(){
 		new MetaTagsMetaBox();
 		new SiteMetaTagsSettingsPanel();
@@ -38,11 +41,17 @@ class MetaTags {
 
 	}
 
+	/**
+	 * add actions
+	 */
 	public function _action_plugins_loaded(){
 		add_action('wp_head', array($this, '_action_wp_head'));
 		add_action('after_setup_theme', array($this, '_action_after_setup_theme'));
 	}
 
+	/**
+	 *  add the og image size
+	 */
 	public function _action_after_setup_theme(){
 		$o = $this->get_option_site_meta();
 		add_image_size($o->og_image_width, $o->og_image_height, false);
@@ -53,9 +62,9 @@ class MetaTags {
 	 * @param string $default
 	 * @return string
 	 */
-	protected function clean_string($str = '', $default = ''){
+	public function clean_string($str = '', $default = ''){
 		$str = trim(strip_tags($str));
-		$str = preg_replace('/\w+/', ' ', $str);
+		$str = preg_replace('/\W+/', ' ', $str);
 		if (empty($str)){
 			$str = $default;
 			$str = trim(strip_tags($str));
@@ -98,7 +107,12 @@ class MetaTags {
 			$metas['author'] = $this->clean_string($author->get('display_name'));
 
 
-			if (has_post_thumbnail($post->ID)){
+			if ($meta->og_image_id > 0){
+				$arr = wp_get_attachment_image_src($meta->og_image_id, self::OG_IMAGE_SIZE_ID);
+				$ogs['og:image'] = isset($arr[0]) ? $arr[0] : '';
+				$ogs['og:image:width'] = isset($arr[1]) ? $arr[1] : '';
+				$ogs['og:image:height'] = isset($arr[2]) ? $arr[2] : '';
+			} elseif (has_post_thumbnail($post->ID)){
 				$id = get_post_thumbnail_id($post->ID);
 				$arr = wp_get_attachment_image_src($id, self::OG_IMAGE_SIZE_ID);
 				$ogs['og:image'] = isset($arr[0]) ? $arr[0] : '';
@@ -114,9 +128,15 @@ class MetaTags {
 			$ogs['og:description'] = $this->clean_string($options->default_site_og_description, $default_desc);
 			$ogs['og:type'] = 'website';
 		} elseif(is_tax()){
-			$tax = get_queried_object();
+			$term = get_queried_object();
 			$default_desc = get_bloginfo('description');
-
+			$metas['description'] = $ogs['og:description'] = $this->clean_string($term->description, $default_desc);
+			$ogs['og:type'] = 'website';
+		} else {
+			$default_desc = get_bloginfo('description');
+			$metas['description'] = $this->clean_string($options->default_site_meta_description, $default_desc);
+			$ogs['og:description'] = $this->clean_string($options->default_site_og_description, $default_desc);
+			$ogs['og:type'] = 'website';
 		}
 
 		/**

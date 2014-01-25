@@ -2,6 +2,7 @@
 namespace ModernMedia\WPLib\MetaTags\Admin;
 use ModernMedia\WPLib\Admin\BaseAdminElement;
 use ModernMedia\WPLib\MetaTags\MetaTags;
+use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 
 /**
@@ -35,14 +36,25 @@ class MetaTagsMetaBox extends BaseAdminElement {
 	/**
 	 * @param int $post_id
 	 */
-	public function html($post_id = null){
-		require Utils::get_lib_path('includes/admin/metabox/meta_tags.php');
+	protected  function html($post_id = null){
+		require Utils::get_lib_path('includes/admin/metabox/post_meta_tags.php');
 	}
 
 	/**
 	 * @param int $post_id
 	 */
 	protected function on_save($post_id = null){
-		MetaTags::inst()->set_post_meta($post_id, $_POST);
+		MetaTags::inst()->set_post_meta($post_id, $_POST[MetaTags::PMK_META_TAGS]);
 	}
+
+	/**
+	 * enqueue the counter and the image uploader js
+	 */
+	protected function on_admin_enqueue_scripts(){
+		wp_enqueue_media();
+		$s = Scripts::inst();
+		$s->enqueue(Scripts::UPLOADER);
+		$s->enqueue(Scripts::CHAR_COUNT);
+	}
+
 } 

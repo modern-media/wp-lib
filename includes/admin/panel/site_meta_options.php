@@ -110,7 +110,7 @@ $data = $this->form_data;
 		</tr>
 		<tr>
 			<th scope="row">
-				<label for="">Default Site Image</label>
+				Default Site Image
 			</th>
 			<td>
 				<div

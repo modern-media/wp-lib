@@ -22,7 +22,35 @@ This package includes various base classes, patterns and utilities that we use a
 
 ### Scripts
 
-The Scripts class
+The Scripts class handles enqueueing Modern Media WP Library JavaScripts. Other elements that rely  on these scripts should enqueue them via:  
+
+    Scripts::inst()->enqueue($script_id)
+
+### Character Counter JavaScript
+
+    wp-lib/assets/js/char-counter.js
+    
+This script updates an element of class `.mm-wp-lib-char-count` with the character count of an input or textarea. Example markup:
+
+    <input
+		type="text"
+		class="widefat"
+		name="default_site_og_description"
+		id="default_site_og_description"
+		placeholder="Default og:description of your site"
+		value="foo bar"
+	>
+	<p>
+	    Characters: 
+	    <span 
+	        class="mm-wp-lib-char-count" 
+	        data-target="#default_site_og_description"
+	    ></span>
+	</p>
+
+Data attributes set on the `.mm-wp-lib-char-count` element:  
+ * 	`data-target`: sets selector of the input or textarea and button text for the WordPress uploader.  
+
 
 ### Image Uploader JavaScript
 
@@ -40,7 +68,7 @@ Example Markup:
 	    <p><a href="#" class="remove">Remove Image</a></p>
     </div>
 
- Elements:
+Elements:
  
  * The `input` element should be a hidden input with the image's post ID as the value.
  * The `.holder` element displays a preview of the image.
@@ -48,7 +76,7 @@ Example Markup:
  * The `.remove` element remove the image (sets the value of the input to '').
 
 
-Data attributes set on the `.mm-wp-lib-uploader` elemant:  
+Data attributes set on the `.mm-wp-lib-uploader` element:  
  * 	`data-label`: sets the title and button text for the WordPress uploader.  
  * 	`data-size`: sets the size of the preview image	
 

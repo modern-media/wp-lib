@@ -32,6 +32,9 @@ class SiteMetaSettings extends BaseData {
 	public $og_image_height = 630;
 
 
+
+
+
 	public function init_from_user_data($arr = null,  $whitelist = array(), $blacklist = array()){
 		parent::init_from_user_data($arr, $whitelist, $blacklist);
 		$this->normalize();
@@ -43,14 +46,19 @@ class SiteMetaSettings extends BaseData {
 	}
 
 	protected function normalize(){
+		$this->default_site_meta_description = MetaTags::inst()->clean_string($this->default_site_meta_description);
+		$this->default_site_og_description = MetaTags::inst()->clean_string($this->default_site_og_description);
 		if (empty($this->og_image_width) || ! is_numeric($this->og_image_width)){
 			$this->og_image_width = MetaTags::OG_IMAGE_WIDTH;
 		}
 		$this->og_image_width = intval($this->og_image_width);
+
 		if (empty($this->og_image_height) || ! is_numeric($this->og_image_height)){
 			$this->og_image_height = MetaTags::OG_IMAGE_HEIGHT;
 		}
 		$this->og_image_height = intval($this->og_image_height);
+
+
 	}
 
 
