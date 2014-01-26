@@ -1,7 +1,8 @@
 <?php
-namespace ModernMedia\MustUse\Widget;
-use ModernMedia\MustUse\Carousel as MMCarousel;
-class Carousel extends Base{
+namespace ModernMedia\WPLib\Carousel;
+use ModernMedia\WPLib\Widget\BaseWidget;
+
+class CarouselWidget extends BaseWidget{
 
 	/**
 	 * @return array
@@ -37,7 +38,7 @@ class Carousel extends Base{
 	 * @return string
 	 */
 	protected function get_widget_content($instance) {
-		return MMCarousel::inst()->get_carousel_html($instance['id'], $instance);
+		return Carousel::inst()->get_carousel_html($instance['id'], $instance);
 	}
 
 	/**
@@ -45,7 +46,7 @@ class Carousel extends Base{
 	 * @return void
 	 */
 	protected function print_form_fields($instance) {
-		$this->print_post_type_select($instance, 'id', 'Carousel', MMCarousel::PT_CAROUSEL);
+		$this->print_post_type_select($instance, 'id', 'Carousel', Carousel::PT_CAROUSEL);
 
 		printf(
 			'<p><label for="%s">Interval (ms)</label> %s</p>',

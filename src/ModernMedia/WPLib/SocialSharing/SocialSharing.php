@@ -1,5 +1,5 @@
 <?php
-namespace ModernMedia\MustUse\SocialSharing;
+namespace ModernMedia\WPLib\SocialSharing;
 
 
 use ModernMedia\WPLib\Utils;

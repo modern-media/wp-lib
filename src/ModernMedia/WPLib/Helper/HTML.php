@@ -2,7 +2,7 @@
 namespace ModernMedia\WPLib\Helper;
 /**
  * Class HTML
- * @package ModernMedia\MustUse\Helper
+ * @package ModernMedia\WPLib\Helper
  *
  * Class for spitting out form controls and other pieces of HTML
  */

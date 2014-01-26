@@ -3,8 +3,8 @@ namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Utils;
 
 /**
- * Class ModernMediaSingleLink
- * @package ModernMedia\MustUse\Widget
+ * Class SingleLink
+ * @package ModernMedia\WPLib\Widget
  *
  * A widget that displays a single link
  */

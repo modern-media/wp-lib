@@ -96,10 +96,6 @@ class ClientTimezone {
 		return $local;
 	}
 
-
-
-
-
 	/**
 	 * Get the offset in minutes from UTC,
 	 * if the cookie has been set on the client.

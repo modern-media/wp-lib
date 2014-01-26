@@ -1,8 +1,8 @@
 <?php
-namespace ModernMedia\MustUse\Widget;
+namespace ModernMedia\WPLib\Widget;
 /**
  * Class Widgets
- * @package ModernMedia\MustUse\Widget
+ * @package ModernMedia\WPLib\Widget
  */
 class Widgets {
 
@@ -36,13 +36,12 @@ class Widgets {
 
 
 	public function _action_widgets_init(){
-		register_widget('\\ModernMedia\\MustUse\\Widget\\Text');
-		register_widget('\\ModernMedia\\MustUse\\Widget\\Search');
-		register_widget('\\ModernMedia\\MustUse\\Widget\\Carousel');
-		register_widget('\\ModernMedia\\MustUse\\Widget\\SingleLink');
-		register_widget('\\ModernMedia\\MustUse\\Widget\\SinglePost');
-		register_widget('\\ModernMedia\\MustUse\\Widget\\TitleAndTagline');
-		register_widget('\\ModernMedia\\MustUse\\Widget\\Copyright');
+		register_widget('\\ModernMedia\\WPLib\\Widget\\Text');
+		register_widget('\\ModernMedia\\WPLib\\Widget\\Search');
+		register_widget('\\ModernMedia\\WPLib\\Widget\\SingleLink');
+		register_widget('\\ModernMedia\\WPLib\\Widget\\SinglePost');
+		register_widget('\\ModernMedia\\WPLib\\Widget\\TitleAndTagline');
+		register_widget('\\ModernMedia\\WPLib\\Widget\\Copyright');
 	}
 
 

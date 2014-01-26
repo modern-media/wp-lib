@@ -1,12 +1,12 @@
 <?php
-namespace ModernMedia\MustUse\Widget;
+namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Utils;
-use ModernMedia\MustUse\SocialSharing\SocialSharing;
+use ModernMedia\WPLib\SocialSharing\SocialSharing;
 use ModernMedia\WPLib\Widget\BaseWidget;
 
 /**
- * Class ModernMediaSinglePost
- * @package ModernMedia\MustUse\Widget
+ * Class SinglePost
+ * @package ModernMedia\WPLib\Widget
  *
  * A widget that displays a single post
  */

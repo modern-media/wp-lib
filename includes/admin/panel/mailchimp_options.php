@@ -1,5 +1,5 @@
 <?php
-namespace ModernMedia\MustUse\Admin\Panel;
+namespace ModernMedia\WPLib\Admin\Panel;
 /**
  * @var MMMUOptions $this
  */

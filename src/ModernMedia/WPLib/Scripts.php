@@ -6,6 +6,7 @@ class Scripts {
 	const UPLOADER = 'mm_wp_lib_uploader';
 	const CHAR_COUNT = 'mm_wp_lib_char_count';
 	const CLIENT_TIMEZONE = 'mm_wp_lib_client_timezone';
+	const CAROUSEL_FRONT = 'mm_wp_lib_carousel_front';
 
 	private $scripts = array();
 
@@ -44,6 +45,14 @@ class Scripts {
 			self::CLIENT_TIMEZONE,
 			array(
 				'uri' => Utils::get_lib_uri('assets/js/client-timezone.js'),
+				'dependencies' => array('jquery'),
+			)
+		);
+
+		$this->add_script(
+			self::CAROUSEL_FRONT,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/carousel-front.js'),
 				'dependencies' => array('jquery'),
 			)
 		);

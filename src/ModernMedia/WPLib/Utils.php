@@ -248,7 +248,7 @@ class Utils {
 	 * @param string $path
 	 * @return string
 	 */
-	public static  function get_lib_uri($path = ''){
+	public static function get_lib_uri($path = ''){
 		$uri = get_bloginfo('url') . '/vendor/modern-media/wp-lib';
 		if (! empty($path)) $uri .= '/' . $path;
 		return $uri;

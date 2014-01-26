@@ -201,7 +201,6 @@ abstract class BaseWidget extends \WP_Widget {
 	 * @return string|void
 	 */
 	public function form($instance){
-		return;
 		echo '<div class="ModernMediaWidget-form">';
 		$instance = $this->_merge_instance_defaults($instance);
 		if (! $this->is_widget_displayed($instance, $reason)) {
