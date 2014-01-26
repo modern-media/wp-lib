@@ -96,6 +96,8 @@ To make sure the javascript is enqueued in admin, use the following code before 
 To get a local copy of a UTC Carbon Date use:
 
     $local = ClientTimezone::inst()->utc_to_local($utc);
+    
+In both PHP and Javascript, we follow PHP's convention that locations west of UTC have negative offsets. This is the opposite of the js convention.
 
 
 

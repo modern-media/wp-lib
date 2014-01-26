@@ -10,7 +10,9 @@ use Carbon\Carbon;
  * via js on the client, the retrieving that value to
  * convert UTC times to local times on the client.
  *
- * The offset is in minutes.
+ * The offset is in minutes. In both javascript and PHP
+ * we follow the PHP convention that locations west of GMT
+ * have a negative offset
  *
  * Elements that use this should call
  *
@@ -40,6 +42,12 @@ class ClientTimezone {
 	public static function inst(){
 		if (! self::$instance instanceof ClientTimezone){
 			self::$instance = new ClientTimezone;
+			if (isset($_COOKIE) && isset($_COOKIE[self::CK_TZ])){
+				/**
+				 * the cookie value and $this->offset are in minutes
+				 */
+				self::$instance->set_offset($_COOKIE[self::CK_TZ]);
+			}
 		}
 		return self::$instance;
 	}
@@ -47,16 +55,7 @@ class ClientTimezone {
 	/**
 	 * private constructor
 	 */
-	private function __construct(){
-		if (isset($_COOKIE[self::CK_TZ])){
-			/**
-			 * the cookie value and $this->offset are in minutes
-			 */
-			$this->offset = $_COOKIE[self::CK_TZ];
-		}
-
-
-	}
+	private function __construct(){}
 	public function enqueue_front(){
 		add_action('wp_enqueue_scripts', array($this, '_enqueue_scripts'));
 	}
@@ -80,11 +79,24 @@ class ClientTimezone {
 	 */
 	public function utc_to_local($utc){
 		$local = $utc->copy();
-		$off = $this->get_offset();
-		$off = is_null($off) ? 0 : intval($off);
-		$local->setTimestamp($utc->getTimestamp() - ($off * 60));
+		$o = $this->offset;
+		$local->addMinutes($o);
+		$hr = str_pad(floor(abs($o)/60), 2, '0', STR_PAD_LEFT);
+		$mn = str_pad(abs($o) % 60, 2, '0', STR_PAD_LEFT);
+		$sign = $o >= 0 ? '+' : '-';
+		$plus_str = sprintf('%s%s%s', $sign, $hr, $mn);
+
+		$d_str = sprintf(
+			'%sT%s%s',
+			$local->format('Y-m-d'),
+			$local->format('H:i:s'),
+			$plus_str
+		);
+		$local = @Carbon::createFromFormat(Carbon::ISO8601, $d_str, null);
 		return $local;
 	}
+
+
 
 
 
@@ -96,6 +108,13 @@ class ClientTimezone {
 	 */
 	public function get_offset() {
 		return $this->offset;
+	}
+
+	/**
+	 * @param int|null $off
+	 */
+	public function set_offset($off) {
+		$this->offset = $off;
 	}
 
 
