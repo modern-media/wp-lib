@@ -5,6 +5,7 @@ class Scripts {
 
 	const UPLOADER = 'mm_wp_lib_uploader';
 	const CHAR_COUNT = 'mm_wp_lib_char_count';
+	const CLIENT_TIMEZONE = 'mm_wp_lib_client_timezone';
 
 	private $scripts = array();
 
@@ -36,6 +37,13 @@ class Scripts {
 			self::CHAR_COUNT,
 			array(
 				'uri' => Utils::get_lib_uri('assets/js/char-count.js'),
+				'dependencies' => array('jquery'),
+			)
+		);
+		$this->add_script(
+			self::CLIENT_TIMEZONE,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/client-timezone.js'),
 				'dependencies' => array('jquery'),
 			)
 		);

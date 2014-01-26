@@ -49,8 +49,7 @@ This script updates an element of class `.mm-wp-lib-char-count` with the charact
 	</p>
 
 Data attributes set on the `.mm-wp-lib-char-count` element:  
- * 	`data-target`: sets selector of the input or textarea and button text for the WordPress uploader.  
-
+ * 	`data-target`: sets selector of the input or textarea twhose characters will be counted.
 
 ### Image Uploader JavaScript
 
@@ -79,6 +78,26 @@ Elements:
 Data attributes set on the `.mm-wp-lib-uploader` element:  
  * 	`data-label`: sets the title and button text for the WordPress uploader.  
  * 	`data-size`: sets the size of the preview image	
+### Client Timezone 
+
+    /** Singleton pattern **/
+    ModernMedia\WPLib\ClientTimezone::inst();
+
+This element sets a cookie on the client browser with javascript. The value of this cookie is the offset in minutes between the client time and UTC. The cookie key is `mm_wp_lib_client_timezone`. 
+
+To make sure the javascript is enqueued on the front end, use the following code before `wp_enqueue_scripts`:
+
+    ClientTimezone::inst()->enqueue_front();
+
+To make sure the javascript is enqueued in admin, use the following code before `admin_enqueue_scripts`:
+
+    ClientTimezone::inst()->enqueue_admin();
+    
+To get a local copy of a UTC Carbon Date use:
+
+    $local = ClientTimezone::inst()->utc_to_local($utc);
+
+
 
 ### Meta Tags
 

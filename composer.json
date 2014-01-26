@@ -10,5 +10,8 @@
 		"nesbot/Carbon": "*",
 		"monolog/monolog": "1.7.*@dev",
 		"ccampbell/chromephp": "*"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "3.7.*"
 	}
 }
