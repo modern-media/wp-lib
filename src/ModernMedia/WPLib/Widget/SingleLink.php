@@ -1,5 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
+use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 
 /**
@@ -19,6 +20,13 @@ class SingleLink extends BaseWidget  {
 	const TYPE_RSS = 'rss_feed';
 	const TYPE_JAVASCRIPT_VOID = 'javascript_void';
 	const TYPE_HASH = 'hash';
+
+	public function __construct(){
+		if (is_admin()){
+			Scripts::inst()->enqueue(Scripts::POST_PICKER);
+		}
+		parent::__construct();
+	}
 	/**
 	 * @return array
 	 */
@@ -129,7 +137,7 @@ class SingleLink extends BaseWidget  {
 	protected function print_form_fields($instance) {
 		/** @noinspection PhpUnusedLocalVariableInspection */
 		$widget = &$this;
-		$path = Utils::get_lib_path('includes/widget/single_link_form.php');
+		$path = Utils::get_lib_path('includes/admin/widget/single_link_form.php');
 		require($path);
 
 	}

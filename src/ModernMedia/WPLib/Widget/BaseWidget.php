@@ -11,6 +11,7 @@ use ModernMedia\WPLib\Utils;
  */
 abstract class BaseWidget extends \WP_Widget {
 
+
 	/**
 	 * @return array
 	 */
@@ -242,23 +243,7 @@ abstract class BaseWidget extends \WP_Widget {
 				)
 			);
 
-			$options = array();
-			$start = 57344;
-			for($n = 0;  $n < 300; $n++){
-				$code_point = $start + $n;
-				$options[$code_point] = dechex($start + $n);
-			}
-			printf(
-				'<p><label for="%s">Title Data Icon</label> %s <br><small>Leave alone if you don\'t get it it.</small></p>',
-				$this->get_field_id('title_data_icon'),
-				$this->select(
-					$instance,
-					'title_data_icon',
-					$options,
-					array(),
-					false
-				)
-			);
+
 
 		}
 
@@ -290,27 +275,12 @@ abstract class BaseWidget extends \WP_Widget {
 				'display_title' => false,
 				'title' => '',
 				'title_link' => '',
-				'title_data_icon' => '',
 			),
 			$defaults
 		);
 		return array_merge($defaults, $instance);
 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	public function print_post_type_select($instance, $field, $label, $post_type, $please = 'Please select...'){
 		$field_id = $this->get_field_id($field);

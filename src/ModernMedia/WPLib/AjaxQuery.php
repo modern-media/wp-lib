@@ -26,6 +26,9 @@ class AjaxQuery {
 	private function __construct(){
 		$slug = 'wp_ajax_' . self::ACTION_IMAGE_SRC_QUERY;
 		add_action($slug, array($this, '_action_image_src_query'));
+
+		$slug = 'wp_ajax_' . self::ACTION_POSTS_QUERY;
+		add_action($slug, array($this, '_action_posts_query'));
 	}
 
 	public function _action_image_src_query(){
@@ -40,5 +43,20 @@ class AjaxQuery {
 		$size = isset($_POST['size']) ? $_POST['size'] : 'thumbnail';
 		$arr = wp_get_attachment_image_src($image_id, $size);
 		$response->respond_with_data($arr);
+	}
+
+	public function _action_posts_query(){
+		$response = new AjaxResponse();
+		$q = array(
+			'posts_per_page' => 10,
+		);
+		if ('any' != $_POST['post_type']);
+		$q['post_type'] = $_POST['post_type'];
+		if (! empty( $_POST['s'])){
+			$q['s'] = $_POST['s'];
+		}
+		$q = new \WP_Query($q);
+		$response->respond_with_data($q);
+
 	}
 } 

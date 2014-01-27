@@ -1,5 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
+use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 use ModernMedia\WPLib\SocialSharing\SocialSharing;
 use ModernMedia\WPLib\Widget\BaseWidget;
@@ -11,6 +12,20 @@ use ModernMedia\WPLib\Widget\BaseWidget;
  * A widget that displays a single post
  */
 class SinglePost extends BaseWidget{
+
+
+	public function __construct(){
+		if (is_admin()){
+			global $pagenow;
+			if ('widgets.php' == $pagenow ){
+				Scripts::inst()->enqueue(Scripts::POST_PICKER);
+
+			}
+
+		}
+		parent::__construct();
+	}
+
 
 	/**
 	 * @return array
@@ -143,7 +158,7 @@ class SinglePost extends BaseWidget{
 	protected function print_form_fields($instance) {
 		/** @noinspection PhpUnusedLocalVariableInspection */
 		$widget = &$this;
-		require Utils::get_lib_path('/includes/widget/single_post_form.php');
+		require Utils::get_lib_path('includes/admin/widget/single_post_form.php');
 	}
 
 	/**
@@ -183,6 +198,6 @@ class SinglePost extends BaseWidget{
 	 * @return bool
 	 */
 	protected function does_widget_have_title_option() {
-		return false;
+		return true;
 	}
 }

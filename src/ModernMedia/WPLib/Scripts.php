@@ -7,6 +7,7 @@ class Scripts {
 	const CHAR_COUNT = 'mm_wp_lib_char_count';
 	const CLIENT_TIMEZONE = 'mm_wp_lib_client_timezone';
 	const CAROUSEL_FRONT = 'mm_wp_lib_carousel_front';
+	const POST_PICKER = 'mm_wp_lib_post_picker';
 
 	private $scripts = array();
 
@@ -54,6 +55,14 @@ class Scripts {
 			array(
 				'uri' => Utils::get_lib_uri('assets/js/carousel-front.js'),
 				'dependencies' => array('jquery'),
+			)
+		);
+
+		$this->add_script(
+			self::POST_PICKER,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/post-picker.js'),
+				'dependencies' => array('jquery', 'underscore'),
 			)
 		);
 

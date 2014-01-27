@@ -1,6 +1,5 @@
 <?php
-namespace ModernMedia\MustUse\Widget;
-use ModernMedia\WPLib\Widget\SingleLink;
+namespace ModernMedia\WPLib\Widget;
 /**
  * @var SingleLink $widget
  * @var $instance
