@@ -30,7 +30,7 @@ class SingleLink extends BaseWidget  {
 	/**
 	 * @return array
 	 */
-	protected function get_instance_defaults() {
+	public function get_instance_defaults() {
 		return array(
 			'type' => '',
 			'id' => 0,
@@ -53,7 +53,7 @@ class SingleLink extends BaseWidget  {
 	 * @param $reason_not_displayed
 	 * @return bool
 	 */
-	protected function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason_not_displayed) {
 		return true;
 	}
 
@@ -61,7 +61,7 @@ class SingleLink extends BaseWidget  {
 	 * @param $instance
 	 * @return bool
 	 */
-	protected function is_widget_content_displayed($instance) {
+	public function is_widget_content_displayed($instance) {
 		return true;
 	}
 
@@ -69,7 +69,7 @@ class SingleLink extends BaseWidget  {
 	 * @param $instance
 	 * @return string
 	 */
-	protected function get_widget_content($instance) {
+	public function get_widget_content($instance) {
 		$url = null;
 		switch($instance['type']){
 			case self::TYPE_HOME:
@@ -134,7 +134,7 @@ class SingleLink extends BaseWidget  {
 	 * @param $instance
 	 * @return void
 	 */
-	protected function print_form_fields($instance) {
+	public function print_form_fields($instance) {
 		/** @noinspection PhpUnusedLocalVariableInspection */
 		$widget = &$this;
 		$path = Utils::get_lib_path('includes/admin/widget/single_link_form.php');
@@ -163,7 +163,7 @@ class SingleLink extends BaseWidget  {
 	 * @param $instance
 	 * @return void
 	 */
-	protected function validate(&$instance) {
+	public function validate(&$instance) {
 		if (empty($instance['title'])){
 			switch($instance['type']){
 				case self::TYPE_HOME:
@@ -212,29 +212,31 @@ class SingleLink extends BaseWidget  {
 	/**
 	 * @return string
 	 */
-	protected function get_name() {
+	public function get_name() {
 		return 'MM Single Link';
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function get_desc() {
+	public function get_desc() {
 		return 'Displays a link to one af a variety of things.';
 	}
 
 	/**
 	 * @return array
 	 */
-	protected function get_control_options(){
+	public function get_control_options(){
 		return array('width' => 400);
 	}
 
 	/**
 	 * @return bool
 	 */
-	protected function does_widget_have_title_option() {
+	public function does_widget_have_title_option() {
 		return false;
 	}
+
+
 }
 

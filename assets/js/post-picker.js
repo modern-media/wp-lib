@@ -61,15 +61,22 @@ jQuery(document).ready(function($){
 
 	var select = function(ctl, item){
 		var inp = $('input.id', ctl);
+		var old_val = inp.val();
 		var selected = $('.selection .selected', ctl);
 		if (! item){
 			inp.val('');
 			selected.text('');
+			ctl.data('post', false);
 		} else {
 			inp.val(item.ID);
 			selected.html(item.post_title);
+			ctl.data('post', item);
 		}
+
 		update(ctl);
+		if (old_val !== inp.val()){
+			inp.change();
+		}
 	};
 	var query_posts = function(ctl){
 		var loading = $('.loading', ctl);

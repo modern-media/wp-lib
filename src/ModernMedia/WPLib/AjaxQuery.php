@@ -7,6 +7,7 @@ class AjaxQuery {
 
 	const ACTION_POSTS_QUERY = 'mm_posts_query';
 	const ACTION_IMAGE_SRC_QUERY = 'mm_image_src_query';
+	const ACTION_FEATURED_IMAGE_QUERY = 'mm_featured_image_query';
 
 	/**
 	 * @var AjaxQuery
@@ -29,6 +30,9 @@ class AjaxQuery {
 
 		$slug = 'wp_ajax_' . self::ACTION_POSTS_QUERY;
 		add_action($slug, array($this, '_action_posts_query'));
+
+		$slug = 'wp_ajax_' . self::ACTION_FEATURED_IMAGE_QUERY;
+		add_action($slug, array($this, '_action_featured_image_query'));
 	}
 
 	public function _action_image_src_query(){
@@ -43,6 +47,28 @@ class AjaxQuery {
 		$size = isset($_POST['size']) ? $_POST['size'] : 'thumbnail';
 		$arr = wp_get_attachment_image_src($image_id, $size);
 		$response->respond_with_data($arr);
+	}
+
+	public function _action_featured_image_query(){
+		$response = new AjaxResponse();
+		$post_id = isset($_POST['post_id']) ? $_POST['post_id'] : false;
+		$data = array();
+		if (! $post_id){
+			$data['has_featured_image'] = false;
+			$data['message'] = __('No post selected.');
+			$response->respond_with_data($data);
+		}
+		$data['has_featured_image'] = has_post_thumbnail($post_id);
+		if (! $data['has_featured_image']){
+			$data['message'] = __('The post has no featured image.');
+			$response->respond_with_data($data);
+		}
+		$size = isset($_POST['size']) ? $_POST['size'] : 'thumbnail';
+		$image_id = get_post_thumbnail_id($post_id);
+		$arr = wp_get_attachment_image_src($image_id, $size);
+		$data['src'] = $arr[0];
+		$response->respond_with_data($data);
+
 	}
 
 	public function _action_posts_query(){

@@ -3,7 +3,6 @@ namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 use ModernMedia\WPLib\SocialSharing\SocialSharing;
-use ModernMedia\WPLib\Widget\BaseWidget;
 
 /**
  * Class SinglePost
@@ -18,10 +17,13 @@ class SinglePost extends BaseWidget{
 		if (is_admin()){
 			global $pagenow;
 			if ('widgets.php' == $pagenow ){
-				Scripts::inst()->enqueue(Scripts::POST_PICKER);
-
+				$s = Scripts::inst();
+				$s->enqueue(Scripts::POST_PICKER);
+				$s->enqueue(Scripts::WIDGET_GENERAL);
+				$s->enqueue(Scripts::WIDGET_SINGLE_POST);
+				$s->enqueue(Scripts::UPLOADER);
+				wp_enqueue_media();
 			}
-
 		}
 		parent::__construct();
 	}
@@ -30,41 +32,55 @@ class SinglePost extends BaseWidget{
 	/**
 	 * @return array
 	 */
-	protected function get_instance_defaults() {
+	public function get_instance_defaults() {
 		return array(
-			'type' => '',
 			'id' => 0,
-			'link_classes' => '',
-			'link_data_icon' => '',
-			'link_extra_attributes' => '',
-			'url' => '',
-			'post_type' => '',
-			'term_id' => '',
-			'taxonomy' => '',
-			'post_id' => '',
-			'author_id' => '',
-			'hash_id' => '',
-			'thumbnail_size' => 'thumbnail',
-			'alternate_title' => '',
-			'alternate_excerpt' => '',
-			'alternate_image' => '',
-			'tag_post_as' => '',
+			'image_display' => 'none',
+			'image_size' => 'thumbnail',
+			'image_placement' => 'above_title',
+			'custom_image_id' => 0,
+			'excerpt' => '',
 			'include_read_button' => false,
-			'read_button_text' => 'Read',
-			'include_social' => false
+			'read_button_text' => __('Read')
 		);
+	}
+
+	public function get_image_display_options(){
+		return array(
+			'none' => __('No image'),
+			'featured' => __('Use featured image'),
+			'custom' => __('Use another image')
+		);
+	}
+
+	public function get_image_placement_options(){
+		return array(
+			'above_title' => __('Above Title'),
+			'above_excerpt' => __('Above Excerpt'),
+			'below_excerpt' => __('Below Excerpt')
+		);
+	}
+
+	public function get_image_size_options(){
+		$sizes = get_intermediate_image_sizes();
+		$keyed = array();
+		foreach($sizes as $s){
+			$keyed[$s] = $s;
+		}
+		return $keyed;
 	}
 
 	public function get_post_type(){
 		return 'any';
 	}
 
+
 	/**
 	 * @param $instance
 	 * @param $reason_not_displayed
 	 * @return bool
 	 */
-	protected function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason_not_displayed) {
 		return true;
 	}
 
@@ -72,7 +88,7 @@ class SinglePost extends BaseWidget{
 	 * @param $instance
 	 * @return bool
 	 */
-	protected function is_widget_content_displayed($instance) {
+	public function is_widget_content_displayed($instance) {
 		return true;
 	}
 
@@ -80,7 +96,7 @@ class SinglePost extends BaseWidget{
 	 * @param $instance
 	 * @return string
 	 */
-	protected function get_widget_content($instance) {
+	public function get_widget_content($instance) {
 		$post_id = $instance['post_id'];
 		$post = get_post($post_id);
 		if (! $post) return '';
@@ -155,17 +171,16 @@ class SinglePost extends BaseWidget{
 	 * @param $instance
 	 * @return void
 	 */
-	protected function print_form_fields($instance) {
-		/** @noinspection PhpUnusedLocalVariableInspection */
-		$widget = &$this;
+	public function print_form_fields($instance) {
 		require Utils::get_lib_path('includes/admin/widget/single_post_form.php');
 	}
+
 
 	/**
 	 * @param $instance
 	 * @return void
 	 */
-	protected function validate(&$instance) {
+	public function validate(&$instance) {
 		$post = get_post($instance['post_id']);
 		if ($post){
 			$instance['title'] = $post->post_title;
@@ -176,28 +191,36 @@ class SinglePost extends BaseWidget{
 	/**
 	 * @return string
 	 */
-	protected function get_name() {
-		return 'MM Single Post';
+	public function get_name() {
+		return 'Single Post Widget';
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function get_desc() {
+	public function get_desc() {
 		return 'Displays a single post or custom post type.';
 	}
 
 	/**
 	 * @return array
 	 */
-	protected function get_control_options(){
-		return array('width' => 400);
+	public function get_control_options(){
+		return array('width' => 350);
 	}
 
 	/**
 	 * @return bool
 	 */
-	protected function does_widget_have_title_option() {
+	public function does_widget_have_title_option() {
 		return true;
 	}
+	/**
+	 * @return bool
+	 */
+	public function does_widget_have_title_link_option() {
+		return false;
+	}
+
+
 }

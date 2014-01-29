@@ -26,7 +26,7 @@ jQuery(document).ready(function($){
 	var find_ctl = function(sel){
 		return sel.parents(ctl_selector_string);
 	};
-	var update = function(ctl){
+	var update = window.mm_wp_lib_uploader_update = function(ctl){
 		var input = $('input', ctl);
 		var holder = $('.holder', ctl);
 		var remove = $('.remove', ctl);

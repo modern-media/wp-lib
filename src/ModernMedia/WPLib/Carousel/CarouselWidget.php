@@ -7,7 +7,7 @@ class CarouselWidget extends BaseWidget{
 	/**
 	 * @return array
 	 */
-	protected function get_instance_defaults() {
+	public function get_instance_defaults() {
 		return array(
 			'id' => 0,
 			'interval' => '5000',
@@ -21,7 +21,7 @@ class CarouselWidget extends BaseWidget{
 	 * @param $reason_not_displayed
 	 * @return bool
 	 */
-	protected function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason_not_displayed) {
 		return true;
 	}
 
@@ -29,7 +29,7 @@ class CarouselWidget extends BaseWidget{
 	 * @param $instance
 	 * @return bool
 	 */
-	protected function is_widget_content_displayed($instance) {
+	public function is_widget_content_displayed($instance) {
 		return true;
 	}
 
@@ -37,7 +37,7 @@ class CarouselWidget extends BaseWidget{
 	 * @param $instance
 	 * @return string
 	 */
-	protected function get_widget_content($instance) {
+	public function get_widget_content($instance) {
 		return Carousel::inst()->get_carousel_html($instance['id'], $instance);
 	}
 
@@ -45,7 +45,7 @@ class CarouselWidget extends BaseWidget{
 	 * @param $instance
 	 * @return void
 	 */
-	protected function print_form_fields($instance) {
+	public function print_form_fields($instance) {
 		$this->print_post_type_select($instance, 'id', 'Carousel', Carousel::PT_CAROUSEL);
 
 		printf(
@@ -64,7 +64,7 @@ class CarouselWidget extends BaseWidget{
 	 * @param $instance
 	 * @return void
 	 */
-	protected function validate(&$instance) {
+	public function validate(&$instance) {
 		if (! is_numeric($instance['interval'])) $instance['interval'] = '5000';
 
 	}
@@ -72,18 +72,18 @@ class CarouselWidget extends BaseWidget{
 	/**
 	 * @return string
 	 */
-	protected function get_name() {
+	public function get_name() {
 		return 'Carousel Widget';
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function get_desc() {
+	public function get_desc() {
 		return 'Put a carousel in a widget.';
 	}
 
-	protected function does_widget_have_title_option(){
+	public function does_widget_have_title_option(){
 		return false;
 	}
 

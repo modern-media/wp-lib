@@ -15,21 +15,21 @@ abstract class BaseWidget extends \WP_Widget {
 	/**
 	 * @return array
 	 */
-	abstract protected function get_instance_defaults();
+	abstract public function get_instance_defaults();
 
 	/**
 	 * @param $instance
 	 * @param $reason_not_displayed
 	 * @return bool
 	 */
-	abstract protected function is_widget_displayed($instance, &$reason_not_displayed);
+	abstract public function is_widget_displayed($instance, &$reason_not_displayed);
 
 
 	/**
 	 * @param $instance
 	 * @return bool
 	 */
-	abstract protected function is_widget_content_displayed($instance);
+	abstract public function is_widget_content_displayed($instance);
 
 
 
@@ -37,30 +37,32 @@ abstract class BaseWidget extends \WP_Widget {
 	 * @param $instance
 	 * @return string
 	 */
-	abstract protected function get_widget_content($instance);
-
-	/**
-	 * @param $instance
-	 * @return void
-	 */
-	abstract protected function print_form_fields($instance);
+	abstract public function get_widget_content($instance);
 
 	/**
 	 * @param $instance
 	 * @return void
 	 */
-	abstract protected function validate(&$instance);
+	abstract public function print_form_fields($instance);
+
+
+	/**
+	 * @param $instance
+	 * @return void
+	 */
+	abstract public function validate(&$instance);
 
 
 	/**
 	 * @return string
 	 */
-	abstract protected function get_name();
+	abstract public function get_name();
 
 	/**
 	 * @return string
 	 */
-	abstract protected function get_desc();
+	abstract public function get_desc();
+
 
 
 
@@ -68,14 +70,17 @@ abstract class BaseWidget extends \WP_Widget {
 	 * the constructor
 	 */
 	public function __construct() {
-		$id_base = str_replace('\\', '_', get_class($this));
-		parent::__construct($id_base, $this->get_name(), $this->get_options(), $this->get_control_options() );
+		parent::__construct($this->get_id_base(), $this->get_name(), $this->get_options(), $this->get_control_options() );
+	}
+
+	public function get_id_base(){
+		return str_replace('\\', '_', get_class($this));
 	}
 
 	/**
 	 * @return array
 	 */
-	protected function get_options(){
+	public function get_options(){
 		return array(
 			'description' => $this->get_desc()
 		);
@@ -84,7 +89,7 @@ abstract class BaseWidget extends \WP_Widget {
 	/**
 	 * @return array
 	 */
-	protected function get_control_options(){
+	public function get_control_options(){
 		return array();
 	}
 
@@ -121,7 +126,7 @@ abstract class BaseWidget extends \WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget($args, $instance){
-		$instance = $this->_merge_instance_defaults($instance);
+		$instance = $this->merge_instance_defaults($instance);
 		if (! $this->is_widget_displayed($instance, $reason)) {
 			return;
 		}
@@ -183,7 +188,14 @@ abstract class BaseWidget extends \WP_Widget {
 	 * Default/ override to get rid of title
 	 * @return bool
 	 */
-	protected function does_widget_have_title_option(){
+	public function does_widget_have_title_option(){
+		return true;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function does_widget_have_title_link_option() {
 		return true;
 	}
 
@@ -197,81 +209,27 @@ abstract class BaseWidget extends \WP_Widget {
 	}
 
 
+
 	/**
 	 * @param array $instance
 	 * @return string|void
 	 */
 	public function form($instance){
-		echo '<div class="ModernMediaWidget-form">';
-		$instance = $this->_merge_instance_defaults($instance);
-		if (! $this->is_widget_displayed($instance, $reason)) {
-			printf(
-				'<p style="background-color:#FF0;padding:5px;">This widget will not be displayed. %s</p>',
-				$reason
-			);
-		}
-
-		$this->print_form_fields($instance);
-
-
-		if ($this->does_widget_have_title_option()){
-
-			printf(
-				'<p>%s</p>',
-				$this->checkbox_input($instance, 'display_title', 'Display title.', array(), false)
-			);
-
-			printf(
-				'<p><label for="%s">Title</label> %s</p>',
-				$this->get_field_id('title'),
-				$this->text_input(
-					$instance,
-					'title',
-					array('class'=>'widefat', 'placeholder'=>'Widget Title'),
-					false
-				)
-			);
-
-			printf(
-				'<p><label for="%s">Title Link</label> %s <br><small>Leave blank if not linked.</small></p>',
-				$this->get_field_id('title_link'),
-				$this->text_input(
-					$instance,
-					'title_link',
-					array('class'=>'widefat', 'placeholder'=>'http://'),
-					false
-				)
-			);
-
-
-
-		}
-
-		printf(
-			'<p><label for="%s">Extra Container Classes</label> %s</p>',
-			$this->get_field_id('extra_classes'),
-			$this->text_input(
-				$instance,
-				'extra_classes',
-				array('class'=>'widefat', 'placeholder'=>'classname classname'),
-				false
-			)
-		);
-
-
-
-		echo '</div>';
+		require Utils::get_lib_path('includes/admin/widget/common/widget_form.php');
 	}
 
 	/**
 	 * @param $instance
 	 * @return array
 	 */
-	private function _merge_instance_defaults($instance){
+	public function merge_instance_defaults($instance){
 		$defaults = $this->get_instance_defaults();
 		$defaults = array_merge(
 			array(
+				'widget_form_advanced_is_open' => false,
+				'widget_opened_form_sections' => '',
 				'extra_classes' => '',
+				'extra_attributes' => '',
 				'display_title' => false,
 				'title' => '',
 				'title_link' => '',
@@ -421,5 +379,7 @@ abstract class BaseWidget extends \WP_Widget {
 		else return $html;
 
 	}
+
+
 
 }

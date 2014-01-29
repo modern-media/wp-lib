@@ -253,4 +253,42 @@ class Utils {
 		if (! empty($path)) $uri .= '/' . $path;
 		return $uri;
 	}
+
+	public static function get_image_size_data(){
+		$sizes = array();
+		$default_sizes = array('thumbnail', 'medium', 'large');
+		foreach($default_sizes as $key){
+			$crop = get_option($key . '_crop');
+			$size = array(
+				'width' => get_option($key . '_size_w'),
+				'height' => get_option($key . '_size_h'),
+				'crop' => is_null($crop) ? false : $crop
+			);
+			$sizes[$key] = $size;
+		}
+		global $_wp_additional_image_sizes;
+		$extra_sizes = get_intermediate_image_sizes();
+		foreach($extra_sizes as $key){
+			if (in_array($key, $default_sizes)){
+				continue;
+			}
+			$sizes[$key] = $_wp_additional_image_sizes[$key];
+		}
+		return $sizes;
+
+	}
+	public static function get_image_size_options(){
+		$sizes = self::get_image_size_data();
+		$opts = array();
+		foreach($sizes as $key => $data){
+			$opts[$key] = sprintf(
+				'%s (%s x %s)',
+				$key,
+				$data['width'],
+				$data['height']
+			);
+		}
+
+		return $opts;
+	}
 } 

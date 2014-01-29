@@ -54,7 +54,7 @@ class MetaTags {
 	 */
 	public function _action_after_setup_theme(){
 		$o = $this->get_option_site_meta();
-		add_image_size($o->og_image_width, $o->og_image_height, false);
+		add_image_size(self::OG_IMAGE_SIZE_ID, $o->og_image_width, $o->og_image_height, false);
 	}
 
 	/**

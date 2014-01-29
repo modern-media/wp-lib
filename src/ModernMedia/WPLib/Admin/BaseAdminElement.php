@@ -410,7 +410,7 @@ abstract class BaseAdminElement {
 				if (! in_array($pagenow, array('post.php', 'post-new.php'))) return false;
 				$type = '';
 				if ('post-new.php' == $pagenow){
-					$type = $_GET['post_type'];
+					$type = isset($_GET['post_type']) ? $_GET['post_type'] : 'post';
 				} else {
 					if (Utils::is_submitting()){
 						if (isset ($_POST['post_type'])){

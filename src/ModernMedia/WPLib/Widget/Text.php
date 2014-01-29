@@ -6,7 +6,7 @@ class Text extends BaseWidget {
 	 * @param $reason_not_displayed
 	 * @return bool
 	 */
-	protected function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason_not_displayed) {
 		$title = trim($instance['title']);
 		$content = trim($instance['content']);
 		if (empty($content) && empty($title)){
@@ -20,14 +20,14 @@ class Text extends BaseWidget {
 	/**
 	 * @return string
 	 */
-	protected function get_name() {
+	public function get_name() {
 		return 'MM Text Widget';
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function get_desc() {
+	public function get_desc() {
 		return 'A much better text widget.';
 	}
 
@@ -35,7 +35,7 @@ class Text extends BaseWidget {
 	 * @param $instance
 	 * @return bool
 	 */
-	protected function is_widget_content_displayed($instance) {
+	public function is_widget_content_displayed($instance) {
 		return true;
 	}
 
@@ -43,7 +43,7 @@ class Text extends BaseWidget {
 	 * @param $instance
 	 * @return string
 	 */
-	protected function get_widget_content($instance) {
+	public function get_widget_content($instance) {
 		$content = trim($instance['content']);
 		return do_shortcode($content);
 	}
@@ -51,7 +51,7 @@ class Text extends BaseWidget {
 	/**
 	 * @return array
 	 */
-	protected function get_control_options(){
+	public function get_control_options(){
 		return array(
 			'width' => 400
 		);
@@ -61,7 +61,7 @@ class Text extends BaseWidget {
 	 * @param $instance
 	 * @return void
 	 */
-	protected function print_form_fields($instance) {
+	public function print_form_fields($instance) {
 		printf(
 			'<p><label for="%s">Content</label> %s</p>',
 			$this->get_field_id('content'),
@@ -78,18 +78,20 @@ class Text extends BaseWidget {
 	 * @param $instance
 	 * @return void
 	 */
-	protected function validate(&$instance) {
+	public function validate(&$instance) {
 		// TODO: Implement validate() method.
 	}
 
 	/**
 	 * @return array
 	 */
-	protected function get_instance_defaults() {
+	public function get_instance_defaults() {
 		return array(
 			'content' => ''
 		);
 	}
+
+
 }
 
 

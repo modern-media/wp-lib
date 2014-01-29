@@ -8,6 +8,8 @@ class Scripts {
 	const CLIENT_TIMEZONE = 'mm_wp_lib_client_timezone';
 	const CAROUSEL_FRONT = 'mm_wp_lib_carousel_front';
 	const POST_PICKER = 'mm_wp_lib_post_picker';
+	const WIDGET_GENERAL = 'mm_wp_lib_widget_general';
+	const WIDGET_SINGLE_POST = 'mm_wp_lib_widget_single_post';
 
 	private $scripts = array();
 
@@ -63,6 +65,21 @@ class Scripts {
 			array(
 				'uri' => Utils::get_lib_uri('assets/js/post-picker.js'),
 				'dependencies' => array('jquery', 'underscore'),
+			)
+		);
+		$this->add_script(
+			self::WIDGET_GENERAL,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/admin/widget/general.js'),
+				'dependencies' => array('jquery'),
+			)
+		);
+
+		$this->add_script(
+			self::WIDGET_SINGLE_POST,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/admin/widget/single-post.js'),
+				'dependencies' => array('jquery'),
 			)
 		);
 
