@@ -38,12 +38,12 @@ class TwitterFollowWidget extends BaseWidget {
 
 	/**
 	 * @param $instance
-	 * @param $reason_not_displayed
+	 * @param $reason
 	 * @return bool
 	 */
-	public function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason) {
 		if (empty($instance['screen_name'])){
-			$reason_not_displayed = __('Enter a screen name');
+			$reason = __('Enter a screen name');
 			return false;
 		}
 		return true;

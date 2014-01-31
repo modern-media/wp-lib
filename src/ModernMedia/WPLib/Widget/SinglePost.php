@@ -34,6 +34,8 @@ class SinglePost extends BaseWidget{
 	public function get_instance_defaults() {
 		return array(
 			'id' => 0,
+			'display_title' => true,
+			'title' => '',
 			'image_display' => 'none',
 			'image_size' => 'thumbnail',
 			'image_placement' => 'above_title',
@@ -69,32 +71,21 @@ class SinglePost extends BaseWidget{
 		return $keyed;
 	}
 
-	public function get_post_type(){
-		return 'any';
-	}
-
-
 	/**
 	 * @param $instance
-	 * @param $reason_not_displayed
+	 * @param $reason
 	 * @return bool
 	 */
-	public function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason) {
 		$post = get_post($instance['id']);
 		if(! $post){
-			$reason_not_displayed = __('No post selected.');
+			$reason = __('No post selected.');
 			return false;
 		}
 		return true;
 	}
 
-	/**
-	 * @param $instance
-	 * @return bool
-	 */
-	public function is_widget_content_displayed($instance) {
-		return true;
-	}
+
 
 	/**
 	 * @param $args
@@ -106,21 +97,30 @@ class SinglePost extends BaseWidget{
 		$post = get_post($instance['id']);
 		if (! $post) return '';
 
-		$title = get_the_title($post->ID);
+		$title = $instance['title'];
+		if (empty($title)){
+			$title = get_the_title($post->ID);
+		}
+
 		$permalink = get_permalink($post->ID);
 
 
-		$title_div = sprintf(
-			'
-			%s
-				<a href="%s">%s</a>
-			%s
-			',
-			$args['before_title'],
-			$permalink,
-			$title,
-			$args['after_title']
-		);
+		if ($instance['display_title']){
+			$title_div = sprintf(
+				'
+				%s
+					<a href="%s">%s</a>
+				%s
+				',
+				$args['before_title'],
+				$permalink,
+				$title,
+				$args['after_title']
+			);
+		} else {
+			$title_div = '';
+		}
+
 
 		$img_div = false;
 		switch($instance['image_display']){
@@ -138,11 +138,15 @@ class SinglePost extends BaseWidget{
 			$img_div = sprintf(
 				'
 				<div class="image">
-					<a href="%s"><img src="%s" class="img-responsive"></a>
+					<a href="%s"><img
+					src="%s"
+					class="img-responsive"
+					title="%s"></a>
 				</div>
 				',
 				$permalink,
-				$img_div[0]
+				$img_div[0],
+				esc_attr($title)
 			);
 		} else {
 			$img_div = '';
@@ -234,18 +238,7 @@ class SinglePost extends BaseWidget{
 		return array('width' => 350);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function does_widget_have_title_option() {
-		return true;
-	}
-	/**
-	 * @return bool
-	 */
-	public function does_widget_have_title_link_option() {
-		return false;
-	}
+
 
 
 

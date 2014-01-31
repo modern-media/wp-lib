@@ -104,6 +104,11 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker');
 		}
 	</script>
 
+	<?php
+	$display_title_link_section = false;
+	require Utils::get_lib_path('includes/admin/widget/common/title_form.php');
+	?>
+
 	<div data-section="excerpt" class="mm-wp-lib-widget-form-section widget-excerpt toggleable<?php if(in_array('excerpt', $opened)) echo ' opened'?>" id="<?php echo $id?>">
 		<p class="section-header">
 			<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('excerpt', $opened)) echo ' fa-rotate-90'?>"></i>

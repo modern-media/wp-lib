@@ -3,14 +3,14 @@ namespace ModernMedia\WPLib\Widget;
 class Text extends BaseWidget {
 	/**
 	 * @param $instance
-	 * @param $reason_not_displayed
+	 * @param $reason
 	 * @return bool
 	 */
-	public function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason) {
 		$title = trim($instance['title']);
 		$content = trim($instance['content']);
 		if (empty($content) && empty($title)){
-			$reason_not_displayed = 'Both title and content are empty.';
+			$reason = 'Both title and content are empty.';
 			return false;
 		}
 		return true;

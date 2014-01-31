@@ -13,26 +13,31 @@ abstract class BaseWidget extends \WP_Widget {
 
 
 	/**
+	 * Return an array of instance default variable values.
+	 * Child classes should merge with the sensible defaults defined
+	 * below in this parent class.
+	 *
 	 * @return array
 	 */
 	abstract public function get_instance_defaults();
 
 	/**
+	 * A method that allows us to display a warning message
+	 * in the widget admin, and prevent mis-configured
+	 * widgets from being displayed on the front end.
+	 *
 	 * @param $instance
-	 * @param $reason_not_displayed
+	 * @param $reason
 	 * @return bool
 	 */
-	abstract public function is_widget_displayed($instance, &$reason_not_displayed);
+	abstract public function is_widget_displayed($instance, &$reason);
+
 
 
 	/**
-	 * @param $instance
-	 * @return bool
-	 */
-	abstract public function is_widget_content_displayed($instance);
-
-
-	/**
+	 * Where the child classes do their
+	 * front end work. Called from widget()
+	 *
 	 * @param $args
 	 * @param $instance
 	 * @return string
@@ -40,6 +45,9 @@ abstract class BaseWidget extends \WP_Widget {
 	abstract public function get_widget_content($args, $instance);
 
 	/**
+	 *  Where the child classes do their
+	 *  form fields. Called from form()
+	 *
 	 * @param $instance
 	 * @return void
 	 */
@@ -47,6 +55,9 @@ abstract class BaseWidget extends \WP_Widget {
 
 
 	/**
+	 * Giving the child classes a chance to
+	 * modify instance variables.
+	 *
 	 * @param $instance
 	 * @return void
 	 */
@@ -54,11 +65,15 @@ abstract class BaseWidget extends \WP_Widget {
 
 
 	/**
+	 * Return the name of the widget
+	 *
 	 * @return string
 	 */
 	abstract public function get_name();
 
 	/**
+	 * Return the description of the widget...
+	 *
 	 * @return string
 	 */
 	abstract public function get_desc();
@@ -73,6 +88,11 @@ abstract class BaseWidget extends \WP_Widget {
 		parent::__construct($this->get_id_base(), $this->get_name(), $this->get_options(), $this->get_control_options() );
 	}
 
+	/**
+	 * Return this id base...
+	 *
+	 * @return string
+	 */
 	public function get_id_base(){
 		return str_replace('\\', '_', get_class($this));
 	}
@@ -94,21 +114,7 @@ abstract class BaseWidget extends \WP_Widget {
 	}
 
 
-	/**
-	 * @param $instance
-	 * @return string
-	 */
-	protected function get_instance_extra_classes($instance){
-		return $instance['extra_classes'];
-	}
 
-	/**
-	 * @param $val
-	 * @return string
-	 */
-	protected function trim_and_stripslash($val){
-		return trim(stripslashes($val));
-	}
 
 	/**
 	 * @param array $new_instance
@@ -116,7 +122,7 @@ abstract class BaseWidget extends \WP_Widget {
 	 * @return array
 	 */
 	public function update($new_instance, $old_instance){
-		$instance = array_map(array($this, 'trim_and_stripslash'), $new_instance);
+		$instance = Utils::trim_stripslashes_deep($new_instance);
 		$this->validate($instance);
 		return $instance;
 	}
@@ -138,6 +144,10 @@ abstract class BaseWidget extends \WP_Widget {
 			$before_widget = str_replace('class="', 'class="' . $extra_classes . ' ', $before_widget );
 		}
 
+		if (! empty($instance['extra_attributes'])){
+			$before_widget = preg_replace('/^<([a-z]+)/', '<$1 ' . $instance['extra_attributes'] . ' ', $before_widget );
+		}
+
 		echo $before_widget;
 		echo $this->get_widget_content($args, $instance);
 		echo  $args['after_widget'];
@@ -145,46 +155,23 @@ abstract class BaseWidget extends \WP_Widget {
 
 	/**
 	 * @param array $instance
-	 * @return string
-	 */
-	protected function get_instance_title_text($instance){
-		$text = isset($instance['title']) ? trim($instance['title']) : '';
-		return $text;
-	}
-
-	/**
-	 *
-	 * Default/ override to get rid of title
-	 * @return bool
-	 */
-	public function does_widget_have_title_option(){
-		return true;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function does_widget_have_title_link_option() {
-		return true;
-	}
-
-
-	/**
-	 * @param array $instance
-	 * @return string
-	 */
-	protected function is_widget_title_displayed($instance){
-		return 1 == $instance['display_title'];
-	}
-
-
-
-	/**
-	 * @param array $instance
 	 * @return string|void
 	 */
 	public function form($instance){
-		require Utils::get_lib_path('includes/admin/widget/common/widget_form.php');
+		$instance = $this->merge_instance_defaults($instance);
+		echo '<div class="mm-wp-lib-widget-form">' . PHP_EOL;
+		$this->hidden_input($instance, 'widget_opened_form_sections', array('class'=>'widget_opened_form_sections'));
+		if (! $this->is_widget_displayed($instance, $reason)) {
+			printf(
+				'<p class="widget-error">%s %s</p>',
+				__('This widget will not be displayed.'),
+				$reason
+			);
+		}
+		$this->print_form_fields($instance);
+		require Utils::get_lib_path('includes/admin/widget/common/classes_form.php');
+		echo '</div>'. PHP_EOL;
+
 	}
 
 	/**
@@ -195,13 +182,9 @@ abstract class BaseWidget extends \WP_Widget {
 		$defaults = $this->get_instance_defaults();
 		$defaults = array_merge(
 			array(
-				'widget_form_advanced_is_open' => false,
 				'widget_opened_form_sections' => '',
 				'extra_classes' => '',
 				'extra_attributes' => '',
-				'display_title' => false,
-				'title' => '',
-				'title_link' => '',
 			),
 			$defaults
 		);
@@ -209,6 +192,14 @@ abstract class BaseWidget extends \WP_Widget {
 
 	}
 
+
+	/**
+	 * @param $instance
+	 * @param $field
+	 * @param $label
+	 * @param $post_type
+	 * @param string $please
+	 */
 	public function print_post_type_select($instance, $field, $label, $post_type, $please = 'Please select...'){
 		$field_id = $this->get_field_id($field);
 		$field_name = $this->get_field_name($field);

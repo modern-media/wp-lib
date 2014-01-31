@@ -50,10 +50,10 @@ class SingleLink extends BaseWidget  {
 
 	/**
 	 * @param $instance
-	 * @param $reason_not_displayed
+	 * @param $reason
 	 * @return bool
 	 */
-	public function is_widget_displayed($instance, &$reason_not_displayed) {
+	public function is_widget_displayed($instance, &$reason) {
 		return true;
 	}
 

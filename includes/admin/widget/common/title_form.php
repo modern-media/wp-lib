@@ -3,11 +3,13 @@ namespace ModernMedia\WPLib\Widget;
 /**
  * @var BaseWidget $this
  * @var $instance
- * @var $opened
+ * @var $display_title_link_section
  */
-if (! $this->does_widget_have_title_option()) {
-	return;
+if(! isset($display_title_link_section)){
+	$display_title_link_section = false;
 }
+$opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instance['widget_opened_form_sections']) : array();
+
 ?>
 <div data-section="title" class="mm-wp-lib-widget-form-section toggleable<?php if(in_array('title', $opened)) echo ' opened'?>">
 	<p class="section-header">
@@ -31,7 +33,7 @@ if (! $this->does_widget_have_title_option()) {
 
 	</div>
 	<?php
-	if ($this->does_widget_have_title_link_option()) {
+	if ($display_title_link_section) {
 		?>
 		<div class="form-field">
 			<div class="label">

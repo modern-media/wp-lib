@@ -3,8 +3,9 @@ namespace ModernMedia\WPLib\Widget;
 /**
  * @var BaseWidget $this
  * @var $instance
- * @var $opened
  */
+$opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instance['widget_opened_form_sections']) : array();
+
 ?>
 
 <div data-section="classes" class="mm-wp-lib-widget-form-section toggleable<?php if(in_array('classes', $opened)) echo ' opened'?>">
