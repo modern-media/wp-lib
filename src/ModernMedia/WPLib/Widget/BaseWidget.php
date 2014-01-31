@@ -163,7 +163,7 @@ abstract class BaseWidget extends \WP_Widget {
 		$this->hidden_input($instance, 'widget_opened_form_sections', array('class'=>'widget_opened_form_sections'));
 		if (! $this->is_widget_displayed($instance, $reason)) {
 			printf(
-				'<p class="widget-error">%s %s</p>',
+				'<div class="mm-wp-lib-widget-error">%s %s</div>',
 				__('This widget will not be displayed.'),
 				$reason
 			);

@@ -49,13 +49,7 @@ class TwitterFollowWidget extends BaseWidget {
 		return true;
 	}
 
-	/**
-	 * @param $instance
-	 * @return bool
-	 */
-	public function is_widget_content_displayed($instance) {
-		return true;
-	}
+
 
 	/**
 	 * @param $args
@@ -78,10 +72,16 @@ class TwitterFollowWidget extends BaseWidget {
 					break;
 				case 'screen_name':
 					break;
-				default:
+				case 'lang':
+				case 'width':
+				case 'align':
+				case 'size':
+
 					if (! empty($val)){
 						$attrs['data-' . $key] = esc_attr($val);
 					}
+					break;
+				default:
 					break;
 			}
 		}
@@ -128,7 +128,4 @@ class TwitterFollowWidget extends BaseWidget {
 		return __('Displays a Twitter Follow Button');
 	}
 
-	public function does_widget_have_title_option(){
-		return false;
-	}
 }

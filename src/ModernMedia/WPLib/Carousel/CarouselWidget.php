@@ -22,16 +22,14 @@ class CarouselWidget extends BaseWidget{
 	 * @return bool
 	 */
 	public function is_widget_displayed($instance, &$reason) {
+		$post = get_post($instance['id']);
+		if(! $post || Carousel::PT_CAROUSEL != get_post_type($post)){
+			$reason = __('No carousel selected.');
+			return false;
+		}
 		return true;
 	}
 
-	/**
-	 * @param $instance
-	 * @return bool
-	 */
-	public function is_widget_content_displayed($instance) {
-		return true;
-	}
 
 	/**
 	 * @param $args
@@ -39,7 +37,7 @@ class CarouselWidget extends BaseWidget{
 	 * @return string
 	 */
 	public function get_widget_content($args, $instance) {
-		return Carousel::inst()->get_carousel_html($args['id'], $args);
+		return Carousel::inst()->get_carousel_html($instance['id'], $instance);
 	}
 
 	/**
@@ -47,15 +45,16 @@ class CarouselWidget extends BaseWidget{
 	 * @return void
 	 */
 	public function print_form_fields($instance) {
-		$this->print_post_type_select($instance, 'id', 'Carousel', Carousel::PT_CAROUSEL);
+		$this->print_post_type_select($instance, 'id', __('Carousel'), Carousel::PT_CAROUSEL);
 
 		printf(
-			'<p><label for="%s">Interval (ms)</label> %s</p>',
+			'<p><label for="%s">%s</label> %s</p>',
 			$this->get_field_id('interval'),
+			__('Interval (ms)'),
 			$this->text_input(
 				$instance,
 				'interval',
-				array('size'=>'10', 'placeholder'=>'Milliseconds'),
+				array('size'=>'10', 'placeholder'=>__('Milliseconds')),
 				false
 			)
 		);
@@ -82,10 +81,6 @@ class CarouselWidget extends BaseWidget{
 	 */
 	public function get_desc() {
 		return 'Put a carousel in a widget.';
-	}
-
-	public function does_widget_have_title_option(){
-		return false;
 	}
 
 }
