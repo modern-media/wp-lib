@@ -330,7 +330,7 @@ abstract class BaseAdminElement {
 	/**
 	 * @return array
 	 */
-	public final function get_post_types(){
+	public function get_post_types(){
 		return $this->init['post_types'];
 	}
 

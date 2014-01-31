@@ -22,6 +22,7 @@ class MetaTagsMetaBox extends BaseAdminElement {
 	public function __construct(){
 
 		$post_types = array_merge(array('post', 'page'), get_post_types());
+		//var_dump($post_types);
 		$args = array(
 			'cap' => 'edit_posts',
 			'post_types' => $post_types,
@@ -31,6 +32,11 @@ class MetaTagsMetaBox extends BaseAdminElement {
 		);
 
 		parent::__construct($args);
+	}
+
+	public function get_post_types(){
+		$post_types = array_merge(get_post_types(array('public'=>true, '_builtin'=>false)), array('post', 'page'));
+		return $post_types;
 	}
 
 	/**
