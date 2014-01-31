@@ -32,12 +32,12 @@ abstract class BaseWidget extends \WP_Widget {
 	abstract public function is_widget_content_displayed($instance);
 
 
-
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	abstract public function get_widget_content($instance);
+	abstract public function get_widget_content($args, $instance);
 
 	/**
 	 * @param $instance
@@ -132,8 +132,6 @@ abstract class BaseWidget extends \WP_Widget {
 		}
 
 
-
-		
 		$before_widget = $args['before_widget'];
 		$extra_classes = trim($instance['extra_classes']);
 		if (! empty($extra_classes)){
@@ -141,36 +139,7 @@ abstract class BaseWidget extends \WP_Widget {
 		}
 
 		echo $before_widget;
-
-		if ($this->is_widget_title_displayed($instance)){
-			$text = $this->get_instance_title_text($instance);
-			$label = sprintf('<span class="text">%s</span>', $text);
-			$val = trim($instance['title_data_icon']);
-			if (! empty($val)){
-				$label = sprintf('<span data-icon="&#x%s;"></span> %s', dechex($val), $label);
-			}
-			$val = trim($instance['title_link']);
-			if (! empty($val)){
-				$label = sprintf('<a href="%s" title="%s">%s</a>', $val, esc_attr($text), $label);
-			}
-			printf(
-				'%s%s%s',
-				$args['before_title'],
-				$label,
-				$args['after_title']
-			);
-
-		}
-		if ($this->is_widget_content_displayed($instance)){
-			printf(
-				'%s%s%s',
-				isset($args['before_content']) ? $args['before_content'] : '',
-				$this->get_widget_content($instance),
-				isset($args['after_content']) ? $args['after_content'] : ''
-			);
-
-		}
-
+		echo $this->get_widget_content($args, $instance);
 		echo  $args['after_widget'];
 	}
 

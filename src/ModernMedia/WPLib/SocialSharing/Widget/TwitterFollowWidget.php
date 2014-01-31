@@ -58,10 +58,11 @@ class TwitterFollowWidget extends BaseWidget {
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
+	public function get_widget_content($args, $instance) {
 		$attrs = array(
 			'href' => 'https://twitter.com/' . $instance['screen_name'],
 			'class' => 'twitter-follow-button'

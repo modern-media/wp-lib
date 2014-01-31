@@ -33,14 +33,15 @@ class Copyright extends BaseWidget {
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
+	public function get_widget_content($args, $instance) {
 		return sprintf(
 			'Copyright &copy; %s %s. All rights reserved.',
 			date('Y'),
-			$instance['org']
+			$args['org']
 		);
 	}
 

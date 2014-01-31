@@ -35,10 +35,11 @@ class TitleAndTagline extends BaseWidget {
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
+	public function get_widget_content($args, $instance) {
 		$title = get_bloginfo('name');
 		return sprintf(
 			'<hgroup>

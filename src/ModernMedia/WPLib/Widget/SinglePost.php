@@ -2,7 +2,6 @@
 namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
-use ModernMedia\WPLib\SocialSharing\SocialSharing;
 
 /**
  * Class SinglePost
@@ -41,7 +40,7 @@ class SinglePost extends BaseWidget{
 			'custom_image_id' => 0,
 			'excerpt' => '',
 			'include_read_button' => false,
-			'read_button_text' => __('Read')
+			'read_button_text' => __('Read...')
 		);
 	}
 
@@ -81,6 +80,11 @@ class SinglePost extends BaseWidget{
 	 * @return bool
 	 */
 	public function is_widget_displayed($instance, &$reason_not_displayed) {
+		$post = get_post($instance['id']);
+		if(! $post){
+			$reason_not_displayed = __('No post selected.');
+			return false;
+		}
 		return true;
 	}
 
@@ -93,76 +97,97 @@ class SinglePost extends BaseWidget{
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
-		$post_id = $instance['post_id'];
-		$post = get_post($post_id);
+	public function get_widget_content($args, $instance) {
+
+		$post = get_post($instance['id']);
 		if (! $post) return '';
-		$url = get_permalink($post_id);
-		$html = '';
-		$alternate_image_id = trim($instance['alternate_image']);
-		$title = get_the_title($post_id);
-		$title_esc = esc_attr($title);
 
-		if (! empty($alternate_image_id)){
-			list($src) = wp_get_attachment_image_src($alternate_image_id, $instance['thumbnail_size']);
-			$html .=  sprintf(
-				'<div class="featured-image">
-					<a href="%s" title="%s"><img src="%s" class="img-responsive" alt="%s"></a>
-				</div>',
-				$url,
-				$title_esc,
-				$src,
-				$title_esc
-			);
-		} elseif ( has_post_thumbnail($post_id) ){
-			$id = get_post_thumbnail_id($post_id);
-			list($src) = wp_get_attachment_image_src($id, $instance['thumbnail_size']);
-			$html .=  sprintf(
-				'<div class="featured-image">
-					<a href="%s" title="%s"><img src="%s" class="img-responsive" alt="%s"></a>
-				</div>',
-				$url,
-				$title_esc,
-				$src,
-				$title_esc
-			);
-		}
-		if (! empty($instance['tag_post_as'])){
-			$html .= sprintf(
-				'<div class="widget-tag">%s</div>',
-				$instance['tag_post_as']
-			);
-		}
-		$html .= sprintf(
-			'<h3><a href="%s" title="%s">%s</a></h3>',
-			$url,
-			$title_esc,
-			$instance['alternate_title'] == '' ? $title : $instance['alternate_title']
+		$title = get_the_title($post->ID);
+		$permalink = get_permalink($post->ID);
+
+
+		$title_div = sprintf(
+			'
+			%s
+				<a href="%s">%s</a>
+			%s
+			',
+			$args['before_title'],
+			$permalink,
+			$title,
+			$args['after_title']
 		);
-		if (! empty($instance['alternate_excerpt'])){
-			$html .= apply_filters('the_excerpt', $instance['alternate_excerpt']);
-		} elseif ($post->post_excerpt) {
-			$html .= apply_filters('the_excerpt', $post->post_excerpt);
-		} else {
-			$html .= apply_filters('the_excerpt', $post->post_content);
-		}
-		if ($instance['include_read_button']){
-			$btn_text = $instance['read_button_text'];
-			if (empty ($btn_text)) $btn_text = 'Read More';
-			$html .= sprintf(
-				'<p><a href="%s" class="btn btn-success btn-read-single-post">%s</a></p>',
-				$url,
-				$btn_text
-			);
-		}
-		if ($instance['include_social']){
-			$html .= SocialSharing::get_share_bar($post_id);
+
+		$img_div = false;
+		switch($instance['image_display']){
+			case 'featured':
+				if (has_post_thumbnail($post->ID)){
+					$img_div = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), $instance['image_size']);
+				}
+				break;
+			case 'custom':
+				$img_div = wp_get_attachment_image_src($instance['custom_image_id'], $instance['image_size']);
+				break;
 		}
 
-		return $html;
+		if ($img_div){
+			$img_div = sprintf(
+				'
+				<div class="image">
+					<a href="%s"><img src="%s" class="img-responsive"></a>
+				</div>
+				',
+				$permalink,
+				$img_div[0]
+			);
+		} else {
+			$img_div = '';
+		}
+
+		if (! empty($instance['excerpt'])){
+			$excerpt_div = $instance['excerpt'];
+		} else {
+			$excerpt_div = $post->post_excerpt;
+		}
+		if (empty($excerpt_div)){
+			$excerpt_div = strip_tags($post->post_content);
+			$excerpt_div = substr($excerpt_div, 0, 240);
+			$excerpt_div .= '...';
+		}
+
+		if ($instance['include_read_button']){
+			$excerpt_div .= sprintf(
+				' <span class="read-more"><a href="%s">%s</a></span>',
+				$permalink,
+				empty($instance['read_button_text']) ? __('Read...') : $instance['read_button_text']
+			);
+		}
+		$excerpt_div = sprintf(
+			'
+			<div class="excerpt">
+				%s
+			</div>
+			',
+			wpautop($excerpt_div)
+		);
+		switch($instance['image_placement']){
+			case 'above_excerpt':
+				$divs = array( $title_div, $img_div, $excerpt_div);
+				break;
+			case 'below_excerpt':
+				$divs = array( $title_div, $excerpt_div, $img_div);
+				break;
+			default:
+				$divs = array($img_div, $title_div, $excerpt_div);
+				break;
+		}
+
+
+		return implode(PHP_EOL, $divs);
 	}
 
 
@@ -221,6 +246,7 @@ class SinglePost extends BaseWidget{
 	public function does_widget_have_title_link_option() {
 		return false;
 	}
+
 
 
 }

@@ -1,5 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\SocialSharing;
+use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\SocialSharing\Data\SocialSharingOptions;
 use ModernMedia\WPLib\SocialSharing\Admin\SocialSharingOptionsPanel;
 use ModernMedia\WPLib\SocialSharing\Data\TweetButtonParams;
@@ -42,7 +43,9 @@ class SocialSharing {
 
 	public function _action_plugins_loaded(){
 		add_action('widgets_init',  array($this, '_action_widgets_init'));
-		//add_action("wp_footer", array($this, "_action_wp_footer"));
+		add_action('wp_enqueue_scripts', function(){
+			Scripts::inst()->enqueue(Scripts::SOCIAL_SHARING_ASYNC);
+		});
 	}
 
 	public function _action_widgets_init(){

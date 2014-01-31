@@ -66,29 +66,30 @@ class SingleLink extends BaseWidget  {
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
+	public function get_widget_content($args, $instance) {
 		$url = null;
-		switch($instance['type']){
+		switch($args['type']){
 			case self::TYPE_HOME:
 				$url = get_bloginfo('url');
 				break;
 			case self::TYPE_URL:
-				$url = $instance['url'];
+				$url = $args['url'];
 				break;
 			case self::TYPE_POST_TYPE_ARCHIVE:
-				$url = get_post_type_archive_link($instance['post_type']);
+				$url = get_post_type_archive_link($args['post_type']);
 				break;
 			case self::TYPE_TERM_ARCHIVE:
-				$url = get_term_link($instance['term_id'], $instance['taxonomy']);
+				$url = get_term_link($args['term_id'], $args['taxonomy']);
 				break;
 			case self::TYPE_POST:
-				$url = get_permalink($instance['post_id']);
+				$url = get_permalink($args['post_id']);
 				break;
 			case self::TYPE_AUTHOR_ARCHIVE:
-				$url = get_author_posts_url($instance['author_id']);
+				$url = get_author_posts_url($args['author_id']);
 				break;
 			case self::TYPE_RSS:
 				$url = get_bloginfo('rss_url');
@@ -97,31 +98,31 @@ class SingleLink extends BaseWidget  {
 				$url = 'javascript:void(0);';
 				break;
 			case self::TYPE_HASH:
-				$url = '#' . trim(trim($instance['hash_id']), '#');
+				$url = '#' . trim(trim($args['hash_id']), '#');
 				break;
 
 		}
 		if (! is_string($url)) return '';
-		$link_as_image = trim($instance['link_as_image']);
+		$link_as_image = trim($args['link_as_image']);
 		if (! empty($link_as_image)){
 			$inner = sprintf(
 				'<img src="%s" alt="%s">',
 				wp_get_attachment_url($link_as_image),
-				esc_attr($instance['title'])
+				esc_attr($args['title'])
 			);
 		} else {
 			$inner = sprintf(
 				'%s <span class="text">%s</span>',
-				empty($instance['link_data_icon']) ? '' : sprintf('<span data-icon="&#x%s;"></span>', dechex($instance['link_data_icon'])),
-				$instance['title']
+				empty($args['link_data_icon']) ? '' : sprintf('<span data-icon="&#x%s;"></span>', dechex($args['link_data_icon'])),
+				$args['title']
 			);
 		}
 
 		$outer = sprintf(
 			'<a href="%s"%s%s>%s</a>',
 			$url,
-			empty($instance['link_classes']) ? '' : sprintf(' class="%s"', $instance['link_classes']),
-			empty($instance['link_extra_attributes']) ? '' : ' ' . $instance['link_extra_attributes'],
+			empty($args['link_classes']) ? '' : sprintf(' class="%s"', $args['link_classes']),
+			empty($args['link_extra_attributes']) ? '' : ' ' . $args['link_extra_attributes'],
 			$inner
 		);
 		return $outer;

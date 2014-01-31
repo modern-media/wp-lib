@@ -46,10 +46,11 @@ class Search extends BaseWidget {
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
+	public function get_widget_content($args, $instance) {
 		ob_start();
 		get_search_form(true);
 		return ob_get_clean();

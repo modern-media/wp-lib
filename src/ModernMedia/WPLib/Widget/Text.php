@@ -40,11 +40,12 @@ class Text extends BaseWidget {
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
-		$content = trim($instance['content']);
+	public function get_widget_content($args, $instance) {
+		$content = trim($args['content']);
 		return do_shortcode($content);
 	}
 

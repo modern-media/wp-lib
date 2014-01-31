@@ -34,11 +34,12 @@ class CarouselWidget extends BaseWidget{
 	}
 
 	/**
+	 * @param $args
 	 * @param $instance
 	 * @return string
 	 */
-	public function get_widget_content($instance) {
-		return Carousel::inst()->get_carousel_html($instance['id'], $instance);
+	public function get_widget_content($args, $instance) {
+		return Carousel::inst()->get_carousel_html($args['id'], $args);
 	}
 
 	/**
