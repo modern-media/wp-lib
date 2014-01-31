@@ -30,20 +30,19 @@ class Debugger {
 			'key' => $key,
 			'data' => $data
 		);
-		\ChromePhp::info($key, $data);
 	}
 
 	public function _action_wp_footer(){
-//		if (! count($this->data)) return;
-//		echo '<script type="text/javascript">' . PHP_EOL;
-//		echo 'if (console.log) {' . PHP_EOL;
-//		echo 'var wp_dbg_data = ' . json_encode($this->data) . ';' . PHP_EOL;
-//		echo 'var n;' . PHP_EOL;
-//		echo 'for(n = 0; n < wp_dbg_data.length; n++){' . PHP_EOL;
-//		echo 'console.log(wp_dbg_data.key, wp_dbg_data.data);' . PHP_EOL;
-//		echo '}' . PHP_EOL;
-//		echo '}' . PHP_EOL;
-//		echo '</script>' . PHP_EOL;
+		if (! count($this->data)) return;
+		echo '<script type="text/javascript">' . PHP_EOL;
+		echo 'if (console.log) {' . PHP_EOL;
+		echo 'var wp_dbg_data = ' . json_encode($this->data) . ';' . PHP_EOL;
+		echo 'var n;' . PHP_EOL;
+		echo 'for(n = 0; n < wp_dbg_data.length; n++){' . PHP_EOL;
+		echo 'console.log(wp_dbg_data[n].key, wp_dbg_data[n].data);' . PHP_EOL;
+		echo '}' . PHP_EOL;
+		echo '}' . PHP_EOL;
+		echo '</script>' . PHP_EOL;
 
 	}
 

@@ -1,6 +1,8 @@
 <?php
 namespace ModernMedia\WPLib\Theme;
 
+use ModernMedia\WPLib\Debugger;
+
 class NavMenuWalker extends \Walker_Nav_Menu {
 
 	/**
@@ -34,6 +36,8 @@ class NavMenuWalker extends \Walker_Nav_Menu {
 	 * @param int    $id     Current item ID.
 	 */
 	public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
+		Debugger::inst()->add('item', $item);
+		//Debugger::inst()->add('args', $args);
 		$li_attrs = array(
 			'class' => array()
 		);
@@ -48,7 +52,7 @@ class NavMenuWalker extends \Walker_Nav_Menu {
 			$li_attrs['class'][] = 'active';
 		}
 		$li_attrs['class'] = implode(' ', $li_attrs['class']);
-		if ($item->has_children){
+		if (in_array('menu-item-has-children', $item->classes)){
 			$a_attrs['class'][] = 'dropdown-toggle';
 			$a_attrs['data-toggle'] = 'dropdown';
 			$li_attrs['class'] = 'dropdown';
@@ -79,7 +83,7 @@ class NavMenuWalker extends \Walker_Nav_Menu {
 			}
 		}
 		$attrs = count($attrs) ? ' ' . implode(' ', $attrs) : '';
-		$output .= sprintf('<a%s>%s</a>', $attrs, apply_filters( 'the_title', $item->title, $item->ID ));
+		$output .= sprintf('<a%s>%s%s%s</a>', $attrs, $args->before,apply_filters( 'the_title', $item->title, $item->ID ), $args->after);
 
 
 	}
