@@ -8,9 +8,12 @@ class Scripts {
 	const CLIENT_TIMEZONE = 'mm_wp_lib_client_timezone';
 	const CAROUSEL_FRONT = 'mm_wp_lib_carousel_front';
 	const POST_PICKER = 'mm_wp_lib_post_picker';
+	const TERM_PICKER = 'mm_wp_lib_term_picker';
 	const WIDGET_GENERAL = 'mm_wp_lib_widget_general';
 	const WIDGET_SINGLE_POST = 'mm_wp_lib_widget_single_post';
+	const WIDGET_SINGLE_LINK = 'mm_wp_lib_widget_single_link';
 	const SOCIAL_SHARING_ASYNC = 'mm_wp_lib_social_sharing_async';
+	const ATTRIBUTE_CONTROL = 'mm_wp_lib_attribute_control';
 	private $scripts = array();
 
 	/**
@@ -35,6 +38,13 @@ class Scripts {
 			array(
 				'uri' => Utils::get_lib_uri('assets/js/uploader.js'),
 				'dependencies' => array('jquery'),
+			)
+		);
+		$this->add_script(
+			self::ATTRIBUTE_CONTROL,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/attribute-control.js'),
+				'dependencies' => array('jquery', 'jquery-ui-autocomplete'),
 			)
 		);
 		$this->add_script(
@@ -89,6 +99,21 @@ class Scripts {
 			)
 		);
 
+		$this->add_script(
+			self::TERM_PICKER,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/term-picker.js'),
+				'dependencies' => array('jquery', 'underscore', 'jquery-ui-autocomplete'),
+			)
+		);
+
+		$this->add_script(
+			self::WIDGET_SINGLE_LINK,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/admin/widget/single-link.js'),
+				'dependencies' => array('jquery'),
+			)
+		);
 	}
 
 	public function enqueue($id){
@@ -104,6 +129,25 @@ class Scripts {
 			$script['version'],
 			$script['in_footer']
 		);
+
+		switch($id){
+			case self::TERM_PICKER:
+				$data = array();
+				$taxonomies = get_taxonomies(array('public' => true), 'objects');
+
+				foreach($taxonomies as $key => $o){
+					$taxonomies[$key] = array(
+						'taxonomy' => $o,
+						'terms' => get_terms($key)
+					);
+				}
+				$data['taxonomies'] = $taxonomies;
+
+				wp_localize_script($id, 'mm_wp_lib_term_picker_data', $data);
+				break;
+
+
+		}
 	}
 
 	public function add_script($id, $arr){
@@ -115,4 +159,6 @@ class Scripts {
 		$arr = array_merge($defaults, $arr);
 		$this->scripts[$id] = $arr;
 	}
+
+
 } 

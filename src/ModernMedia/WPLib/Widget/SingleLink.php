@@ -1,5 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
+use ModernMedia\WPLib\Helper\HTML;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 
@@ -23,7 +24,18 @@ class SingleLink extends BaseWidget  {
 
 	public function __construct(){
 		if (is_admin()){
-			Scripts::inst()->enqueue(Scripts::POST_PICKER);
+			global $pagenow;
+			if ('widgets.php' == $pagenow ){
+				$s = Scripts::inst();
+
+				$s->enqueue(Scripts::WIDGET_GENERAL);
+				$s->enqueue(Scripts::UPLOADER);
+				$s->enqueue(Scripts::TERM_PICKER);
+				$s->enqueue(Scripts::POST_PICKER);
+				$s->enqueue(Scripts::WIDGET_SINGLE_LINK);
+				$s->enqueue(Scripts::ATTRIBUTE_CONTROL);
+				wp_enqueue_media();
+			}
 		}
 		parent::__construct();
 	}
@@ -34,9 +46,7 @@ class SingleLink extends BaseWidget  {
 		return array(
 			'type' => '',
 			'id' => 0,
-			'link_classes' => '',
-			'link_data_icon' => '',
-			'link_extra_attributes' => '',
+			'link_attributes' => array(),
 			'url' => '',
 			'post_type' => '',
 			'term_id' => '',
@@ -44,7 +54,12 @@ class SingleLink extends BaseWidget  {
 			'post_id' => '',
 			'author_id' => '',
 			'hash_id' => '',
-			'link_as_image' => '',
+			'use_image' => false,
+			'image_size' => 'medium',
+			'image_id' => '',
+			'image_attributes' => array(),
+			'title' => '',
+			'title_attribute' => '',
 		);
 	}
 
@@ -56,14 +71,110 @@ class SingleLink extends BaseWidget  {
 	public function is_widget_displayed($instance, &$reason) {
 		return true;
 	}
+	
+	public function get_instance_title($instance, $title_attribute = false){
+		$value = '';
+		if ($title_attribute){
+			if(! empty($instance['title_attribute'])){
+				$value = $instance['title_attribute'];
+			} else {
+				$attrs = is_array($instance['link_attributes']) ? $instance['link_attributes'] : array();
+				if (isset($attrs['title']) && ! empty($attrs['title'])){
+					$value = $attrs['title'];
+				} elseif (! empty($instance['title'])){
+					$value = $instance['title'];
+				}
+			}
+		} elseif (! empty($instance['title'])){
+			$value = $instance['title'];
+		}
+	
+		if (! empty($value)){
+			return $value;
+		}
+		$value = '';
+		
+		switch($instance['type']){
+			case self::TYPE_HOME:
+				$value = __('Home');
+				break;
+			case self::TYPE_URL:
+				$value = __('Missing Link Text');
+				break;
+			case self::TYPE_POST_TYPE_ARCHIVE:
+				$o = get_post_type_object($instance['post_type']);
+				if ($o){
+					$value = $o->labels->name;
+				}
+				break;
+			case self::TYPE_TERM_ARCHIVE:
+				$o = get_term($instance['term_id'], $instance['taxonomy']);
+				if (! is_wp_error($o)){
+					$value = $o->name;
+				}
 
-	/**
-	 * @param $instance
-	 * @return bool
-	 */
-	public function is_widget_content_displayed($instance) {
-		return true;
+				break;
+			case self::TYPE_POST:
+				$value = get_the_title($instance['post_id']);
+				break;
+			case self::TYPE_AUTHOR_ARCHIVE:
+				$user = new \WP_User($instance['author_id']);
+				if ($user instanceof \WP_User && $user->ID > 0){
+					$value = $user->get('display_name');
+				}
+				break;
+			case self::TYPE_RSS:
+				$value = 'RSS Feed';
+				break;
+			case self::TYPE_JAVASCRIPT_VOID:
+				$value = __('Missing Link Text');
+				break;
+			case self::TYPE_HASH:
+				$value = __('Missing Link Text');
+				break;
+
+		}
+		return $value;
 	}
+
+	public function get_href($instance){
+		$href = false;
+		switch($instance['type']){
+			case self::TYPE_HOME:
+				$href = get_bloginfo('url');
+				break;
+			case self::TYPE_URL:
+				$href = ! empty($instance['url']) ? $instance['url'] : $href;
+				break;
+			case self::TYPE_POST_TYPE_ARCHIVE:
+				$href = get_post_type_archive_link($instance['post_type']);
+				break;
+			case self::TYPE_TERM_ARCHIVE:
+				$href = get_term_link($instance['term_id'], $instance['taxonomy']);
+				if (is_wp_error($href)){
+					$href = false;
+				}
+				break;
+			case self::TYPE_POST:
+				$href = get_permalink($instance['post_id']);
+				break;
+			case self::TYPE_AUTHOR_ARCHIVE:
+				$href = get_author_posts_url($instance['author_id']);
+				break;
+			case self::TYPE_RSS:
+				$href = get_bloginfo('rss_url');
+				break;
+			case self::TYPE_JAVASCRIPT_VOID:
+				$href = 'javascript:void(0);';
+				break;
+			case self::TYPE_HASH:
+				$href = '#' . trim(trim($instance['hash_id']), '#');
+				break;
+
+		}
+		return $href;
+	}
+
 
 	/**
 	 * @param $args
@@ -71,61 +182,24 @@ class SingleLink extends BaseWidget  {
 	 * @return string
 	 */
 	public function get_widget_content($args, $instance) {
-		$url = null;
-		switch($args['type']){
-			case self::TYPE_HOME:
-				$url = get_bloginfo('url');
-				break;
-			case self::TYPE_URL:
-				$url = $args['url'];
-				break;
-			case self::TYPE_POST_TYPE_ARCHIVE:
-				$url = get_post_type_archive_link($args['post_type']);
-				break;
-			case self::TYPE_TERM_ARCHIVE:
-				$url = get_term_link($args['term_id'], $args['taxonomy']);
-				break;
-			case self::TYPE_POST:
-				$url = get_permalink($args['post_id']);
-				break;
-			case self::TYPE_AUTHOR_ARCHIVE:
-				$url = get_author_posts_url($args['author_id']);
-				break;
-			case self::TYPE_RSS:
-				$url = get_bloginfo('rss_url');
-				break;
-			case self::TYPE_JAVASCRIPT_VOID:
-				$url = 'javascript:void(0);';
-				break;
-			case self::TYPE_HASH:
-				$url = '#' . trim(trim($args['hash_id']), '#');
-				break;
-
+		$href = $this->get_href($instance);
+		if (! is_string($href)) return '';
+		$attrs = is_array($instance['link_attributes']) ? $instance['link_attributes'] : array();
+		$attrs = $this->attribute_field_to_keyed_array($attrs);
+		$attrs['href'] = $href;
+		$attrs['title'] = $this->get_instance_title($instance, true);
+		$html = sprintf('<a %s>',  HTML::attr_array_to_string($attrs));
+		if ($instance['use_image']){
+			$image = wp_get_attachment_image_src($instance['image_id'], $instance['image_size']);
+			if ($image){
+				$attrs = is_array($instance['image_attributes']) ? $instance['image_attributes'] : array();
+				$attrs = $this->attribute_field_to_keyed_array($attrs);
+				$attrs['src'] = $image[0];
+				$html .= sprintf('<img %s>',  HTML::attr_array_to_string($attrs));
+			}
 		}
-		if (! is_string($url)) return '';
-		$link_as_image = trim($args['link_as_image']);
-		if (! empty($link_as_image)){
-			$inner = sprintf(
-				'<img src="%s" alt="%s">',
-				wp_get_attachment_url($link_as_image),
-				esc_attr($args['title'])
-			);
-		} else {
-			$inner = sprintf(
-				'%s <span class="text">%s</span>',
-				empty($args['link_data_icon']) ? '' : sprintf('<span data-icon="&#x%s;"></span>', dechex($args['link_data_icon'])),
-				$args['title']
-			);
-		}
-
-		$outer = sprintf(
-			'<a href="%s"%s%s>%s</a>',
-			$url,
-			empty($args['link_classes']) ? '' : sprintf(' class="%s"', $args['link_classes']),
-			empty($args['link_extra_attributes']) ? '' : ' ' . $args['link_extra_attributes'],
-			$inner
-		);
-		return $outer;
+		$html .= sprintf('<span>%s</span></a>', $this->get_instance_title($instance));
+		return $html;
 
 	}
 
@@ -136,11 +210,7 @@ class SingleLink extends BaseWidget  {
 	 * @return void
 	 */
 	public function print_form_fields($instance) {
-		/** @noinspection PhpUnusedLocalVariableInspection */
-		$widget = &$this;
-		$path = Utils::get_lib_path('includes/admin/widget/single_link_form.php');
-		require($path);
-
+		require Utils::get_lib_path('includes/admin/widget/single_link_form.php');
 	}
 
 	/**
@@ -156,7 +226,7 @@ class SingleLink extends BaseWidget  {
 			self::TYPE_AUTHOR_ARCHIVE => 'Author Archive',
 			self::TYPE_RSS => 'Site RSS Feed',
 			self::TYPE_JAVASCRIPT_VOID => 'javascript:void(0);',
-			self::TYPE_HASH => '#',
+			self::TYPE_HASH => '#DOM-id',
 		);
 	}
 
@@ -165,48 +235,60 @@ class SingleLink extends BaseWidget  {
 	 * @return void
 	 */
 	public function validate(&$instance) {
-		if (empty($instance['title'])){
-			switch($instance['type']){
-				case self::TYPE_HOME:
-					$instance['title'] = 'Home';
-					break;
-				case self::TYPE_URL:
-					$instance['title'] = $instance['url'];
-					break;
-				case self::TYPE_POST_TYPE_ARCHIVE:
-					$type = get_post_type_object($instance['post_type']);
-					if ($type){
-						$instance['title'] = $type->labels->name;
-					}
-					break;
-				case self::TYPE_TERM_ARCHIVE:
-					$term = get_term($instance['term_id'], $instance['taxonomy']);
-					if ($term && ! is_wp_error($term)){
-						$instance['title'] = $term->name;
-					}
-					break;
-				case self::TYPE_POST:
-					$post = get_post($instance['post_id']);
-					if ($post){
-						$instance['title'] = $post->post_title;
-					}
-					break;
-				case self::TYPE_AUTHOR_ARCHIVE:
-					$user = new \WP_User($instance['author_id']);
-					if ($user && $user->ID > 0){
-						$instance['title'] = get_the_author_meta('display_name', $instance['author_id']);
-					}
-					break;
-				case self::TYPE_RSS:
-					$instance['title'] = 'RSS';
-					break;
-				case self::TYPE_JAVASCRIPT_VOID:
-				case self::TYPE_HASH:
-					$user = wp_get_current_user();
-					$instance['title'] = sprintf('%s gives good js.', get_the_author_meta('display_name', $user->ID));
-					break;
+		$new_title = '';
+		switch($instance['type']){
+			case self::TYPE_HOME:
+				$new_title = 'Home';
+				break;
+			case self::TYPE_URL:
+				$new_title = $instance['url'];
+				break;
+			case self::TYPE_POST_TYPE_ARCHIVE:
+				$type = get_post_type_object($instance['post_type']);
+				if ($type){
+					$new_title = $type->labels->name;
+				}
+				break;
+			case self::TYPE_TERM_ARCHIVE:
+				$term = get_term($instance['term_id'], $instance['taxonomy']);
+				if ($term && ! is_wp_error($term)){
+					$new_title = $term->name;
+				}
+				break;
+			case self::TYPE_POST:
+				$post = get_post($instance['post_id']);
+				if ($post){
+					$new_title = $post->post_title;
+				}
+				break;
+			case self::TYPE_AUTHOR_ARCHIVE:
+				$user = new \WP_User($instance['author_id']);
+				if ($user && $user->ID > 0){
+					$new_title = get_the_author_meta('display_name', $instance['author_id']);
+				}
+				break;
+			case self::TYPE_RSS:
+				$new_title = 'RSS';
+				break;
+			case self::TYPE_JAVASCRIPT_VOID:
+			case self::TYPE_HASH:
+				$new_title = 'Link Text Here';
+				break;
 
-			}
+		}
+		if (empty($instance['title'])){
+			$instance['title'] = $new_title;
+		}
+		if (empty($instance['title_attribute'])){
+			$instance['title_attribute'] = $new_title;
+		}
+
+		if (! is_array($instance['link_attributes'])){
+			$instance['link_attributes'] = array();
+		}
+
+		if (! is_array($instance['image_attributes'])){
+			$instance['image_attributes'] = array();
 		}
 	}
 
@@ -214,7 +296,7 @@ class SingleLink extends BaseWidget  {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'MM Single Link';
+		return 'Super Powered Single Link';
 	}
 
 	/**
@@ -229,13 +311,6 @@ class SingleLink extends BaseWidget  {
 	 */
 	public function get_control_options(){
 		return array('width' => 400);
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function does_widget_have_title_option() {
-		return false;
 	}
 
 

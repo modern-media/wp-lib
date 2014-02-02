@@ -1,5 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
+use ModernMedia\WPLib\Helper\HTML;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 
@@ -21,6 +22,7 @@ class SinglePost extends BaseWidget{
 				$s->enqueue(Scripts::WIDGET_GENERAL);
 				$s->enqueue(Scripts::WIDGET_SINGLE_POST);
 				$s->enqueue(Scripts::UPLOADER);
+				$s->enqueue(Scripts::ATTRIBUTE_CONTROL);
 				wp_enqueue_media();
 			}
 		}
@@ -42,7 +44,23 @@ class SinglePost extends BaseWidget{
 			'custom_image_id' => 0,
 			'excerpt' => '',
 			'include_read_button' => false,
-			'read_button_text' => __('Read...')
+			'read_button_text' => __('Read...'),
+			'image_attributes' => array(),
+			'link_image' => true,
+			'image_link_attributes' => array(),
+			'title_link_attributes' => array(),
+			'link_title' => true,
+			'read_button_attributes' => array(),
+			'included_elements' => array('image', 'title', 'excerpt', 'social'),
+		);
+	}
+
+	public function get_element_options(){
+		return array(
+			'title' => __('Header'),
+			'image' => __('Image'),
+			'excerpt' => __('Excerpt'),
+			'social' => __('Social Sharing'),
 		);
 	}
 
@@ -61,6 +79,8 @@ class SinglePost extends BaseWidget{
 			'below_excerpt' => __('Below Excerpt')
 		);
 	}
+
+
 
 	public function get_image_size_options(){
 		$sizes = get_intermediate_image_sizes();
@@ -135,6 +155,9 @@ class SinglePost extends BaseWidget{
 		}
 
 		if ($img_div){
+			$img_attrs = $this->attribute_field_to_keyed_array($instance['image_attrs']);
+			$img_attrs['src'] = $img_div[0];
+			$img_attrs = HTML::attr_array_to_string($img_attrs);
 			$img_div = sprintf(
 				'
 				<div class="image">
@@ -213,6 +236,21 @@ class SinglePost extends BaseWidget{
 		$post = get_post($instance['post_id']);
 		if ($post){
 			$instance['title'] = $post->post_title;
+		}
+		if (! is_array($instance['image_attributes'])){
+			$instance['image_attributes'] = array();
+		}
+		if (! is_array($instance['image_link_attributes'])){
+			$instance['image_link_attributes'] = array();
+		}
+		if (! is_array($instance['title_link_attributes'])){
+			$instance['title_link_attributes'] = array();
+		}
+		if (! is_array($instance['read_button_attributes'])){
+			$instance['read_button_attributes'] = array();
+		}
+		if (! is_array($instance['included_elements'])){
+			$instance['included_elements'] = array();
 		}
 
 	}

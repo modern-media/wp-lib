@@ -38,7 +38,7 @@ class Widgets {
 	public function _action_widgets_init(){
 		//register_widget('\\ModernMedia\\WPLib\\Widget\\Text');
 		//register_widget('\\ModernMedia\\WPLib\\Widget\\Search');
-	//	register_widget('\\ModernMedia\\WPLib\\Widget\\SingleLink');
+		register_widget('\\ModernMedia\\WPLib\\Widget\\SingleLink');
 		register_widget('\\ModernMedia\\WPLib\\Widget\\SinglePost');
 		//register_widget('\\ModernMedia\\WPLib\\Widget\\TitleAndTagline');
 		//register_widget('\\ModernMedia\\WPLib\\Widget\\Copyright');

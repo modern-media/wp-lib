@@ -23,7 +23,7 @@ class Stylesheet {
 	private function __construct(){
 		if (is_admin()){
 			add_action('admin_enqueue_scripts', function(){
-				wp_enqueue_style('mm-wp-lib-admin-css', Utils::get_lib_uri('assets/css/admin.css'));
+				wp_enqueue_style('mm-wp-lib-admin-css', Utils::get_lib_uri('assets/css/admin.min.css'));
 			});
 		}
 	}

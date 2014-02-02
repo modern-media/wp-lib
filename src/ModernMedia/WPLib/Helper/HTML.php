@@ -212,4 +212,15 @@ class HTML {
 		$html .= self::end_tag('select');
 		return $html;
 	}
+
+	public static function attr_array_to_string($arr){
+		$attrs = array();
+		foreach($arr as $key => $value){
+			if (empty($value)) continue;
+			$attrs[] = sprintf(
+				'%s="%s"', $key, esc_attr($value)
+			);
+		}
+		return implode(' ', $attrs);
+	}
 }

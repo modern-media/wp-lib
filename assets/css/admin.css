@@ -1,0 +1,111 @@
+@import "../../../../fortawesome/font-awesome/css/font-awesome.min.css";
+.mm-wp-lib-widget-form-section {
+  padding-top: 12px;
+  margin: 13px 0;
+  border-top: 1px solid #666;
+}
+.mm-wp-lib-widget-form-section ul.element-list {
+  min-height: 50px;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #CCC;
+}
+.mm-wp-lib-widget-form-section ul.element-list li {
+  cursor: move;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #FFF;
+}
+.mm-wp-lib-widget-form-section a.selection {
+  font-size: 24px;
+}
+.mm-wp-lib-widget-form-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+.mm-wp-lib-widget-form-section .section-header {
+  margin: 0 0 13px 0;
+  font-weight: bold;
+}
+.mm-wp-lib-widget-form-section .section-header a {
+  text-decoration: none;
+}
+.mm-wp-lib-widget-form-section .form-field {
+  border: 1px dotted #cccccc;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 13px;
+}
+.mm-wp-lib-widget-form-section .form-field .label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+.mm-wp-lib-widget-form-section .form-field small {
+  display: block;
+  margin-top: 6px;
+}
+.mm-wp-lib-widget-form-section .form-field.single-check input {
+  width: auto;
+}
+.mm-wp-lib-widget-form-section .form-field.single-check label {
+  display: inline;
+}
+.mm-wp-lib-widget-form-section.toggleable .form-field {
+  display: none;
+}
+.mm-wp-lib-widget-form-section.toggleable.opened .form-field {
+  display: block;
+}
+.mm-wp-lib-post-picker .list {
+  padding: 12px;
+  border: 1px solid #CCC;
+}
+.mm-wp-lib-form-table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  border: 1px solid #999;
+}
+.mm-wp-lib-form-table td {
+  vertical-align: top;
+  padding: 10px;
+}
+.mm-wp-lib-form-table td:first-child {
+  text-align: right;
+  width: 15%;
+}
+.mm-wp-lib-form-table td:last-child {
+  width: 35%;
+}
+.mm-wp-lib-form-table tr:nth-child(even) td {
+  background-color: #FFF;
+}
+.mm-wp-lib-form-table tr:nth-child(odd) td {
+  background-color: #F6F6F6;
+}
+.mm-wp-lib-widget-error {
+  margin: 13px 0;
+  background-color: #ffff00;
+  padding: 6px;
+}
+.mm-wp-lib-attribute-control label span {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+.mm-wp-lib-attribute-control .attribute.template {
+  display: none;
+}
+.mm-wp-lib-attribute-control .attribute a.remove {
+  color: red;
+  font-size: 24px;
+}
+.mm-wp-lib-attribute-control .attribute a.remove span {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}

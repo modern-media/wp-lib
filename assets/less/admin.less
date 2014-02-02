@@ -3,9 +3,29 @@
 
 
 .mm-wp-lib-widget-form-section{
-	padding-bottom: 12px;
+
+	ul.element-list{
+		min-height: 50px;
+		padding: 12px;
+		border-radius: 6px;
+		background-color: #CCC;
+		li{
+			cursor: move;
+			padding: 12px;
+			border-radius: 6px;
+			background-color: #FFF;
+		}
+	}
+	a.selection{
+		font-size: 24px;
+	}
+	padding-top: 12px;
 	margin: 13px 0;
-	border-bottom: 1px dotted #CCC;
+	border-top: 1px solid #666;
+	&:first-child{
+		border-top: none;
+		padding-top: 0;
+	}
 	.section-header{
 		margin: 0 0 13px 0;
 		font-weight: bold;
@@ -15,11 +35,14 @@
 	}
 
 	.form-field{
-
+		border: 1px dotted #cccccc;
+		padding: 12px;
+		border-radius: 6px;
 		margin-bottom: 13px;
-		label{
+		.label{
 			display: block;
 			margin-bottom: 6px;
+			font-weight: bold;
 		}
 		small{
 			display: block;
@@ -32,7 +55,7 @@
 			}
 			label{
 				display: inline;
-				margin-bottom: 0;
+
 			}
 		}
 
@@ -40,27 +63,6 @@
 
 	}
 
-	.form-field-horizontal{
-		.clearfix();
-		>.label, >.controls{
-			float: left;
-		}
-		>.label{
-			width: 33%;
-			label{
-				display: block;
-				padding-right: 13px;
-				padding-top: 5px;
-				text-align: right;
-			}
-		}
-		>.controls{
-			width: 67%;
-			.mm-wp-lib-uploader{
-				margin: 13px 0;
-			}
-		}
-	}
 
 	&.toggleable{
 
@@ -118,6 +120,26 @@
 
 .mm-wp-lib-widget-error{
 	margin: 13px 0;
-	background-color: #FFO;
+	background-color: #ffff00;
 	padding: 6px;
+}
+
+.mm-wp-lib-attribute-control{
+	label{
+		span{
+			.text-hide();
+		}
+	}
+	.attribute{
+		&.template{
+			display: none;
+		}
+		a.remove{
+			color: red;
+			font-size: 24px;
+			span{
+				.text-hide();
+			}
+		}
+	}
 }

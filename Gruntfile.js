@@ -35,7 +35,7 @@ module.exports = function (grunt) {
 
 			less: {
 				files: [
-					'wp-content/themes/ubmtech/assets/less/*.less'
+					'assets/less/*.less'
 
 				],
 				tasks: 'less'

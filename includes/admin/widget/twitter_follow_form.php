@@ -39,7 +39,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 			<?php _e('Advanced Follow Button Options')?></a>
 	</p>
 
-	<div class="form-field form-field-horizontal">
+	<div class="form-field">
 		<div class="label">
 			<label for="<?php echo $this->get_field_id('size')?>">
 				<?php _e('Size')?>
@@ -49,7 +49,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 			<?php $this->select($instance, 'size', SocialSharing::inst()->get_twitter_button_size_options(), array('class' => 'widefat'))?>
 		</div>
 	</div>
-	<div class="form-field form-field-horizontal">
+	<div class="form-field">
 		<div class="label">
 			<label for="<?php echo $this->get_field_id('width')?>">
 				<?php _e('Width')?>
@@ -61,7 +61,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 	</div>
 
-	<div class="form-field form-field-horizontal">
+	<div class="form-field">
 		<div class="label">
 			<label for="<?php echo $this->get_field_id('align')?>">
 				<?php _e('Alignment')?>
@@ -73,7 +73,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 	</div>
 
-	<div class="form-field form-field-horizontal">
+	<div class="form-field ">
 		<div class="label">
 			<label for="<?php echo $this->get_field_id('lang')?>">
 				<?php _e('Language')?>

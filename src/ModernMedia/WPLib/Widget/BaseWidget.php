@@ -123,8 +123,27 @@ abstract class BaseWidget extends \WP_Widget {
 	 */
 	public function update($new_instance, $old_instance){
 		$instance = Utils::trim_stripslashes_deep($new_instance);
+		if (! is_string($instance['widget_opened_form_sections'])){
+			$instance['widget_opened_form_sections'] = '';
+		}
+		if (! is_array($instance['container_attributes'])){
+			$instance['container_attributes'] = array();
+		}
 		$this->validate($instance);
 		return $instance;
+	}
+
+
+
+	public function attribute_field_to_keyed_array($attrs){
+		$keyed = array();
+		foreach($attrs as $a){
+			if (empty($a['attribute_name']) || empty($a['attribute_value'])){
+				continue;
+			}
+			$keyed[$a['attribute_name']] = $a['attribute_value'];
+		}
+		return $keyed;
 	}
 
 	/**
@@ -139,13 +158,13 @@ abstract class BaseWidget extends \WP_Widget {
 
 
 		$before_widget = $args['before_widget'];
-		$extra_classes = trim($instance['extra_classes']);
-		if (! empty($extra_classes)){
-			$before_widget = str_replace('class="', 'class="' . $extra_classes . ' ', $before_widget );
-		}
+		$attrs = is_array($instance['container_attributes']) ? $instance['container_attributes'] : array();
+		$attrs = $this->attribute_field_to_keyed_array($attrs);
+		$attrs = HTML::attr_array_to_string($attrs);
 
-		if (! empty($instance['extra_attributes'])){
-			$before_widget = preg_replace('/^<([a-z]+)/', '<$1 ' . $instance['extra_attributes'] . ' ', $before_widget );
+
+		if (! empty($attrs)){
+			$before_widget = preg_replace('/^<([a-z]+)/', '<$1 ' . $attrs . ' ', $before_widget );
 		}
 
 		echo $before_widget;
@@ -183,8 +202,7 @@ abstract class BaseWidget extends \WP_Widget {
 		$defaults = array_merge(
 			array(
 				'widget_opened_form_sections' => '',
-				'extra_classes' => '',
-				'extra_attributes' => '',
+				'container_attributes' => array(),
 			),
 			$defaults
 		);

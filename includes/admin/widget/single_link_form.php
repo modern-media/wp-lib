@@ -1,275 +1,329 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
+use ModernMedia\WPLib\Utils;
+use ModernMedia\WPLib\Admin\Controls;
 /**
- * @var SingleLink $widget
+ * @var SingleLink $this
  * @var $instance
  */
-use ModernMedia\WPLib\Helper\HTML;
-$ctr_id = $widget->get_field_id('single_link_controls');
+$ctr_id = $this->get_field_id('single_link_controls');
+$opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instance['widget_opened_form_sections']) : array();
+
 ?>
 
-<div class="mm-single-link-controls bootstrapped" id="<?php echo $ctr_id?>">
+<div class="mm-wp-lib-single-link-widget-controls" id="<?php echo $ctr_id?>">
 
-	<div class="type-select-ctr form-group">
-		<label for="<?php echo $widget->get_field_id('type')?>">Link Type:</label>
+	<div class="mm-wp-lib-widget-form-section">
+		<p class="section-header"><label for="<?php echo $this->get_field_id('type')?>"><?php _e('Link Type')?></label></p>
+		<div class="form-field">
+
+			<div class="controls">
+				<?php
+				$this->select($instance, 'type', $this->get_type_options(), array('class' => 'select-type'));
+				?>
+			</div>
+		</div>
+
 		<?php
-		$widget->select($instance, 'type', $widget->get_type_options(), array('class' => 'type form-control'));
+		//none...
+		$type = '';
 		?>
-	</div>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<div class="mm-wp-lib-widget-error">
+				<?php _e('Select a link type.')?>
+			</div>
+		</div>
 
 
-	<div class="options">
 		<?php
 		//home...
 		$type = SingleLink::TYPE_HOME;
-		printf(
-			'<div class="option-ctr %s"%s><p>No options available.</p></div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"'
-		);
+		?>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<p><?php _e('No options available.')?></p>
+		</div>
 
-
+		<?php
 		//url...
 		$type = SingleLink::TYPE_URL;
-		printf(
-			'<div class="option-ctr form-group %s"%s>
-			<label for="%s">URL</label>
-			%s</div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"',
-			$widget->get_field_id('url'),
-			$widget->text_input($instance, 'url', array('class' => 'form-control', 'placeholder' => 'http://example.com'),false)
-		);
-
-
-
-		//post type archive...
-		$type = SingleLink::TYPE_POST_TYPE_ARCHIVE;
-		$options = get_post_types(array('has_archive' => true), 'objects');
-		foreach($options as $key=>$o){
-			$options[$key] = $o->labels->name;
-		}
-		printf(
-			'<div class="option-ctr form-group %s"%s><p>
-			<label for="%s">Post Type</label>
-			%s</p></div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"',
-			$widget->get_field_id('post_type'),
-			$widget->select($instance, 'post_type',$options,array('class' => 'form-control'), false)
-		);
-
-
-		//term archive...
-		$type = SingleLink::TYPE_TERM_ARCHIVE;
-		$options = get_taxonomies(array(), 'objects');
-		foreach($options as $key=>$o){
-			$options[$key] = $o->labels->name;
-		}
-		$val = '';
-		if (SingleLink::TYPE_TERM_ARCHIVE == $instance['type']){
-			$term = get_term($instance['term_id'], $instance['taxonomy']);
-			if ($term && ! is_wp_error($term)){
-				$val = $term->name;
-			}
-		}
-		printf(
-			'<div class="option-ctr form-group %s"%s><p><label for="%s">Taxonomy</label>%s</p>
-			<p><label for="%s">Term</label><input type="text" class="term_name" value="%s" id="%s" placeholder="Term Name">
-			 %s</p></div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"',
-			$widget->get_field_id('taxonomy'),
-			$widget->select($instance, 'taxonomy',$options,array('class' => 'taxonomy form-control'), false),
-			$widget->get_field_id('term_name'),
-			esc_attr($val),
-			$widget->get_field_id('term_name'),
-			$widget->hidden_input($instance, 'term_id', array('class' => 'term_id form-control'), false)
-		);
-
-
 		?>
-		<div class="form-group">
-			<label>Link to Post</label>
-		<?php
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<div class="form-field">
+				<div class="label">
+					<label for="<?php echo $this->get_field_id('url')?>">
+						<?php _e('Outside URL')?>
+					</label>
+				</div>
+				<div class="controls">
+					<?php
+					$this->text_input($instance, 'url', array( 'class'=>'widefat', 'placeholder'=>__('http://')))
+					?>
+				</div>
+			</div>
+		</div>
 
+		<?php
+		//url...
+		$type = SingleLink::TYPE_POST_TYPE_ARCHIVE;
+		$options = array_merge(
+			array('post' =>get_post_type_object('post')),
+			get_post_types(array('has_archive'=>true), 'objects')
+		);
+		foreach($options as $key=>$o){
+			$options[$key] = $o->labels->name;
+		}
+		?>
+
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<div class="form-field">
+				<div class="label">
+					<label for="<?php echo $this->get_field_id('post_type')?>">
+						<?php _e('Post Type')?>
+					</label>
+				</div>
+				<div class="controls">
+					<?php
+					$this->select($instance, 'post_type',$options,array('class' => 'widefat post_type'))
+					?>
+				</div>
+			</div>
+		</div>
+
+		<?php
+		//term archives...
+		$type = SingleLink::TYPE_TERM_ARCHIVE;
+		$control_id = $this->get_field_id('mm-wp-lib-single-link-term-picker');
+		?>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<div class="mm-wp-lib-term-picker" id="<?php echo $control_id?>">
+				<?php $this->hidden_input($instance, 'term_id', array('class'=>'term_id'));?>
+				<?php $this->hidden_input($instance, 'taxonomy', array('class'=>'taxonomy'));?>
+				<?php
+				$taxonomy = get_taxonomy($instance['taxonomy']);
+				$term = get_term($instance['term_id'], $instance['taxonomy']);
+				if (is_wp_error($term)){
+					$label = __('[none]');
+				} else {
+					$label = sprintf(
+						'%s (%s)',
+						$term->name,
+						$taxonomy->labels->singular_name
+					);
+				}
+				?>
+				<p class="selected">
+					<strong><?php _e('Selected:')?></strong>
+					<span class="term-name"><?php echo $label?></span>
+				</p>
+
+				<p>
+					<label>
+						<?php _e('Select Term')?>
+						<input type="text" class="autocomplete widefat">
+					</label>
+				</p>
+
+			</div>
+			<script type="text/javascript">
+				if (window.mm_wp_lib_term_picker_init){
+					window.mm_wp_lib_term_picker_init(jQuery('#<?php echo $control_id?>'));
+				}
+			</script>
+		</div>
+
+		<?php
 		//single post...
 		$type = SingleLink::TYPE_POST;
-
-
-		$val = '[none selected]';
-		if (SingleLink::TYPE_POST == $instance['type']){
-			if (empty($instance['post_id'])){
-				$val = '[none selected]';
-			} else {
-				$val = get_the_title($instance['post_id']);
-			}
-		}
-
-
-		printf(
-			'
-			<div class="option-ctr %s"%s>
-			<div
-			class="mmmu-post-picker-controls"
-			data-post_type="%s"
-			>
-
-			<div class="pull-right">
-			<a
-			href="#"
-			class="choose btn btn-primary btn-xs"
-			>Choose</a>
-
-			<a
-			href="#"
-			class="clear btn btn-xs btn-default"
-			>Clear</a>
-
-			</div>
-
-			<span class="post-title">%s</span>
-
-
-
-			<div class="clear"></div>
-
-
-			%s
-
-			</div>
-			</div>
-			',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"',
-			esc_attr('any'),
-			$val,
-			$widget->hidden_input($instance, 'post_id', array('class' => 'post_id'), false)
-
-		);
 		?>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<?php
+			Controls::post_picker_control(
+				$this->get_field_name('post_id'),
+				get_post($instance['post_id']),
+				$this->get_field_id('mm-wp-lib-single-link-post-picker')
+			);
+			?>
 		</div>
-		<?php
 
-		//author...
+
+
+
+		<?php
+		//author archives...
 		$type = SingleLink::TYPE_AUTHOR_ARCHIVE;
-		$val = '';
-		if (SingleLink::TYPE_AUTHOR_ARCHIVE == $instance['type']){
-			$val = get_the_author_meta('display_name', $instance['author_id']);
-		}
-		printf(
-			'<div class="option-ctr form-group %s"%s>
-			<p><label for="%s">Author</label>
-			<input type="text" class="author_name" value="%s" id="%s" placeholder="Author Name">
-			%s</p></div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"',
-			$widget->get_field_id('author_name'),
-			esc_attr($val),
-			$widget->get_field_id('author_name'),
-			$widget->hidden_input($instance, 'author_id', array('class' => 'author_id form-control'), false)
 
-		);
-
-		//rss...
-		$type = SingleLink::TYPE_RSS;
-		printf(
-			'<div class="option-ctr %s"%s><p>No options available.</p></div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"'
-		);
-		//js void...
-		$type = SingleLink::TYPE_JAVASCRIPT_VOID;
-		printf(
-			'<div class="option-ctr %s"%s><p>No options available.</p></div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"'
-		);
-
-		//hash...
-		$type = SingleLink::TYPE_HASH;
-		$val = '';
-		if (SingleLink::TYPE_HASH == $instance['type']){
-			$val = $instance['hash_id'];
-		}
-		printf(
-			'<div class="option-ctr form-group %s"%s>
-			<p><label for="%s">Element ID</label>
-			%s<br><small>The href will be # plus whatever you put here. Leave blank for just #.</small></p></div>',
-			$type,
-			$type == $instance['type'] ? '' : ' style="display:none"',
-			$widget->get_field_id('hash_id'),
-			$widget->text_input($instance, 'hash_id', array('class' => 'author_id form-control'), false)
-
-		);
-		?>
-
-		<div class="form-group">
-			<label for="<?php echo $widget->get_field_id('title')?>">Link Text</label>
-			<?php
-			$widget->text_input($instance, 'title', array('class' => 'form-control'));
-			?>
-		</div>
-
-		<div class="form-group">
-			<label for="<?php echo $widget->get_field_id('link_classes')?>">Link Classes</label>
-			<?php
-			$widget->text_input($instance, 'link_classes', array('class' => 'form-control'));
-			?>
-		</div>
-
-		<div class="form-group">
-		<?php
-		/** @var SingleLink $widget */
-
-		printf(
-			'<label for="%s">Extra Link Attributes</label> %s ',
-			$widget->get_field_id('link_extra_attributes'),
-			$widget->text_input(
-				$instance,
-				'link_extra_attributes',
-				array('class' => 'form-control'),
-				false
+		$users = new \WP_User_Query(
+			array(
+				'orderby' => 'display_name',
+				'who' => 'authors'
 			)
 		);
+		$options = array();
+		foreach($users->results as $user){
+			$options[$user->ID] = $user->get('display_name');
+		}
 		?>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<div class="form-field">
+				<div class="label">
+					<label for="<?php echo $this->get_field_id('author_id')?>">
+						<?php _e('Author')?>
+					</label>
+				</div>
+				<div class="controls">
+					<?php
+					$this->select($instance, 'author_id',$options,array('class' => 'widefat author_id'))
+					?>
+				</div>
+			</div>
 		</div>
+
 		<?php
-		$id = $widget->get_field_id('link_as_image-mmmu-uploader');
+		//author archives...
+		$type = SingleLink::TYPE_JAVASCRIPT_VOID;
+
+
 		?>
-		<div
-			id="<?php echo $id?>"
-			class="mmmu-uploader"
-			 data-size="thumbnail"
-			data-image-id="<?php echo $instance['link_as_image']?>"
-			data-upload-button-text="Choose Image"
-			data-remove-button-text="Remove Image"
-			data-uploader-frame-title="Choose Image" 
-			data-uploader-frame-button-text="Choose">
-			<p><strong>Use Image:</strong><br> <a class="upload"></a><br><a class="remove"></a></p>
-			<input type="hidden"
-				   class="image_id"
-				   name="<?php echo $widget->get_field_name('link_as_image')?>"
-				   id="<?php echo $widget->get_field_id('link_as_image')?>"
-				   value="<?php esc_attr($instance['link_as_image'])?>"
-				>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<p><?php _e('No options available.')?></p>
+		</div>
+
+		<?php
+		//author archives...
+		$type = SingleLink::TYPE_RSS;
+
+
+		?>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<p><?php _e('No options available.')?></p>
+		</div>
+
+		<?php
+		//author archives...
+		$type = SingleLink::TYPE_HASH;
+
+		?>
+		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
+			<div class="form-field">
+				<div class="label">
+					<label for="<?php echo $this->get_field_id('hash_id')?>">
+						<?php _e('Hash ID')?>
+					</label>
+				</div>
+				<div class="controls">
+					<?php
+					$this->text_input($instance, 'hash_id',array('class' => 'widefat', 'placeholder' => '#dom-id'))
+					?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="mm-wp-lib-widget-form-section">
+		<p class="section-header"><?php _e('Link Text and Title')?></p>
+		<div class="form-field">
+			<div class="label">
+				<label for="<?php echo $this->get_field_id('title')?>">
+					<?php _e('Link Text')?>
+				</label>
+			</div>
+			<div class="controls">
+				<?php
+				$this->text_input($instance, 'title',array('class' => 'widefat title', 'placeholder' => 'Link Text'))
+				?>
+			</div>
+		</div>
+		<div class="form-field">
+			<div class="label">
+				<label for="<?php echo $this->get_field_id('title_attribute')?>">
+					<?php _e('Link Title Attribute')?>
+				</label>
+			</div>
+			<div class="controls">
+				<?php
+				$this->text_input($instance, 'title_attribute',array('class' => 'widefat title_attribute', 'placeholder' => 'Title Attribute'))
+				?>
+			</div>
+		</div>
+	</div>
+	<div data-section="image" class="mm-wp-lib-widget-form-section widget-image toggleable<?php if(in_array('image', $opened)) echo ' opened'?>">
+		<p class="section-header">
+			<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('image', $opened)) echo ' fa-rotate-90'?>"></i>
+			<?php _e('Use Image')?></a>
+		</p>
+		<div class="form-field single-check">
+			<?php $this->checkbox_input($instance, 'use_image', __('Use an image.'), array('class'=>'use_image'));?>
+		</div>
+		<div class="image-options"<?php if (! $instance['use_image']) echo ' style="display:none" ';?>>
+			<div class="form-field">
+				<?php
+				$uploader_id = $this->get_field_id('mm-wp-lib-widget-single-link-uploader');
+				?>
+				<div id="<?php echo $uploader_id?>"
+					class="mm-wp-lib-uploader"
+					 data-label="<?php _e('Choose Image')?>"
+					 data-preview-size="medium">
+					<?php $this->hidden_input($instance, 'image_id')?>
+					<div class="holder"></div>
+					<p><a href="#" class="choose button"><?php _e('Upload/Choose Image')?></a></p>
+					<p><a href="#" class="remove"><?php _e('Remove Image')?></a></p>
+				</div>
+				<script type="text/javascript">
+				if (window.mm_wp_lib_uploader_update){
+					window.mm_wp_lib_uploader_update(jQuery('#<?php echo $uploader_id?>'));
+				}
+				</script>
+			</div>
+			<div class="form-field">
+				<div class="label">
+					<label for="<?php echo $this->get_field_id('image_size')?>">
+						<?php _e('Image Size')?>
+					</label>
+				</div>
+
+				<div class="controls">
+					<?php
+					$this->select($instance, 'image_size', Utils::get_image_size_options(), array('class'=>'widefat'));
+					?>
+				</div>
+
+			</div>
+			<div class="form-field">
+				<p><?php _e('Image Attributes')?></p>
+				<?php
+				Controls::attribute_control(
+					$this->get_field_name('image_attributes'),
+					$instance['image_attributes']
+				);
+				?>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<div data-section="link_extra" class="mm-wp-lib-widget-form-section toggleable<?php if(in_array('link_extra', $opened)) echo ' opened'?>">
+		<p class="section-header">
+			<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('link_extra', $opened)) echo ' fa-rotate-90'?>"></i>
+				<?php _e('Link Attributes')?></a>
+		</p>
+
+
+		<div class="form-field">
+			<?php
+			Controls::attribute_control(
+				$this->get_field_name('link_attributes'),
+				$instance['link_attributes']
+			);
+
+			?>
+
 		</div>
 
 
-	</div><!--/.type-options-->
+
+	</div>
 
 </div><!-- /.mm-single-link-controls -->
 
-<script type="text/javascript">
-	if (! mmmu_single_link_controls_init){
-		mmmu_uninitialized_single_link_controls.push(<?php  echo json_encode($ctr_id)?>);
-	} else {
-		mmmu_single_link_controls_init(<?php  echo json_encode($ctr_id)?>);
-	}
 
-
-	if (mmmu_refresh_uploader) {
-		mmmu_refresh_uploader(jQuery('#<?php echo $id?>'));
-	}
-
-</script>
