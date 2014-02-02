@@ -36,15 +36,14 @@ class SinglePost extends BaseWidget{
 	public function get_instance_defaults() {
 		return array(
 			'id' => 0,
-			'display_title' => true,
 			'title' => '',
-			'image_display' => 'none',
-			'image_size' => 'thumbnail',
-			'image_placement' => 'above_title',
+			'image_display' => 'featured',
+			'image_size' => 'medium',
 			'custom_image_id' => 0,
 			'excerpt' => '',
 			'include_read_button' => false,
 			'read_button_text' => __('Read...'),
+			'read_button_block' => false,
 			'image_attributes' => array(),
 			'link_image' => true,
 			'image_link_attributes' => array(),
@@ -66,19 +65,12 @@ class SinglePost extends BaseWidget{
 
 	public function get_image_display_options(){
 		return array(
-			'none' => __('No image'),
 			'featured' => __('Use featured image'),
 			'custom' => __('Use another image')
 		);
 	}
 
-	public function get_image_placement_options(){
-		return array(
-			'above_title' => __('Above Title'),
-			'above_excerpt' => __('Above Excerpt'),
-			'below_excerpt' => __('Below Excerpt')
-		);
-	}
+
 
 
 
@@ -117,106 +109,129 @@ class SinglePost extends BaseWidget{
 		$post = get_post($instance['id']);
 		if (! $post) return '';
 
-		$title = $instance['title'];
-		if (empty($title)){
-			$title = get_the_title($post->ID);
-		}
-
+		$elements = array();
+		$post_title = get_the_title($post->ID);
 		$permalink = get_permalink($post->ID);
-
-
-		if ($instance['display_title']){
-			$title_div = sprintf(
-				'
-				%s
-					<a href="%s">%s</a>
-				%s
-				',
-				$args['before_title'],
-				$permalink,
-				$title,
-				$args['after_title']
-			);
-		} else {
-			$title_div = '';
+		$elements['title'] = $this->get_widget_title_html($args, $instance, $post_title, $permalink);
+		$elements['image'] = $this->get_widget_image_html($args, $instance, $post_title, $permalink);
+		$elements['excerpt'] = $this->get_widget_excerpt_html($args, $instance, $post_title, $permalink);
+		$elements['social'] = $this->get_widget_social_html($args, $instance, $post_title, $permalink);
+		$divs = array();
+		foreach($instance['included_elements'] as $key){
+			if ($elements[$key]){
+				$divs[] = $elements[$key];
+			}
 		}
-
-
-		$img_div = false;
-		switch($instance['image_display']){
-			case 'featured':
-				if (has_post_thumbnail($post->ID)){
-					$img_div = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), $instance['image_size']);
-				}
-				break;
-			case 'custom':
-				$img_div = wp_get_attachment_image_src($instance['custom_image_id'], $instance['image_size']);
-				break;
-		}
-
-		if ($img_div){
-			$img_attrs = $this->attribute_field_to_keyed_array($instance['image_attrs']);
-			$img_attrs['src'] = $img_div[0];
-			$img_attrs = HTML::attr_array_to_string($img_attrs);
-			$img_div = sprintf(
-				'
-				<div class="image">
-					<a href="%s"><img
-					src="%s"
-					class="img-responsive"
-					title="%s"></a>
-				</div>
-				',
-				$permalink,
-				$img_div[0],
-				esc_attr($title)
-			);
-		} else {
-			$img_div = '';
-		}
-
-		if (! empty($instance['excerpt'])){
-			$excerpt_div = $instance['excerpt'];
-		} else {
-			$excerpt_div = $post->post_excerpt;
-		}
-		if (empty($excerpt_div)){
-			$excerpt_div = strip_tags($post->post_content);
-			$excerpt_div = substr($excerpt_div, 0, 240);
-			$excerpt_div .= '...';
-		}
-
-		if ($instance['include_read_button']){
-			$excerpt_div .= sprintf(
-				' <span class="read-more"><a href="%s">%s</a></span>',
-				$permalink,
-				empty($instance['read_button_text']) ? __('Read...') : $instance['read_button_text']
-			);
-		}
-		$excerpt_div = sprintf(
-			'
-			<div class="excerpt">
-				%s
-			</div>
-			',
-			wpautop($excerpt_div)
-		);
-		switch($instance['image_placement']){
-			case 'above_excerpt':
-				$divs = array( $title_div, $img_div, $excerpt_div);
-				break;
-			case 'below_excerpt':
-				$divs = array( $title_div, $excerpt_div, $img_div);
-				break;
-			default:
-				$divs = array($img_div, $title_div, $excerpt_div);
-				break;
-		}
-
 
 		return implode(PHP_EOL, $divs);
 	}
 
+
+	private function get_widget_social_html($args, $instance, $post_title, $permalink){
+		if (! in_array('social', $instance['included_elements'])) {
+			return false;
+		}
+		return '<div class="widget-social"></div>';
+	}
+	private function get_widget_excerpt_html($args, $instance, $post_title, $permalink){
+		if (! in_array('excerpt', $instance['included_elements'])) {
+			return false;
+		}
+		$post = get_post($instance['id']);
+		if (! empty($instance['excerpt'])){
+			$html = $instance['excerpt'];
+		} else {
+			$html = $post->post_excerpt;
+		}
+		if (empty($html)){
+			$html = strip_tags($post->post_content);
+			$html = substr($html, 0, 240);
+			$html .= '...';
+		}
+		if ($instance['include_read_button']){
+			$attrs = is_array($instance['read_button_attributes']) ? $instance['read_button_attributes'] : array();
+			$attrs = $this->attribute_field_to_keyed_array($attrs);
+			$attrs['href'] = $permalink;
+			$btn = ! empty($instance['read_button_text']) ? $instance['read_button_text'] : __('Read...');
+			if (! isset($attrs['title']) || empty($attrs['title'])){
+				if (! empty($instance['title'])){
+					$attrs['title'] = $instance['title'];
+				} else {
+					$attrs['title'] = $post_title;
+				}
+			}
+			$btn = sprintf('<a %s>%s</a>', HTML::attr_array_to_string($attrs), $btn);
+			if ($instance['read_button_block']){
+				$btn = sprintf('<p class="read-btn-ctr">%s</p>', $btn);
+				$html .= PHP_EOL . $btn;
+			}
+			$html .= ' ' . $btn;
+
+		}
+		return sprintf('<div class="widget-excerpt">%s</div>', wpautop($html));
+	}
+
+	private function get_widget_image_html($args, $instance, $post_title, $permalink){
+		if (! in_array('image', $instance['included_elements'])) {
+			return false;
+		}
+		$image = false;
+		switch($instance['image_display']){
+			case 'featured':
+				if (has_post_thumbnail($instance['id'])){
+					$image = wp_get_attachment_image_src(get_post_thumbnail_id($instance['id']), $instance['image_size']);
+				}
+				break;
+			case 'custom':
+				$image = wp_get_attachment_image_src($instance['custom_image_id'], $instance['image_size']);
+				break;
+		}
+		if (! $image) {
+			return false;
+		}
+		$attrs = is_array($instance['image_attributes']) ? $instance['image_attributes'] : array();
+		$attrs = $this->attribute_field_to_keyed_array($attrs);
+		$attrs['src'] = $image[0];
+		$html = sprintf('<img %s>', HTML::attr_array_to_string($attrs));
+		if ($instance['link_image']){
+			$attrs = is_array($instance['image_link_attributes']) ? $instance['image_link_attributes'] : array();
+			$attrs = $this->attribute_field_to_keyed_array($attrs);
+			if (! isset($attrs['title']) || empty($attrs['title'])){
+				if (! empty($instance['title'])){
+					$attrs['title'] = $instance['title'];
+				} else {
+					$attrs['title'] = $post_title;
+				}
+			}
+			$attrs['href'] = $permalink;
+			$html = sprintf('<a %s>%s</a>', HTML::attr_array_to_string($attrs), $html);
+		}
+		return sprintf('<div class="widget-image">%s</div>',$html);
+	}
+
+
+	private function get_widget_title_html($args, $instance, $post_title, $permalink){
+		if (! in_array('title', $instance['included_elements'])) {
+			return false;
+		}
+
+		$html = empty($instance['title']) ? $instance['title'] : $post_title;
+		if($instance['link_title']){
+			$attrs = is_array($instance['title_link_attributes']) ? $instance['title_link_attributes'] : array();
+			$attrs = $this->attribute_field_to_keyed_array($attrs);
+			if (! isset($attrs['title']) || empty($attrs['title'])){
+				if (! empty($instance['title'])){
+					$attrs['title'] = $instance['title'];
+				} else {
+					$attrs['title'] = $post_title;
+				}
+			}
+			$attrs['href'] = $permalink;
+			$html = sprintf('<a %s>%s</a>', HTML::attr_array_to_string($attrs), $html);
+		}
+		return $args['before_title'] . $html . $args['after_title'];
+
+	}
 
 
 	/**

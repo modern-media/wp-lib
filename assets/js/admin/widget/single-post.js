@@ -59,22 +59,28 @@ jQuery(document).ready(function($){
 			}
 		}
 	};
+	var update_included = function(ctl){
+		$('.element-list.unused li input', ctl).each(function(){
+			$(this).removeAttr('name');
+			$('.element-' + $(this).val()).hide();
+		});
+		var fn = $('.element-list-ctr', ctl).data('form-name');
+		$('.element-list.used li input', ctl).each(function(i){
+			$(this).attr('name', fn + '[' + i + ']');
+			$('.element-' + $(this).val()).show();
+		});
+	};
 	var update = window.mm_wp_lib_widget_single_post_update = function(ctl){
 		update_link_image(ctl);
 		update_link_title(ctl);
 		update_read_button(ctl);
 		update_img_sel(ctl);
+		update_included(ctl);
 		var lists = $('.element-list', ctl);
 		lists.sortable({
 			connectWith: '#' + ctl.attr('id') + ' .element-list',
 			stop: function(){
-				$('.element-list.unused li input', ctl).each(function(){
-					$(this).removeAttr('name');
-				});
-				var fn = $('.element-list-ctr', ctl).data('form-name');
-				$('.element-list.used li input', ctl).each(function(i){
-					$(this).attr('name', fn + '[' + i + ']');
-				});
+				update_included(ctl);
 			}
 		});
 	};

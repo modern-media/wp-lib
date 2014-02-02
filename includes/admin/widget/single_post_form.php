@@ -22,7 +22,7 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 
 	<div data-section="included_elements" class="mm-wp-lib-widget-form-section toggleable<?php if(in_array('included_elements', $opened)) echo ' opened'?>">
 		<p class="section-header">
-			<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('included_elements', $opened)) echo ' fa-rotate-90'?>"></i>
+			<a href="#"><i class="toggle-section fa fa-caret-right<?php if(in_array('included_elements', $opened)) echo ' fa-rotate-90'?>"></i>
 				<?php _e('Included Elements')?></a>
 		</p>
 		<div class="form-field">
@@ -76,10 +76,11 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 		</div>
 
 	</div>
-	<div data-section="title" class="mm-wp-lib-widget-form-section toggleable<?php if(in_array('title', $opened)) echo ' opened'?>">
+	<div data-section="title"
+		 class="mm-wp-lib-widget-form-section element-title toggleable<?php if(in_array('title', $opened)) echo ' opened'?><?php if(in_array('title', $instance['included_elements'])) echo ' not-included'?>">
 		<p class="section-header">
-			<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('title', $opened)) echo ' fa-rotate-90'?>"></i>
-				<?php _e('Widget Header')?></a>
+			<a href="#"><i class="toggle-section fa fa-caret-right<?php if(in_array('title', $opened)) echo ' fa-rotate-90'?>"></i>
+				<?php _e('Header')?></a>
 		</p>
 
 		<div class="form-field">
@@ -95,9 +96,7 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 			</div>
 
 		</div>
-		<div class="form-field single-check">
-			<?php $this->checkbox_input($instance, 'display_title', __('Display header.'));?>
-		</div>
+
 
 		<div class="form-field single-check">
 			<?php $this->checkbox_input($instance, 'link_title', __('Link header to post.'), array('class' => 'link_title'));?>
@@ -123,10 +122,11 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 
 	</div> <!-- .mm-wp-lib-widget-form-section -->
 
-	<div data-section="excerpt" class="mm-wp-lib-widget-form-section widget-excerpt toggleable<?php if(in_array('excerpt', $opened)) echo ' opened'?>">
+	<div data-section="excerpt"
+		 class="mm-wp-lib-widget-form-section element-excerpt widget-excerpt toggleable<?php if(in_array('excerpt', $opened)) echo ' opened'?><?php if(in_array('excerpt', $instance['included_elements'])) echo ' not-included'?>">
 		<p class="section-header">
-			<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('excerpt', $opened)) echo ' fa-rotate-90'?>"></i>
-				<?php _e('Widget Text')?></a>
+			<a href="#"><i class="toggle-section fa fa-caret-right<?php if(in_array('excerpt', $opened)) echo ' fa-rotate-90'?>"></i>
+				<?php _e('Excerpt')?></a>
 		</p>
 
 		<div class="form-field">
@@ -146,6 +146,9 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 		</div>
 
 		<div class="read_button_details">
+			<div class="form-field single-check">
+				<?php $this->checkbox_input($instance, 'read_button_block', __('Enclose read button in it\'s own paragraph tag.'));?>
+			</div>
 			<div class="form-field">
 				<div class="label">
 					<label for="<?php echo $this->get_field_id('read_button_text')?>">
@@ -180,10 +183,12 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 	</div>
 
 
-	<div data-section="image" class="mm-wp-lib-widget-form-section widget-image toggleable<?php if(in_array('image', $opened)) echo ' opened'?>">
+	<div
+		data-section="image"
+		class="mm-wp-lib-widget-form-section widget-image element-image toggleable<?php if(in_array('image', $opened)) echo ' opened'?><?php if(in_array('image', $instance['included_elements'])) echo ' not-included'?>">
 		<p class="section-header">
-			<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('image', $opened)) echo ' fa-rotate-90'?>"></i>
-			<?php _e('Widget Image')?></a>
+			<a href="#"><i class="toggle-section fa fa-caret-right<?php if(in_array('image', $opened)) echo ' fa-rotate-90'?>"></i>
+			<?php _e('Image')?></a>
 		</p>
 
 
@@ -195,7 +200,7 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 			</div>
 			<div class="controls">
 				<?php
-				$this->select($instance, 'image_display', $this->get_image_display_options(),array('class'=>'widefat image-display'));
+				$this->select($instance, 'image_display', $this->get_image_display_options(),array('class'=>'widefat image-display'), false);
 				?>
 			</div>
 		</div>
@@ -233,19 +238,6 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 
 
 
-			<div class="form-field">
-				<div class="label">
-					<label for="<?php echo $this->get_field_id('image_placement')?>">
-						<?php _e('Image Placement')?>
-					</label>
-				</div>
-
-				<div class="controls">
-					<?php
-					$this->select($instance, 'image_placement', $this->get_image_placement_options() ,array('class'=>'widefat'));
-					?>
-				</div>
-			</div>
 
 			<div class="form-field">
 				<div class="label">

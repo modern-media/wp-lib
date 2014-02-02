@@ -16,15 +16,27 @@ jQuery(document).ready(function($){
 	};
 
 	var toggle = function(ctl){
+
 		if (ctl.hasClass('opened')){
-			ctl.removeClass('opened');
-			$('.section-header i', ctl).removeClass('fa-rotate-90');
+			$('.form-field', ctl).slideUp('fast', function(){
+				ctl.removeClass('opened');
+				$('.section-header i', ctl).removeClass('fa-rotate-90');
+				update_open_input(ctl);
+			});
+
 
 		} else {
-			ctl.addClass('opened');
-			$('.section-header i', ctl).addClass('fa-rotate-90');
+			var p = ctl.parents('.mm-wp-lib-widget-form');
+			$('.toggleable.opened .form-field', p).hide();
+			$('.toggleable.opened').removeClass('opened');
+			$('.form-field', ctl).slideDown('fast', function(){
+				ctl.addClass('opened');
+				$('.section-header i', ctl).addClass('fa-rotate-90');
+				update_open_input(ctl);
+			});
+
 		}
-		update_open_input(ctl);
+
 	};
 	body.on('click', ctl_selector_string + ' .section-header a', function(event){
 		event.preventDefault();
