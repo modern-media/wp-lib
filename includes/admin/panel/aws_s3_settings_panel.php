@@ -6,7 +6,7 @@ use ModernMedia\WPLib\AWSS3\Admin\Panel\SettingsPanel;
  * @var SettingsPanel $this
  */
 $plugin = AWSS3::inst();
-$keys = $plugin->get_option_aws();
+$keys = $plugin->get_options();
 
 ?>
 
@@ -50,12 +50,33 @@ $keys = $plugin->get_option_aws();
 			</th>
 			<td>
 				<?php
-				if ($plugin->is_option_aws_keys_valid()){
+				$error = '';
+				$buckets = array();
+				if (! $plugin->is_option_aws_keys_valid()){
+					$error = __('Invalid or empty keys.');
+				} else{
 					$client = $plugin->get_client();
-					$data = $client->listBuckets();
-					/** @var \Guzzle\Service\Resource\Model $data */
-					$buckets = $data->getAll(array('Buckets'));
-					$buckets = $buckets['Buckets'];
+					if (! $client){
+						$error = __('Could not create an S3 client with those keys.');
+					} else {
+						try {
+							$data = $client->listBuckets();
+							/** @var \Guzzle\Service\Resource\Model $data */
+							$buckets = $data->getAll(array('Buckets'));
+							$buckets = $buckets['Buckets'];
+							if (! count($buckets)){
+								$error = __('No buckets available.');
+							}
+						} catch (\Exception $e) {
+							$error = sprintf(
+								__('There was an error retrieving yor buckets. AWS said: %s'),
+								$e->getMessage()
+							);
+						}
+
+					}
+				}
+				if (empty($error)){
 					printf(
 						'<select name="bucket" id="bucket"><option value="">%s</option>',
 						__('Select a bucket...')
@@ -70,8 +91,9 @@ $keys = $plugin->get_option_aws();
 					}
 					echo '</select>';
 				} else {
-					printf('<p>%s</p>', __('Invalid or empty keys.'));
+					printf('<p>%s</p>', $error);
 				}
+
 
 				?>
 			</td>

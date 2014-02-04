@@ -4,7 +4,16 @@ use Aws\S3\S3Client;
 use ModernMedia\WPLib\AWSS3\Admin\Panel\SettingsPanel;
 use ModernMedia\WPLib\AWSS3\Data\AWSOptions;
 
+/**
+ * Class AWSS3
+ *
+ * @package ModernMedia\WPLib\AWSS3
+ *
+ */
 class AWSS3{
+
+	const PMK_S3 = 'mm-wp-lib-aws-s3';
+
 
 	const OK_AWS_KEYS = 'modern_media_aws_keys';
 	/**
@@ -12,12 +21,7 @@ class AWSS3{
 	 */
 	private static $instance;
 
-	private $settings_panel;
 
-	/**
-	 * @var S3Client
-	 */
-	private $client = null;
 
 	/**
 	 * @return AWSS3
@@ -30,40 +34,35 @@ class AWSS3{
 	}
 
 	private function __construct(){
-		$this->settings_panel = new SettingsPanel;
-		add_filter('wp_generate_attachment_metadata', array($this, '_filter_wp_generate_attachment_metadata'), 10, 2);
+
+		if (is_admin()){
+			new SettingsPanel;
+		}
+		add_filter('wp_update_attachment_metadata', array($this, '_filter_wp_update_attachment_metadata'), 10, 2);
 		add_filter( 'wp_get_attachment_url', array( $this, '_filter_wp_get_attachment_url' ), 9, 2 );
 		add_action( 'delete_attachment', array( $this, '_action_delete_attachment' ), 20 );
 	}
 
-	public function _filter_wp_get_attachment_url($url, $post_id ){
-		$meta = wp_get_attachment_metadata($post_id);
-		if (isset($meta['s3_url'])) return $meta['s3_url'];
-		return $url;
-	}
 
-	public function _action_delete_attachment($post_id){
-		$meta = wp_get_attachment_metadata($post_id);
-		if (isset($meta['s3_url'])){
-			$mime = get_post_mime_type($post_id);
-			$parts = explode('/', $mime);
-			$is_image = 'image' == array_shift($parts);
+	/**
+	 * @param $dir
+	 * @param $upload_path
+	 * @param $attached
+	 * @param S3Client $client
+	 * @param AWSOptions $options
+	 */
+	private function replicate_and_delete_recursive($dir, &$upload_path, &$attached, &$client, &$options){
 
-			if (! isset($meta['s3_bucket']) || isset($meta['s3_key'])) return;
+		$dh = dir($dir);
+		while(false !== ($entry = $dh->read())){
+			if ('.' == $entry || '..' == $entry) continue;
+			$child_path = $dir . DIRECTORY_SEPARATOR . $entry;
+			if (is_dir($child_path)){
+				$this->replicate_and_delete_recursive($child_path, $upload_path, $attached, $client, $options);
+			} else {
 
-
-			$client = $this->get_client();
-			$result = $client->deleteObject(array(
-				'Bucket'     => $meta['s3_bucket'],
-				'Key' => $meta['s3_key']
-			));
-			if ($is_image){
-				foreach($meta['sizes'] as $size => $info){
-
-					$result = $client->deleteObject(array(
-						'Bucket' => $info['s3_bucket'],
-						'Key'    => $info['s3_key']
-					));
+				$key = trim(str_replace(WP_CONTENT_DIR, '', $child_path), '/');
+				if(isset($attached[$key])){
 
 
 				}
@@ -71,72 +70,102 @@ class AWSS3{
 			}
 
 		}
-	}
-
-	public function  _filter_wp_generate_attachment_metadata($data, $post_id){
-		$mime = get_post_mime_type($post_id);
-		$parts = explode('/', $mime);
-		$is_image = 'image' == array_shift($parts);
-
-		$unique = substr(md5($data['file']), 0, 5);
-		$client = $this->get_client();
-		$path = dirname($data['file']);
-		$filename = basename($data['file']);
-		$source_path = WP_CONTENT_DIR . '/uploads/' . $path;
-
-		$opts = $this->get_option_aws();
-		$bucket = $opts->bucket;
-		$key =  $unique . '/' . $filename;
-		$metadata = array(
-			'mime' => $mime
-		);
-		if ($is_image){
-			$metadata['width'] = $data['width'];
-			$metadata['height'] = $data['height'];
+		if ($dir != $upload_path){
+			rmdir($dir);
 		}
-		$result = $client->putObject(array(
-			'Bucket'     => $bucket,
-			'Key'        => $key,
-			'SourceFile' => $source_path . '/' . $filename,
-			'ACL'        => 'public-read',
-			'Metadata'   => $metadata
-		));
-		/** @var \Guzzle\Service\Resource\Model $result */
-		$data['s3_url'] = $result->get('ObjectURL');
-		$data['s3_bucket'] = $bucket;
-		$data['s3_key'] = $key;
-		if ($is_image){
-			foreach($data['sizes'] as $size => $info){
-
-				$key = $unique . '/' . $info['file'];
-				$result = $client->putObject(array(
-					'Bucket'     => $bucket,
-					'Key'        => $key,
-					'SourceFile' => $source_path . '/' . $info['file'],
-					'ACL'        => 'public-read',
-					'Metadata'   => array(
-						'height' => $info['height'],
-						'width' => $info['width']
-					)
-				));
-				$data[$size]['s3_url'] = $result->get('ObjectURL');
-				$data[$size]['s3_bucket'] = $bucket;
-				$data[$size]['s3_key'] = $key;
-
-			}
-		}
-		return $data;
 	}
 
 	/**
-	 * @return AWSOptions
+	 * @param $data
+	 * @param $post_id
+	 * @return mixed
 	 */
-	public function get_option_aws(){
-		$o = get_option(self::OK_AWS_KEYS);
-		if (! $o instanceof AWSOptions){
-			$o = new AWSOptions;
+	public function _filter_wp_update_attachment_metadata($data, $post_id){
+		$attached = get_post_meta($post_id, '_wp_attached_file', true);
+		if (! $attached) return $data;
+		$upload_path = wp_upload_dir();
+		$upload_path = $upload_path['basedir'];
+		$source_path = $upload_path . '/' . $attached;
+		$source_dir = dirname($source_path);
+		$key = trim(str_replace(WP_CONTENT_DIR, '', $upload_path), '/') . '/' . $attached;
+		$key_dir = dirname($key);
+		$client = $this->get_client();
+		$options = $this->get_options();
+		//$source = ;
+		$meta = array(
+			'Bucket' => $options->bucket,
+			'Key' => $key,
+			'sizes' => array(),
+		);
+
+		try{
+			$result = $client->putObject(array(
+				'Bucket'     => $options->bucket,
+				'Key'        => $key,
+				'SourceFile' => $source_path,
+				'ACL'        => 'public-read',
+			));
+			/**@var \Guzzle\Service\Resource\Model $result**/
+			$meta['url'] = $result->get('ObjectURL');
+			$mime = get_post_mime_type($post_id);
+			unlink($source_path);
+			if (0 === strpos($mime, 'image/')){
+				foreach($data['sizes'] as $size => $info){
+					$key = $key_dir . '/' . $info['file'];
+					$src =  $source_dir . '/' . $info['file'];
+					$result = $client->putObject(array(
+						'Bucket'     => $options->bucket,
+						'Key'        => $key,
+						'SourceFile' => $src,
+						'ACL'        => 'public-read'
+					));
+					$meta['sizes'][$size]['url'] = $result->get('ObjectURL');
+					$meta['sizes'][$size]['Bucket'] = $options->bucket;
+					$meta['sizes'][$size]['Key'] = $key;
+					unlink($src);
+				}
+
+			}
+		} catch(\Exception $e){
+			return $data;
 		}
-		return $o;
+
+		update_post_meta($post_id, self::PMK_S3, $meta);
+		return $data;
+	}
+	public function _filter_wp_get_attachment_url($url, $post_id ){
+		$meta = get_post_meta($post_id, self::PMK_S3, true);
+		if (is_array($meta)) return $meta['url'];
+		return $url;
+	}
+
+	/**
+	 * @param $post_id
+	 */
+	public function _action_delete_attachment($post_id){
+		$meta = get_post_meta($post_id, self::PMK_S3, true);
+		if (is_array($meta)){
+
+			$client = $this->get_client();
+			if ($client){
+				/** @var S3Client $client */
+				try{
+					$client->deleteObject(array(
+						'Bucket' => $meta['Bucket'],
+						'Key' => $meta['Key']
+					));
+
+					foreach($meta['sizes'] as  $info){
+						$client->deleteObject(array(
+							'Bucket' => $info['Bucket'],
+							'Key'    => $info['Key']
+						));
+					}
+				} catch (\Exception $e){
+					//fail silently?
+				}
+			}
+		}
 	}
 
 	/**
@@ -151,22 +180,30 @@ class AWSS3{
 	 * @return bool
 	 */
 	public function is_option_aws_keys_valid(){
-		$keys = $this->get_option_aws();
-		return ! empty($keys->id) && ! empty($keys->secret);
+		$opts = $this->get_options();
+		return ! empty($opts->id) && ! empty($opts->secret);
+	}
+
+	/**
+	 * @return AWSOptions
+	 */
+	public function get_options(){
+		$o = get_option(self::OK_AWS_KEYS);
+		if (! $o instanceof AWSOptions){
+			$o = new AWSOptions;
+		}
+		return $o;
 	}
 
 	/**
 	 * @return S3Client
 	 */
 	public function get_client(){
-		if (! $this->client instanceof S3Client){
-			$keys = $this->get_option_aws();
-			$this->client = S3Client::factory(array(
-				'key'    => $keys->id,
-				'secret' => $keys->secret
-			));
-		}
-		return $this->client;
+		$keys = $this->get_options();
+		$client = S3Client::factory(array(
+			'key'    => $keys->id,
+			'secret' => $keys->secret
+		));
+		return $client;
 	}
-
 } 
