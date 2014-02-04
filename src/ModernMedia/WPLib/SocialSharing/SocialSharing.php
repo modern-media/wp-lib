@@ -59,103 +59,6 @@ class SocialSharing {
 	}
 
 
-
-	public function admin(){
-
-		$options = self::get_options();
-
-		$errors = array();
-		$message = "";
-
-		if (isset($_POST) && isset($_POST["submitting"]) && $_POST["submitting"] == 1){
-			check_admin_referer(self::PLUGIN_NAMESPACE);
-			if ($options->init_from_array($_POST, $errors)){
-				$message = "Options saved.";
-				update_option(self::PLUGIN_NAMESPACE, $options);
-			}
-		}
-		require Utils::get_lib_path('/includes/admin/panel/social_sharing_options.php');
-	}
-
-	public function _action_wp_footer(){
-
-		$options = self::get_options();
-		$fb_app_id = $options->fb_app_id;
-
-		/* Twitter Share */
-		if($options->fb_include_script){
-			?>
-			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-		<?php
-		}
-
-		/* Google plusone asynchronous */
-		if($options->fb_include_script){
-			?>
-			<script type="text/javascript">
-				window.___gcfg = {
-					lang: 'en-US',
-					parsetags: 'onload'
-				};
-				(function() {
-					var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-					po.src = 'https://apis.google.com/js/plusone.js';
-					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-				})();
-			</script>
-		<?php
-		}
-
-		/* Stumbleupon Badge */
-		if($options->su_badge_include_script){
-			?>
-			<script type="text/javascript">
-				(function() {
-					var li = document.createElement('script'); li.type = 'text/javascript'; li.async = true;
-					li.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + '//platform.stumbleupon.com/1/widgets.js';
-					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(li, s);
-				})();
-			</script>
-		<?php
-		}
-
-		/* FB Like */
-		if($options->fb_include_script){
-			?><div id="fb-root"></div>
-			<script>(function(d, s, id) {
-					var js, fjs = d.getElementsByTagName(s)[0];
-					if (d.getElementById(id)) return;
-					js = d.createElement(s); js.id = id;
-					js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<?php echo $fb_app_id ?>";
-					fjs.parentNode.insertBefore(js, fjs);
-				}(document, 'script', 'facebook-jssdk'));</script>
-		<?php
-		}
-
-		/* Linkedin Share */
-		if($options->linkedin_include_script){
-			?>
-			<script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>
-		<?php
-		}
-
-
-		/* Pinterest Pin it */
-		if($options->pinterest_include_script){
-			?>
-			<script type="text/javascript">
-				(function(d){
-					var f = d.getElementsByTagName('SCRIPT')[0], p = d.createElement('SCRIPT');
-					p.type = 'text/javascript';
-					p.async = true;
-					p.src = '//assets.pinterest.com/js/pinit.js';
-					f.parentNode.insertBefore(p, f);
-				}(document));
-			</script>
-		<?php
-		}
-	}
-
 	/**
 	 * @param null|array|TweetButtonParams $params
 	 * @param string $text
@@ -167,6 +70,7 @@ class SocialSharing {
 		} elseif (! $params instanceof TweetButtonParams){
 			$params = new TweetButtonParams();
 		}
+		var_dump($params);
 		$defaults = $this->get_options()->tweet_button;
 		$attrs = array(
 			'href' => 'https://twitter.com/share',
@@ -174,7 +78,7 @@ class SocialSharing {
 		);
 
 		foreach($params->get_keys() as $key){
-			if (! empty($params->{$key})){
+			if (empty($params->{$key})){
 				$params->{$key} = $defaults->{$key};
 			}
 			if (! empty($params->{$key})){
