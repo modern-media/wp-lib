@@ -2,6 +2,7 @@
 namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Helper\HTML;
 use ModernMedia\WPLib\Scripts;
+use ModernMedia\WPLib\SocialSharing\ShareThis;
 use ModernMedia\WPLib\Utils;
 
 /**
@@ -50,7 +51,10 @@ class SinglePost extends BaseWidget{
 			'title_link_attributes' => array(),
 			'link_title' => true,
 			'read_button_attributes' => array(),
-			'included_elements' => array('image', 'title', 'excerpt', 'social'),
+			'included_elements' => array('image', 'title', 'excerpt'),
+			'include_feature_tag' => false,
+			'feature_tag_text' => '',
+			'include_social' => false,
 		);
 	}
 
@@ -58,8 +62,7 @@ class SinglePost extends BaseWidget{
 		return array(
 			'title' => __('Header'),
 			'image' => __('Image'),
-			'excerpt' => __('Excerpt'),
-			'social' => __('Social Sharing'),
+			'excerpt' => __('Excerpt')
 		);
 	}
 
@@ -164,8 +167,12 @@ class SinglePost extends BaseWidget{
 			if ($instance['read_button_block']){
 				$btn = sprintf('<p class="read-btn-ctr">%s</p>', $btn);
 				$html .= PHP_EOL . $btn;
+			} else {
+				$html .= ' ' . $btn;
 			}
-			$html .= ' ' . $btn;
+			if ($instance['include_social']){
+				$html .= ShareThis::inst()->get_sharebar($instance['id']);
+			}
 
 		}
 		return sprintf('<div class="widget-excerpt">%s</div>', wpautop($html));
@@ -229,7 +236,19 @@ class SinglePost extends BaseWidget{
 			$attrs['href'] = $permalink;
 			$html = sprintf('<a %s>%s</a>', HTML::attr_array_to_string($attrs), $html);
 		}
-		return $args['before_title'] . $html . $args['after_title'];
+		$html = $args['before_title'] . $html . $args['after_title'];
+		if ($instance['include_feature_tag']){
+			$html = sprintf(
+				'
+				<div class="featured-tag">%s</div>
+				%s
+				',
+				$instance['feature_tag_text'],
+				$html
+			);
+		}
+		return sprintf('<div class="widget-header">%s</div>',$html);
+
 
 	}
 

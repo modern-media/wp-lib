@@ -1,6 +1,7 @@
 <?php
 namespace ModernMedia\WPLib\SocialSharing;
 use ModernMedia\WPLib\Scripts;
+use ModernMedia\WPLib\SocialSharing\Data\GooglePlusShareParams;
 use ModernMedia\WPLib\SocialSharing\Data\SocialSharingOptions;
 use ModernMedia\WPLib\SocialSharing\Admin\SocialSharingOptionsPanel;
 use ModernMedia\WPLib\SocialSharing\Data\TweetButtonParams;
@@ -45,6 +46,7 @@ class SocialSharing {
 		add_action('widgets_init',  array($this, '_action_widgets_init'));
 		add_action('wp_enqueue_scripts', function(){
 			Scripts::inst()->enqueue(Scripts::SOCIAL_SHARING_ASYNC);
+			Scripts::inst()->enqueue(Scripts::LINKED_IN);
 		});
 	}
 
@@ -70,7 +72,6 @@ class SocialSharing {
 		} elseif (! $params instanceof TweetButtonParams){
 			$params = new TweetButtonParams();
 		}
-		var_dump($params);
 		$defaults = $this->get_options()->tweet_button;
 		$attrs = array(
 			'href' => 'https://twitter.com/share',
@@ -104,21 +105,52 @@ class SocialSharing {
 		}
 		return sprintf('<a %s>%s</a>', $attrs, $text);
 	}
-	/**
-	 * @static
-	 * @param $url
-	 * @param SocialSharingOptions $options
-	 * @return bool
-	 */
-	public static function googlePlusOneButton($url, $options = null){
-		if (is_null($options)) $options = self::get_options();
-		$html = "<div class=\"g-plusone\"";
-		$html .= " data-href=\"{$url}\"";
-		$html .= " data-annotation=\"{$options->google_plusone_annotation}\"";
-		$html .= " data-size=\"{$options->google_plusone_size}\"";
-		$html .= "></div>";
-		return $html;
+	public function get_tweet_button_for_post($post_id, $params = null){
+		if (is_null($params)){
+			$params = new TweetButtonParams;
+		}
+		if(empty($params->text)){
+			$params->text = get_the_title($post_id);
+		}
+		if(empty($params->url)){
+			$params->url = wp_get_shortlink($post_id);
+			$params->counturl = get_permalink($post_id);
+		}
+		return $this->get_tweet_button($params);
 	}
+
+	public function get_google_plus_button($params = null){
+		if (is_array($params)){
+			$params = new GooglePlusShareParams($params);
+		} elseif (! $params instanceof GooglePlusShareParams){
+			$params = new GooglePlusShareParams();
+		}
+		$attrs = array(
+			'data-href' => $params->href,
+			'class' => 'g-plusone',
+			'data-annotation' => 'none',
+			'data-size' => 'medium'
+		);
+		foreach($attrs as $key => $val){
+			$attrs[$key] = sprintf('%s="%s"', $key, $val);
+		}
+		$attrs = implode(' ', $attrs);
+
+		return sprintf('<div %s></div>', $attrs);
+	}
+	public function get_google_plus_button_for_post($post_id, $params = null){
+		if (is_null($params)){
+			$params = new GooglePlusShareParams;
+		}
+		if(empty($params->text)){
+			$params->href = get_permalink($post_id);
+		}
+
+		return $this->get_google_plus_button($params);
+	}
+
+
+
 
 	/**
 	 * @static

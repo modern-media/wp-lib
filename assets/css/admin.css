@@ -50,6 +50,13 @@
 }
 .mm-wp-lib-widget-form-section .form-field.single-check label {
   display: inline;
+  font-weight: bold;
+}
+.mm-wp-lib-widget-form-section .form-fields-inner .form-field {
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  margin: 13px 0;
 }
 .mm-wp-lib-widget-form-section.toggleable .form-field {
   display: none;
@@ -108,4 +115,78 @@
   text-shadow: none;
   background-color: transparent;
   border: 0;
+}
+.mm-wp-lib-carousel-items-list .item.template {
+  display: none;
+}
+.mm-wp-lib-carousel-items-list .item .item-header {
+  line-height: 24px;
+  background-color: #EEE;
+  border-radius: 6px 6px 0 0;
+  padding: 12px;
+  cursor: move;
+}
+.mm-wp-lib-carousel-items-list .item .item-header:before,
+.mm-wp-lib-carousel-items-list .item .item-header:after {
+  content: " ";
+  display: table;
+}
+.mm-wp-lib-carousel-items-list .item .item-header:after {
+  clear: both;
+}
+.mm-wp-lib-carousel-items-list .item .item-header .left {
+  width: 90%;
+  float: left;
+}
+.mm-wp-lib-carousel-items-list .item .item-header .right {
+  width: 5%;
+  float: right;
+  text-align: right;
+}
+.mm-wp-lib-carousel-items-list .item .item-header .right .remove {
+  color: #F00;
+  font-size: 24px;
+  text-decoration: none;
+}
+.mm-wp-lib-carousel-items-list .item .item-header .right .remove:hover {
+  color: #C00;
+}
+.mm-wp-lib-carousel-items-list .item .item-header .right .remove span {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+.mm-wp-lib-carousel-items-list .item .item-header .header {
+  font-weight: bold;
+}
+.mm-wp-lib-carousel-items-list .item .item-content {
+  border-left: 1px solid #EEE;
+  border-right: 1px solid #EEE;
+  border-bottom: 1px solid #EEE;
+  border-radius: 0 0 6px 6px;
+  background-color: #FFF;
+  padding: 12px;
+}
+.mm-wp-lib-carousel-items-list .item .item-content:before,
+.mm-wp-lib-carousel-items-list .item .item-content:after {
+  content: " ";
+  display: table;
+}
+.mm-wp-lib-carousel-items-list .item .item-content:after {
+  clear: both;
+}
+.mm-wp-lib-carousel-items-list .item .item-content .left {
+  width: 45%;
+  float: left;
+}
+.mm-wp-lib-carousel-items-list .item .item-content .right {
+  width: 45%;
+  float: right;
+}
+.mm-wp-lib-carousel-items-list .item .item-content .holder img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }

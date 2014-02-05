@@ -1,8 +1,25 @@
 <?php
 namespace ModernMedia\WPLib\Carousel;
 use ModernMedia\WPLib\Widget\BaseWidget;
+use ModernMedia\WPLib\Carousel\Data\CarouselSettingsData;
+use ModernMedia\WPLib\Utils;
+use ModernMedia\WPLib\Scripts;
+
 
 class CarouselWidget extends BaseWidget{
+
+	public function __construct(){
+		if (is_admin()){
+			global $pagenow;
+			if ('widgets.php' == $pagenow ){
+				$s = Scripts::inst();
+				$s->enqueue(Scripts::WIDGET_GENERAL);
+				$s->enqueue(Scripts::WIDGET_CAROUSEL);
+			}
+		}
+		parent::__construct();
+	}
+
 
 	/**
 	 * @return array
@@ -10,8 +27,10 @@ class CarouselWidget extends BaseWidget{
 	public function get_instance_defaults() {
 		return array(
 			'id' => 0,
-			'interval' => '5000',
-			'pause' => 'hover'
+			'settings' => new CarouselSettingsData(),
+			'display_title' => false,
+			'title' => '',
+			'title_link' => '',
 		);
 	}
 
@@ -45,19 +64,7 @@ class CarouselWidget extends BaseWidget{
 	 * @return void
 	 */
 	public function print_form_fields($instance) {
-		$this->print_post_type_select($instance, 'id', __('Carousel'), Carousel::PT_CAROUSEL);
-
-		printf(
-			'<p><label for="%s">%s</label> %s</p>',
-			$this->get_field_id('interval'),
-			__('Interval (ms)'),
-			$this->text_input(
-				$instance,
-				'interval',
-				array('size'=>'10', 'placeholder'=>__('Milliseconds')),
-				false
-			)
-		);
+		require Utils::get_lib_path('includes/admin/widget/carousel_form.php');
 	}
 
 	/**
@@ -66,6 +73,7 @@ class CarouselWidget extends BaseWidget{
 	 */
 	public function validate(&$instance) {
 		if (! is_numeric($instance['interval'])) $instance['interval'] = '5000';
+		$instance['settings'] = new CarouselSettingsData($instance['settings']);
 
 	}
 

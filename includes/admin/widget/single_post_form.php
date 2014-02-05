@@ -58,6 +58,7 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 							<?php
 							$n = 0;
 							foreach($instance['included_elements'] as $key){
+								if (! array_key_exists($key, $elements)) continue;
 								$label = $elements[$key];
 								?>
 								<li>
@@ -97,26 +98,60 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 
 		</div>
 
-
-		<div class="form-field single-check">
-			<?php $this->checkbox_input($instance, 'link_title', __('Link header to post.'), array('class' => 'link_title'));?>
-		</div>
-
-		<div class="title_link_attributes">
-			<div class="form-field">
-				<div class="label">
-					<?php _e('Header Link Attributes')?>
+		<div class="form-field">
+			<div class="form-fields-inner">
+				<div class="form-field single-check">
+					<?php $this->checkbox_input($instance, 'include_feature_tag', __('Include feature tag.'), array('class' => 'include_feature_tag'));?>
 				</div>
-				<div class="controls">
-					<?php
-					Controls::attribute_control(
-						$this->get_field_name('title_link_attributes'),
-						$instance['title_link_attributes']
-					);
-					?>
+			</div>
+
+
+			<div class="form-fields-inner feature-tag-ctr" <?php if (! $instance['include_feature_tag']) echo ' style="display:none"'?> >
+				<div class="form-field">
+					<div class="label">
+						<label for="<?php echo $this->get_field_id('feature_tag_text')?>">
+							<?php _e('Feature Tag Text')?>
+						</label>
+					</div>
+					<div class="controls">
+						<?php
+						$this->text_input($instance, 'feature_tag_text', array('class'=>'widefat feature_tag_text', 'placeholder'=>__('Featured Something')));
+						?>
+					</div>
+
 				</div>
 			</div>
 		</div>
+
+
+
+
+
+		<div class="form-field">
+			<div class="form-fields-inner">
+				<div class="form-field single-check">
+					<?php $this->checkbox_input($instance, 'link_title', __('Link header to post.'), array('class' => 'link_title'));?>
+				</div>
+			</div>
+
+			<div class="title_link_attributes form-fields-inner">
+				<div class="form-field">
+					<div class="label">
+						<?php _e('Header Link Attributes')?>
+					</div>
+					<div class="controls">
+						<?php
+						Controls::attribute_control(
+							$this->get_field_name('title_link_attributes'),
+							$instance['title_link_attributes']
+						);
+						?>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
 
 
 
@@ -141,44 +176,59 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 				?>
 			</div>
 		</div>
-		<div class="form-field single-check">
-			<?php $this->checkbox_input($instance, 'include_read_button', __('Include read button.'), array('class'=>'include_read_button'));?>
-		</div>
 
-		<div class="read_button_details">
-			<div class="form-field single-check">
-				<?php $this->checkbox_input($instance, 'read_button_block', __('Enclose read button in it\'s own paragraph tag.'));?>
-			</div>
-			<div class="form-field">
-				<div class="label">
-					<label for="<?php echo $this->get_field_id('read_button_text')?>">
-						<?php _e('Read Button Text')?>
-					</label>
-				</div>
-
-				<div class="controls">
-					<?php
-					$this->text_input($instance, 'read_button_text', array('class'=>'widefat'));
-					?>
+		<div class="form-field">
+			<div class="form-fields-inner">
+				<div class="form-field single-check">
+				<?php $this->checkbox_input($instance, 'include_read_button', __('Include read button.'), array('class'=>'include_read_button'));?>
 				</div>
 			</div>
-
-			<div class="read_button_attributes">
+			<div class="read_button_details form-fields-inner">
+				<div class="form-field single-check">
+					<?php $this->checkbox_input($instance, 'read_button_block', __('Enclose read button in its own paragraph tag.'));?>
+				</div>
 				<div class="form-field">
 					<div class="label">
-						<?php _e('Read Button Attributes')?>
+						<label for="<?php echo $this->get_field_id('read_button_text')?>">
+							<?php _e('Read Button Text')?>
+						</label>
 					</div>
+
 					<div class="controls">
 						<?php
-						Controls::attribute_control(
-							$this->get_field_name('read_button_attributes'),
-							$instance['read_button_attributes']
-						);
+						$this->text_input($instance, 'read_button_text', array('class'=>'widefat'));
 						?>
 					</div>
 				</div>
+
+				<div class="read_button_attributes">
+					<div class="form-field">
+						<div class="label">
+							<?php _e('Read Button Attributes')?>
+						</div>
+						<div class="controls">
+							<?php
+							Controls::attribute_control(
+								$this->get_field_name('read_button_attributes'),
+								$instance['read_button_attributes']
+							);
+							?>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
+		<div class="form-field">
+			<div class="form-fields-inner">
+				<div class="form-field single-check">
+					<?php $this->checkbox_input($instance, 'include_social', __('Include social buttons.'), array('class'=>'include_social'));?>
+				</div>
+			</div>
+		</div>
+
+
+
+
 
 	</div>
 
@@ -190,17 +240,16 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 			<a href="#"><i class="toggle-section fa fa-caret-right<?php if(in_array('image', $opened)) echo ' fa-rotate-90'?>"></i>
 			<?php _e('Image')?></a>
 		</p>
-
-
 		<div class="form-field">
 			<div class="label">
 				<label for="<?php echo $this->get_field_id('image_display')?>">
-					<?php _e('Display Image')?>
+					<?php _e('Image:')?>
 				</label>
 			</div>
+
 			<div class="controls">
 				<?php
-				$this->select($instance, 'image_display', $this->get_image_display_options(),array('class'=>'widefat image-display'), false);
+				$this->select($instance, 'image_display', $this->get_image_display_options(), array('class'=>'widefat image-display'));
 				?>
 			</div>
 		</div>
@@ -266,36 +315,36 @@ $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 				</div>
 			</div>
 
-			<div class="form-field single-check">
-				<?php
-				$this->checkbox_input($instance, 'link_image', __('Link image to post.'), array('class' => 'link_image'))
-				?>
-			</div>
-			<div class="image_link_attributes">
-				<div class="form-field">
-					<div class="label">
-						<?php _e('Image Link Attributes')?>
-					</div>
-					<div class="controls">
+			<div class="form-field">
+				<div class="form-fields-inner">
+					<div class="form-field single-check">
 						<?php
-						Controls::attribute_control(
-							$this->get_field_name('image_link_attributes'),
-							$instance['image_link_attributes']
-						);
+						$this->checkbox_input($instance, 'link_image', __('Link image to post.'), array('class' => 'link_image'))
 						?>
 					</div>
 				</div>
+
+				<div class="image_link_attributes form-fields-inner">
+					<div class="form-field">
+						<div class="label">
+							<?php _e('Image Link Attributes')?>
+						</div>
+						<div class="controls">
+							<?php
+							Controls::attribute_control(
+								$this->get_field_name('image_link_attributes'),
+								$instance['image_link_attributes']
+							);
+							?>
+						</div>
+					</div>
+				</div>
+
 			</div>
 
 
-
 		</div>
-
-
 	</div>
-
-
-
 </div>
 <?php
 $jq = '#' . $ctr_id;

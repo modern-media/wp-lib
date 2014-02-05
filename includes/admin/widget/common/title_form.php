@@ -13,7 +13,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 ?>
 <div data-section="title" class="mm-wp-lib-widget-form-section toggleable<?php if(in_array('title', $opened)) echo ' opened'?>">
 	<p class="section-header">
-		<a href="#"><i class="toggle-section fa fa-arrow-right<?php if(in_array('title', $opened)) echo ' fa-rotate-90'?>"></i>
+		<a href="#"><i class="toggle-section fa fa-caret-right<?php if(in_array('title', $opened)) echo ' fa-rotate-90'?>"></i>
 		<?php _e('Widget Title')?></a>
 	</p>
 	<div class="form-field single-check">

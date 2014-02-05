@@ -20,7 +20,7 @@ jQuery(document).ready(function($){
 		if (ctl.hasClass('opened')){
 			$('.form-field', ctl).slideUp('fast', function(){
 				ctl.removeClass('opened');
-				$('.section-header i', ctl).removeClass('fa-rotate-90');
+				$('.section-header i', find_ctl(ctl)).removeClass('fa-rotate-90');
 				update_open_input(ctl);
 			});
 

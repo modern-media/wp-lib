@@ -1,12 +1,16 @@
 <?php
 namespace ModernMedia\WPLib\Carousel;
+use ModernMedia\WPLib\Carousel\Admin\CarouselItemsMetaBox;
+use ModernMedia\WPLib\Carousel\Admin\CarouselSettingsMetaBox;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
+use ModernMedia\WPLib\Carousel\Data\CarouselSettingsData;
+use ModernMedia\WPLib\Carousel\Data\CarouselItemData;
 class Carousel {
 
 	const PT_CAROUSEL = 'mm_wp_lib_carousel';
 	const PMK_ITEMS = 'mm_wp_lib_carousel_items';
-	const PMK_CAROUSEL_CLASS = 'mm_wp_lib_carousel_class';
+	const PMK_SETTINGS = 'mm_wp_lib_carousel_settings';
 	const SHORTCODE = 'mm_wp_lib_carouse';
 
 
@@ -31,8 +35,35 @@ class Carousel {
 	 */
 	private function __construct(){
 		add_action('plugins_loaded', array($this, '_action_plugins_loaded'));
+		if (is_admin()){
+			new CarouselSettingsMetaBox;
+			new CarouselItemsMetaBox;
+		}
 	}
 
+	/**
+	 * @param $post_id
+	 * @return array|mixed
+	 */
+	public function get_post_meta_items($post_id){
+		$a = get_post_meta($post_id, self::PMK_ITEMS, true);
+		if (! is_array($a)){
+			$a = array();
+		}
+		return $a;
+	}
+
+	/**
+	 * @param $post_id
+	 * @return CarouselSettingsData
+	 */
+	public function get_post_meta_settings($post_id) {
+		$o = get_post_meta($post_id, self::PMK_SETTINGS, true);
+		if (! $o instanceof CarouselSettingsData){
+			$o = new CarouselSettingsData;
+		}
+		return $o;
+	}
 	/**
 	 * add actions...
 	 */
@@ -49,6 +80,7 @@ class Carousel {
 	 */
 	public function _action_widgets_init(){
 		register_widget('\\ModernMedia\\WPLib\\Carousel\\CarouselWidget');
+
 	}
 
 
@@ -60,19 +92,31 @@ class Carousel {
 	public function get_carousel_html($id, $attrs = array()){
 		static $counter = 0;
 		$counter++;
-		Scripts::inst()->enqueue(Scripts::CAROUSEL_FRONT);
+
 		if (Carousel::PT_CAROUSEL != get_post_type($id)) return '';
-		$items = get_post_meta($id, self::PMK_ITEMS , true);
+		$items = $this->get_post_meta_items($id);
 		if (! is_array($items) || ! count($items)) return '';
 
-		$carousel_id = 'carousel-' . $counter;
+		if (is_array($attrs)){
+			$attrs = new CarouselSettingsData($attrs);
+		} elseif(! $attrs instanceof CarouselSettingsData){
+			$attrs = new CarouselSettingsData;
+		}
+
+		/** @var CarouselSettingsData $attrs */
+
+
+		Scripts::inst()->enqueue(Scripts::CAROUSEL_FRONT);
+
+		$carousel_id = 'mm-wp-lib-carousel-' . $counter;
 		$items_html = $this->get_carousel_items_html($items);
 		$nav_html = $this->get_carousel_nav_html($carousel_id, $items);
 
 
 		$class = array('carousel slide', 'mm-wp-lib-carousel');
-		$extra = get_post_meta($id, self::PMK_CAROUSEL_CLASS, true);
-		if ($extra) $class[] = $extra;
+		if (! empty($attrs->class)){
+			$class[] = $attrs->class;
+		}
 		$class = implode(' ', $class);
 
 		return sprintf(
@@ -86,8 +130,8 @@ class Carousel {
 			',
 			$carousel_id,
 			$class,
-			isset($attrs['interval']) ? $attrs['interval'] : '5000',
-			isset($attrs['pause']) ? $attrs['pause'] : 'hover',
+			is_numeric($attrs->interval) ? intval($attrs->interval) : '5000',
+			! empty($attrs->pause) ? $attrs->pause : 'hover',
 			$items_html,
 			$nav_html
 		);
@@ -96,36 +140,51 @@ class Carousel {
 
 	/**
 	 * @param int $n
-	 * @param array $item
+	 * @param CarouselItemData $item
 	 * @return string
 	 */
 	private function get_carousel_item_html($n, $item){
-		$a = ! empty($item['image_links_to']) ?
+		$a = ! empty($item->link) ?
 			sprintf(
 				'<a href="%s" title="%s">',
-				$item['image_links_to'],
-				esc_attr($item['heading'])
+				$item->link,
+				esc_attr($item->header)
 			) : '';
 		$img = sprintf(
 			'%s<img src="%s" alt="%s">%s',
 			$a,
-			wp_get_attachment_url($item['image_id']),
-			esc_attr($item['heading']),
+			wp_get_attachment_url($item->image_id),
+			esc_attr($item->header),
 			empty($a) ? '' : '</a>'
 		);
 		$class = array('item');
-		$extra = trim($item['classes']);
-		if (! empty($extra))  $class[] = $extra;
+		if (! empty($item->class))  $class[] = $item->class;
 		if ($n == 0) $class[] = 'active';
 		$class = implode(' ', $class);
+
+		$caption = sprintf(
+			'<div class="carousel-caption">
+				<h3>%s%s%s</h3>
+					%s
+			  </div>
+			  ',
+			$a,
+			$item->header,
+			empty($a) ? '' : '</a>',
+			wpautop($item->text)
+		);
+
 		return sprintf(
 			'
 			<div class="%s">
 				%s
+
+				%s
 			</div>
 			',
 			$class,
-			$img
+			$img,
+			$caption
 		);
 	}
 
@@ -216,4 +275,6 @@ class Carousel {
 		);
 		register_post_type(self::PT_CAROUSEL, $args);
 	}
+
+
 }

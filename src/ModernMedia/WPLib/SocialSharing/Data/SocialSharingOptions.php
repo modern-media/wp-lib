@@ -9,8 +9,13 @@ class SocialSharingOptions extends BaseData {
 	 */
 	public $tweet_button;
 
-	public $google_plus_size = "medium";
-	public $google_plus_annotation = "none";
+	/**
+	 * @var GooglePlusShareParams
+	 */
+	public $google_plus_one;
+
+
+
 
 	public $su_badge_layout = "5";
 	public $su_badge_include_script = false;

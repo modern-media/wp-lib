@@ -22,7 +22,7 @@ $post_types = get_post_types(array('public' =>true), 'objects');
 					</a>
 				</p>
 			</td>
-			<td style="width: 20%; vertical-align: top;">
+			<td style="width: 20%; vertical-align: bottom;">
 				<p><a href="#" class="choose"><?php _e('Choose')?></a>
 					<br>
 					<a href="#" class="remove"><?php _e('Remove')?></a></p>

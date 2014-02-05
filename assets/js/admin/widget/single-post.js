@@ -26,6 +26,13 @@ jQuery(document).ready(function($){
 			$('.read_button_details', ctl).slideUp('fast');
 		}
 	};
+	var update_featured_tag = function(ctl){
+		if ($('input.include_feature_tag', ctl).is(':checked')){
+			$('.feature-tag-ctr', ctl).slideDown('fast');
+		} else {
+			$('.feature-tag-ctr', ctl).slideUp('fast');
+		}
+	};
 	var update_img_sel = function(ctl){
 		var sel = $('select.image-display', ctl);
 		var image_details = $('.image-details', ctl);
@@ -76,6 +83,7 @@ jQuery(document).ready(function($){
 		update_read_button(ctl);
 		update_img_sel(ctl);
 		update_included(ctl);
+		update_featured_tag(ctl);
 		var lists = $('.element-list', ctl);
 		lists.sortable({
 			connectWith: '#' + ctl.attr('id') + ' .element-list',
@@ -112,6 +120,9 @@ jQuery(document).ready(function($){
 	});
 	body.on('change', ctl_selector_string + ' input.include_read_button', function(){
 		update_read_button(find_ctl($(this)));
+	});
+	body.on('change', ctl_selector_string + ' input.include_feature_tag', function(){
+		update_featured_tag(find_ctl($(this)));
 	});
 	$( ".selector" ).on( "", function( event, ui ) {} );
 	body.on('sortstop', 'div.widgets-sortables', function(event, ui){

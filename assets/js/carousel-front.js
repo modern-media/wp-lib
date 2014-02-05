@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-	$(".mmmu_carousel").each(function(){
+	$(".mm-wp-lib-carousel").each(function(){
 		$(this).carousel('cycle');
 	});
 

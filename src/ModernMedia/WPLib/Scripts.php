@@ -12,8 +12,11 @@ class Scripts {
 	const WIDGET_GENERAL = 'mm_wp_lib_widget_general';
 	const WIDGET_SINGLE_POST = 'mm_wp_lib_widget_single_post';
 	const WIDGET_SINGLE_LINK = 'mm_wp_lib_widget_single_link';
+	const WIDGET_CAROUSEL = 'mm_wp_lib_widget_carousel';
 	const SOCIAL_SHARING_ASYNC = 'mm_wp_lib_social_sharing_async';
+	const LINKED_IN = 'mm_wp_linked_in';
 	const ATTRIBUTE_CONTROL = 'mm_wp_lib_attribute_control';
+
 	private $scripts = array();
 
 	/**
@@ -93,6 +96,13 @@ class Scripts {
 			)
 		);
 		$this->add_script(
+			self::WIDGET_CAROUSEL,
+			array(
+				'uri' => Utils::get_lib_uri('assets/js/admin/widget/carousel.js'),
+				'dependencies' => array('jquery'),
+			)
+		);
+		$this->add_script(
 			self::SOCIAL_SHARING_ASYNC,
 			array(
 				'uri' => Utils::get_lib_uri('assets/js/social-sharing.js')
@@ -112,6 +122,13 @@ class Scripts {
 			array(
 				'uri' => Utils::get_lib_uri('assets/js/admin/widget/single-link.js'),
 				'dependencies' => array('jquery'),
+			)
+		);
+
+		$this->add_script(
+			self::LINKED_IN,
+			array(
+				'uri' => 'http://platform.linkedin.com/in.js'
 			)
 		);
 	}

@@ -2,9 +2,9 @@
 namespace ModernMedia\WPLib\Carousel\Data;
 use ModernMedia\WPLib\Data\BaseData;
 
-class CarouselData extends BaseData{
+class CarouselSettingsData extends BaseData{
 
 	public $interval = 5000;
-
-	public $items = array();
+	public $class = '';
+	public $pause = 'hover';
 } 

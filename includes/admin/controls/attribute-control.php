@@ -6,7 +6,7 @@
 ?>
 <div class="mm-wp-lib-attribute-control"
 	 data-form-name="<?php echo $form_name?>">
-	<p style="text-align: right"><a href="#" class="add button"><?php _e('Add New')?></a></p>
+
 	<ul class="attribute-list">
 		<li class="attribute template">
 			<table style="width:100%"><tr>
@@ -75,6 +75,7 @@
 		}
 		?>
 	</ul>
+	<p style="text-align: right"><a href="#" class="add button"><?php _e('Add New')?></a></p>
 
 </div>
  
