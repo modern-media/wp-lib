@@ -9,7 +9,7 @@ use ModernMedia\WPLib\Admin\Controls;
 $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instance['widget_opened_form_sections']) : array();
 $ctr_id = $this->get_field_id('mm-wp-lib-post-picker-ctr');
 ?>
-<div class="mm-wp-lib-single-post-widget" id="<?php echo $ctr_id?>" xmlns="http://www.w3.org/1999/html">
+<div class="mm-wp-lib-single-post-widget" id="<?php echo $ctr_id?>">
 	<div class="mm-wp-lib-widget-form-section">
 		<?php
 		Controls::post_picker_control(

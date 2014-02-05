@@ -1,5 +1,7 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
+use ModernMedia\WPLib\Utils;
+
 class Text extends BaseWidget {
 	/**
 	 * @param $instance
@@ -8,7 +10,7 @@ class Text extends BaseWidget {
 	 */
 	public function is_widget_displayed($instance, &$reason) {
 		$title = trim($instance['title']);
-		$content = trim($instance['content']);
+		$content = trim($instance['text']);
 		if (empty($content) && empty($title)){
 			$reason = 'Both title and content are empty.';
 			return false;
@@ -21,7 +23,7 @@ class Text extends BaseWidget {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'MM Text Widget';
+		return 'Super Text Widget';
 	}
 
 	/**
@@ -31,13 +33,7 @@ class Text extends BaseWidget {
 		return 'A much better text widget.';
 	}
 
-	/**
-	 * @param $instance
-	 * @return bool
-	 */
-	public function is_widget_content_displayed($instance) {
-		return true;
-	}
+
 
 	/**
 	 * @param $args
@@ -45,8 +41,8 @@ class Text extends BaseWidget {
 	 * @return string
 	 */
 	public function get_widget_content($args, $instance) {
-		$content = trim($args['content']);
-		return do_shortcode($content);
+		return $instance['text'];
+
 	}
 
 	/**
@@ -63,16 +59,7 @@ class Text extends BaseWidget {
 	 * @return void
 	 */
 	public function print_form_fields($instance) {
-		printf(
-			'<p><label for="%s">Content</label> %s</p>',
-			$this->get_field_id('content'),
-			$this->text_area(
-				$instance,
-				'content',
-				array('class'=>'widefat', 'placeholder'=>'HTML Content', 'rows' =>10),
-				false
-			)
-		);
+		require Utils::get_lib_path('includes/admin/widget/text_form.php');
 	}
 
 	/**
@@ -88,7 +75,9 @@ class Text extends BaseWidget {
 	 */
 	public function get_instance_defaults() {
 		return array(
-			'content' => ''
+			'display_title' => false,
+			'title' => '',
+			'text' => ''
 		);
 	}
 
