@@ -36,7 +36,7 @@ class NavMenuWalker extends \Walker_Nav_Menu {
 	 * @param int    $id     Current item ID.
 	 */
 	public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
-		Debugger::inst()->add('item', $item);
+		//Debugger::inst()->add('item', $item);
 		//Debugger::inst()->add('args', $args);
 		$li_attrs = array(
 			'class' => array()
