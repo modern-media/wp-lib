@@ -190,3 +190,6 @@
   max-width: 100%;
   height: auto;
 }
+.ajax-msg {
+  line-height: 32px;
+}

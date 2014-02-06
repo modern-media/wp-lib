@@ -1,8 +1,6 @@
 <?php
-namespace ModernMedia\WPLib\AWSS3;
+namespace ModernMedia\WPLib;
 use Aws\S3\S3Client;
-use ModernMedia\WPLib\AWSS3\Admin\Panel\SettingsPanel;
-use ModernMedia\WPLib\AWSS3\Data\AWSOptions;
 
 /**
  * Class AWSS3
@@ -14,8 +12,6 @@ class AWSS3{
 
 	const PMK_S3 = 'mm-wp-lib-aws-s3';
 
-
-	const OK_AWS_KEYS = 'modern_media_aws_keys';
 	/**
 	 * @var AWSS3
 	 */
@@ -34,45 +30,17 @@ class AWSS3{
 	}
 
 	private function __construct(){
-
-		if (is_admin()){
-			new SettingsPanel;
-		}
 		add_filter('wp_update_attachment_metadata', array($this, '_filter_wp_update_attachment_metadata'), 10, 2);
 		add_filter( 'wp_get_attachment_url', array( $this, '_filter_wp_get_attachment_url' ), 9, 2 );
 		add_action( 'delete_attachment', array( $this, '_action_delete_attachment' ), 20 );
 	}
 
 
-	/**
-	 * @param $dir
-	 * @param $upload_path
-	 * @param $attached
-	 * @param S3Client $client
-	 * @param AWSOptions $options
-	 */
-	private function replicate_and_delete_recursive($dir, &$upload_path, &$attached, &$client, &$options){
 
-		$dh = dir($dir);
-		while(false !== ($entry = $dh->read())){
-			if ('.' == $entry || '..' == $entry) continue;
-			$child_path = $dir . DIRECTORY_SEPARATOR . $entry;
-			if (is_dir($child_path)){
-				$this->replicate_and_delete_recursive($child_path, $upload_path, $attached, $client, $options);
-			} else {
+	public function copy_attachments_to_S3(){
+		$upload_path = wp_upload_dir();
+		return $upload_path;
 
-				$key = trim(str_replace(WP_CONTENT_DIR, '', $child_path), '/');
-				if(isset($attached[$key])){
-
-
-				}
-
-			}
-
-		}
-		if ($dir != $upload_path){
-			rmdir($dir);
-		}
 	}
 
 	/**
@@ -90,17 +58,17 @@ class AWSS3{
 		$key = trim(str_replace(WP_CONTENT_DIR, '', $upload_path), '/') . '/' . $attached;
 		$key_dir = dirname($key);
 		$client = $this->get_client();
-		$options = $this->get_options();
+		$options = WPLib::inst()->get_settings();
 		//$source = ;
 		$meta = array(
-			'Bucket' => $options->bucket,
+			'Bucket' => $options->awss3_bucket,
 			'Key' => $key,
 			'sizes' => array(),
 		);
 
 		try{
 			$result = $client->putObject(array(
-				'Bucket'     => $options->bucket,
+				'Bucket'     => $options->awss3_bucket,
 				'Key'        => $key,
 				'SourceFile' => $source_path,
 				'ACL'        => 'public-read',
@@ -114,13 +82,13 @@ class AWSS3{
 					$key = $key_dir . '/' . $info['file'];
 					$src =  $source_dir . '/' . $info['file'];
 					$result = $client->putObject(array(
-						'Bucket'     => $options->bucket,
+						'Bucket'     => $options->awss3_bucket,
 						'Key'        => $key,
 						'SourceFile' => $src,
 						'ACL'        => 'public-read'
 					));
 					$meta['sizes'][$size]['url'] = $result->get('ObjectURL');
-					$meta['sizes'][$size]['Bucket'] = $options->bucket;
+					$meta['sizes'][$size]['Bucket'] = $options->awss3_bucket;
 					$meta['sizes'][$size]['Key'] = $key;
 					unlink($src);
 				}
@@ -168,41 +136,51 @@ class AWSS3{
 		}
 	}
 
-	/**
-	 * @param $arr
-	 */
-	public function set_option_aws($arr){
-		$o = new AWSOptions($arr);
-		update_option(self::OK_AWS_KEYS, $o);
-	}
+
 
 	/**
 	 * @return bool
 	 */
 	public function is_option_aws_keys_valid(){
-		$opts = $this->get_options();
-		return ! empty($opts->id) && ! empty($opts->secret);
+		$opts = WPLib::inst()->get_settings();
+		return ! empty($opts->awss3_id) && ! empty($opts->awss3_secret);
 	}
 
 	/**
-	 * @return AWSOptions
+	 * @param $opts
+	 * @param $error
+	 * @return bool
 	 */
-	public function get_options(){
-		$o = get_option(self::OK_AWS_KEYS);
-		if (! $o instanceof AWSOptions){
-			$o = new AWSOptions;
+	public function check_settings($opts, &$error){
+		try{
+			$client = S3Client::factory(array(
+				'key'    => $opts->awss3_id,
+				'secret' => $opts->awss3_secret
+			));
+			$client->putObject(array(
+				'Bucket' => $opts->awss3_bucket,
+				'Key'    => 'test.txt',
+				'Body'   => 'Hello!'
+			));
+			return true;
+		} catch (\Exception $e){
+			$error = sprintf(__('Something is wrong. Amazon Web Services S3 said: %s'), $e->getMessage());
+			return false;
 		}
-		return $o;
+
+
 	}
+
+
 
 	/**
 	 * @return S3Client
 	 */
 	public function get_client(){
-		$keys = $this->get_options();
+		$opts = WPLib::inst()->get_settings();
 		$client = S3Client::factory(array(
-			'key'    => $keys->id,
-			'secret' => $keys->secret
+			'key'    => $opts->awss3_id,
+			'secret' => $opts->awss3_secret
 		));
 		return $client;
 	}
