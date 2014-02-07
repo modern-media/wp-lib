@@ -27,6 +27,16 @@ class NetworkSidebarSharing {
 
 	private function __construct(){
 
+		/**
+		 * This is kind of janky, but it's the only way to do it, as
+		 * there does not seem to be a dedicated hook for "this site's
+		 * sidebar widgets have changed'.
+		 * This should work for the following cases:
+		 * (1) widgets are edited
+		 * (2) widgets are moved
+		 * (3) widgets are deleted.
+		 */
+
 		if (isset($_POST) && isset($_POST['savewidgets'])) {
 			add_filter('wp_die_ajax_handler', array($this, '_filter_wp_die_ajax_handler'), 10, 1);
 		}
@@ -37,8 +47,10 @@ class NetworkSidebarSharing {
 		return $handler;
 	}
 
+	/**
+	 * Refresh all the blogs' shared sidebars...
+	 */
 	private function refresh(){
-
 		$master_blog_id = get_current_blog_id();
 		if (! is_multisite()) return;
 
@@ -141,6 +153,18 @@ class NetworkSidebarSharing {
 	}
 
 	/**
+	 * Get the widget's type (e.g., 'archives' and numeric index
+	 * from a key stored in the 'sidebars_widgets' option. The
+	 * actual widgets are stored in the 'widget_type' option,
+	 * which are arrays with widgets indexed numerically. Thus,
+	 * a widget referred to in 'sidebars_widgets' as 'type-1' would
+	 * be found in the option 'widget_type' in the key 1.
+	 *
+	 * If the $widget_key string matches our regex, we return
+	 * an array with 'type' and 'index' keys.
+	 *
+	 * If the $widget_key string doesn't match, we return false.
+	 *
 	 * @param $widget_key
 	 * @return array|bool
 	 */
