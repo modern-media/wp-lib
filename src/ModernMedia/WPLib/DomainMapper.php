@@ -1,5 +1,5 @@
 <?php
-namespace ModernMedia\WPLib\Network;
+namespace ModernMedia\WPLib;
 
 class DomainMapper {
 

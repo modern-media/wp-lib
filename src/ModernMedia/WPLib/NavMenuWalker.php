@@ -1,8 +1,5 @@
 <?php
-namespace ModernMedia\WPLib\Theme;
-
-use ModernMedia\WPLib\Debugger;
-
+namespace ModernMedia\WPLib;
 class NavMenuWalker extends \Walker_Nav_Menu {
 
 	/**

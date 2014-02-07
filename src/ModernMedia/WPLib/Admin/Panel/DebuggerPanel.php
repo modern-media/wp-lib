@@ -1,7 +1,7 @@
 <?php
-namespace ModernMedia\WPLib\Admin;
-
-use ModernMedia\WPLib\Debugger;
+namespace ModernMedia\WPLib\Admin\Panel;
+use ModernMedia\WPLib\Admin\BaseAdminElement;
+use ModernMedia\WPLib\Utils;
 
 class DebuggerPanel extends BaseAdminElement {
 
@@ -14,6 +14,6 @@ class DebuggerPanel extends BaseAdminElement {
 	}
 
 	public function html($post_id = null){
-		echo Debugger::inst()->get_formatted_data();
+		require Utils::get_lib_path('includes/admin/panel/debugger.php');
 	}
 } 

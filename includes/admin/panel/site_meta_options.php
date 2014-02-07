@@ -1,14 +1,14 @@
 <?php
-use ModernMedia\WPLib\MetaTags\MetaTags;
-use ModernMedia\WPLib\MetaTags\Data\SiteMetaSettings;
-use ModernMedia\WPLib\MetaTags\Admin\SiteMetaTagsSettingsPanel;
+use ModernMedia\WPLib\MetaTags;
+use ModernMedia\WPLib\Data\SiteMetaTagsData;
+use ModernMedia\WPLib\Admin\Panel\SiteMetaTagsSettingsPanel;
 /**
  * @var SiteMetaTagsSettingsPanel $this
  */
 
 $data = $this->form_data;
 /**
- * @var SiteMetaSettings $data;
+ * @var SiteMetaTagsData $data;
  */
 ?>
 

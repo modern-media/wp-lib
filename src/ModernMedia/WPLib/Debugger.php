@@ -1,7 +1,7 @@
 <?php
 namespace ModernMedia\WPLib;
 use Carbon\Carbon;
-use ModernMedia\WPLib\Admin\DebuggerPanel;
+use ModernMedia\WPLib\Admin\Panel\DebuggerPanel;
 
 class Debugger {
 
@@ -25,6 +25,7 @@ class Debugger {
 	}
 
 	private function __construct(){
+		if (! Utils::is_wp_debug()) return;
 		$this->request_started = Carbon::now('UTC');
 		if (is_admin()){
 			new DebuggerPanel;
@@ -32,35 +33,27 @@ class Debugger {
 		add_action('shutdown' , array($this, '_action_shutdown'));
 	}
 
-
-
-	public function get_formatted_data(){
-		$data = $this->get_data();
-		$html = '';
-
-		foreach($data as $r => $request){
-			$html .= sprintf(
-				'<h3>Request %s.</h3><p>Started: %s</p><p>Ended: %s</p>',
-				$r,
-				$request->request_started,
-				$request->request_ended
-			);
-			foreach($request->data as $datum){
-				$html .= sprintf('<h4>%s</h4>', $datum->label);
-				$html .= sprintf('<p class="timestamp">%s</p>', $datum->timestamp);
-				ob_start();
-				var_dump(unserialize($datum->data));
-				$html .= sprintf('<pre>%s</pre>', ob_get_clean());
-			}
-			$html .= '<hr>';
+	/**
+	 * @return array
+	 */
+	public function get_data(){
+		if (! Utils::is_wp_debug()) return array();
+		if (is_multisite()){
+			$json = get_site_option(self::OK_DEBUGGER_DATA, '', false);
+		} else {
+			$json = get_option(self::OK_DEBUGGER_DATA, '');
 		}
+		$arr = json_decode($json);
+		if (! is_array($arr)){
+			$arr = array();
+		}
+		return $arr;
 
-		return $html;
 	}
 
 
-
 	public function add($data, $label = ''){
+		if (! Utils::is_wp_debug()) return;
 		if (! is_array($this->request_data)){
 			$this->request_data = array();
 		}
@@ -75,12 +68,13 @@ class Debugger {
 	}
 
 	public function _action_shutdown(){
+		if (! Utils::is_wp_debug()) return;
 		if (! is_array($this->request_data)) return;
 		$data = $this->get_data();
 		$d = Carbon::now('UTC');
 		$r_data = array(
-			'request_started' => $this->request_started->format('r'),
-			'request_ended' => $d->format('r'),
+			'request_started' => $this->request_started->getTimestamp(),
+			'request_ended' => $d->getTimestamp(),
 			'data' => $this->request_data
 		);
 		array_unshift($data, $r_data);
@@ -93,22 +87,7 @@ class Debugger {
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	private function get_data(){
-		if (is_multisite()){
-			$json = get_site_option(self::OK_DEBUGGER_DATA, '', false);
-		} else {
-			$json = get_option(self::OK_DEBUGGER_DATA, '');
-		}
-		$arr = json_decode($json);
-		if (! is_array($arr)){
-			$arr = array();
-		}
-		return $arr;
 
-	}
 
 
 } 

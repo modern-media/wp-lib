@@ -1,5 +1,5 @@
 <?php
-use ModernMedia\WPLib\Helper\HTML;
+use ModernMedia\WPLib\HTML;
 /**
  * @var $data_label
  * @var $data_preview_size

@@ -1,13 +1,13 @@
 <?php
-namespace ModernMedia\WPLib\MetaTags\Admin;
+namespace ModernMedia\WPLib\Admin\MetaBox;
 use ModernMedia\WPLib\Admin\BaseAdminElement;
-use ModernMedia\WPLib\MetaTags\MetaTags;
+use ModernMedia\WPLib\MetaTags;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 
 /**
  * Class MetaTagsMetaBox
- * @package ModernMedia\WPLib\MetaTags\Admin
+ *
  *
  * This meta box allows one to edit meta tags
  * for individual posts/pages and

@@ -1,10 +1,10 @@
 <?php
-namespace ModernMedia\WPLib\MetaTags;
+namespace ModernMedia\WPLib;
 
-use ModernMedia\WPLib\MetaTags\Admin\MetaTagsMetaBox;
-use ModernMedia\WPLib\MetaTags\Admin\SiteMetaTagsSettingsPanel;
-use ModernMedia\WPLib\MetaTags\Data\PostMetaData;
-use ModernMedia\WPLib\MetaTags\Data\SiteMetaSettings;
+use ModernMedia\WPLib\Admin\MetaBox\MetaTagsMetaBox;
+use ModernMedia\WPLib\Admin\Panel\SiteMetaTagsSettingsPanel;
+use ModernMedia\WPLib\Data\PostMetaTagsData;
+use ModernMedia\WPLib\Data\SiteMetaTagsData;
 
 class MetaTags {
 
@@ -175,12 +175,12 @@ class MetaTags {
 	}
 
 	/**
-	 * @return SiteMetaSettings
+	 * @return SiteMetaTagsData
 	 */
 	public function get_option_site_meta(){
 		$o = get_option(self::OK_SITE_META);
-		if (! $o instanceof SiteMetaSettings){
-			$o = new SiteMetaSettings;
+		if (! $o instanceof SiteMetaTagsData){
+			$o = new SiteMetaTagsData;
 		}
 		return $o;
 	}
@@ -196,12 +196,12 @@ class MetaTags {
 
 	/**
 	 * @param $post_id
-	 * @return PostMetaData
+	 * @return PostMetaTagsData
 	 */
 	public function get_post_meta($post_id){
 		$o = get_post_meta($post_id, self::PMK_META_TAGS, true);
-		if (! $o instanceof PostMetaData){
-			$o = new PostMetaData;
+		if (! $o instanceof PostMetaTagsData){
+			$o = new PostMetaTagsData;
 		}
 		return $o;
 	}
@@ -211,7 +211,7 @@ class MetaTags {
 	 * @param array $arr
 	 */
 	public function set_post_meta($post_id, $arr){
-		$o = new PostMetaData($arr);
+		$o = new PostMetaTagsData($arr);
 		update_post_meta($post_id, self::PMK_META_TAGS, $o);
 
 	}

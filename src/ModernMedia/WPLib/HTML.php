@@ -1,8 +1,8 @@
 <?php
-namespace ModernMedia\WPLib\Helper;
+namespace ModernMedia\WPLib;
 /**
  * Class HTML
- * @package ModernMedia\WPLib\Helper
+ * @package ModernMedia\WPLib
  *
  * Class for spitting out form controls and other pieces of HTML
  */

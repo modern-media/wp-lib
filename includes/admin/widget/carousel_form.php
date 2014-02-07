@@ -1,7 +1,7 @@
 <?php
 use ModernMedia\WPLib\Utils;
-use ModernMedia\WPLib\Carousel\Carousel;
-use ModernMedia\WPLib\Carousel\CarouselWidget;
+use ModernMedia\WPLib\Carousel;
+use ModernMedia\WPLib\CarouselWidget;
 
 /**
  * @var CarouselWidget $this

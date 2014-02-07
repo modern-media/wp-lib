@@ -1,10 +1,11 @@
 <?php
-namespace ModernMedia\WPLib\Admin;
-
+namespace ModernMedia\WPLib\Admin\Panel;
+use ModernMedia\WPLib\Admin\BaseAdminElement;
 use ModernMedia\WPLib\AWSS3;
 use ModernMedia\WPLib\Data\WPLibSettings;
 use ModernMedia\WPLib\WPLib;
 use ModernMedia\WPLib\Utils;
+use ModernMedia\WPLib\Scripts;
 
 class WPLibSettingsPanel extends BaseAdminElement {
 
@@ -48,5 +49,15 @@ class WPLibSettingsPanel extends BaseAdminElement {
 		}
 		die();
 
+	}
+
+	/**
+	 * enqueue the counter and the image uploader js
+	 */
+	protected function on_admin_enqueue_scripts(){
+		wp_enqueue_media();
+		$s = Scripts::inst();
+		$s->enqueue(Scripts::UPLOADER);
+		$s->enqueue(Scripts::CHAR_COUNT);
 	}
 } 

@@ -1,6 +1,5 @@
 <?php
-namespace ModernMedia\WPLib\Carousel\Data;
-use ModernMedia\WPLib\Data\BaseData;
+namespace ModernMedia\WPLib\Data;
 
 class CarouselSettingsData extends BaseData{
 

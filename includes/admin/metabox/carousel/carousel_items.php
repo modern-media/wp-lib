@@ -1,6 +1,6 @@
 <?php
-use ModernMedia\WPLib\Carousel\Carousel;
-use ModernMedia\WPLib\Carousel\Admin\CarouselItemsMetaBox;
+use ModernMedia\WPLib\Carousel;
+use ModernMedia\WPLib\Admin\MetaBox\CarouselItemsMetaBox;
 
 /**
  * @var CarouselItemsMetaBox $this

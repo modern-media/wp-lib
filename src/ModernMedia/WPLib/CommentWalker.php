@@ -1,5 +1,5 @@
 <?php
-namespace ModernMedia\WPLib\Theme;
+namespace ModernMedia\WPLib;
 
 class CommentWalker extends \Walker_Comment {
 	public function start_lvl(&$output, $depth = 0, $args = array()){

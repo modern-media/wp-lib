@@ -1,9 +1,9 @@
 <?php
-namespace ModernMedia\WPLib\Carousel\Admin;
-use ModernMedia\WPLib\Carousel\Carousel;
+namespace ModernMedia\WPLib\Admin\MetaBox;
+use ModernMedia\WPLib\Carousel;
 use ModernMedia\WPLib\Admin\BaseAdminElement;
 use ModernMedia\WPLib\Utils;
-use ModernMedia\WPLib\Carousel\Data\CarouselSettingsData;
+use ModernMedia\WPLib\Data\CarouselSettingsData;
 class CarouselSettingsMetaBox extends BaseAdminElement {
 
 	public function __construct(){

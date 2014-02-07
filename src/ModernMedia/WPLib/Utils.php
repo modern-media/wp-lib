@@ -298,4 +298,8 @@ class Utils {
 		/** @var \wpdb $wpdb */
 		return $wpdb->get_results('SELECT * FROM ' . $wpdb->blogs);
 	}
+
+	public static function is_wp_debug(){
+		return defined('WP_DEBUG') && WP_DEBUG;
+	}
 } 

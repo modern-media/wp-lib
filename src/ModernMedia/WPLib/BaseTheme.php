@@ -1,5 +1,5 @@
 <?php
-namespace ModernMedia\WPLib\Theme;
+namespace ModernMedia\WPLib;
 
 abstract class BaseTheme {
 

@@ -61,7 +61,6 @@ class NetworkSidebarSharing {
 		$blogs = Utils::get_network_sites();
 
 
-
 		/**
 		 * Get the shared sidebar and widget settings from the "master" blog...
 		 */

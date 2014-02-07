@@ -1,9 +1,8 @@
 <?php
-namespace ModernMedia\WPLib\Carousel;
+namespace ModernMedia\WPLib;
 use ModernMedia\WPLib\Widget\BaseWidget;
-use ModernMedia\WPLib\Carousel\Data\CarouselSettingsData;
-use ModernMedia\WPLib\Utils;
-use ModernMedia\WPLib\Scripts;
+use ModernMedia\WPLib\Data\CarouselSettingsData;
+
 
 
 class CarouselWidget extends BaseWidget{

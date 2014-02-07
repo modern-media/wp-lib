@@ -1,6 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
-use ModernMedia\WPLib\Helper\HTML;
+use ModernMedia\WPLib\HTML;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 

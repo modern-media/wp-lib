@@ -1,5 +1,5 @@
 <?php
-use ModernMedia\WPLib\Carousel\Carousel;
+use ModernMedia\WPLib\Carousel;
 
 /**
  * @var $post_id

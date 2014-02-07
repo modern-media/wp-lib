@@ -1,5 +1,5 @@
 <?php
-use ModernMedia\WPLib\Helper\HTML;
+use ModernMedia\WPLib\HTML;
 /**
  * @var $form_name
  * @var $control_id

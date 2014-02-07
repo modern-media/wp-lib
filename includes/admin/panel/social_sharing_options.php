@@ -1,6 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\SocialSharing;
-use ModernMedia\WPLib\Helper\HTML;
+use ModernMedia\WPLib\HTML;
 use ModernMedia\WPLib\SocialSharing\Admin\SocialSharingOptionsPanel;
 /**
  * @var SocialSharingOptionsPanel $this

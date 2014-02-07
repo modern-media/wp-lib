@@ -1,8 +1,8 @@
 <?php
-namespace ModernMedia\WPLib\Carousel\Admin;
+namespace ModernMedia\WPLib\Admin\MetaBox;
 use ModernMedia\WPLib\Admin\BaseAdminElement;
-use ModernMedia\WPLib\Carousel\Carousel;
-use ModernMedia\WPLib\Carousel\Data\CarouselItemData;
+use ModernMedia\WPLib\Carousel;
+use ModernMedia\WPLib\Data\CarouselItemData;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 

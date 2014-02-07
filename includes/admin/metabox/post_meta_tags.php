@@ -1,5 +1,5 @@
 <?php
-use ModernMedia\WPLib\MetaTags\MetaTags;
+use ModernMedia\WPLib\MetaTags;
 $data = MetaTags::inst()->get_post_meta($post_id);
 ?>
 <p>

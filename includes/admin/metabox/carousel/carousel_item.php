@@ -1,6 +1,6 @@
 <?php
-use ModernMedia\WPLib\Carousel\Carousel;
-use ModernMedia\WPLib\Helper\HTML;
+use ModernMedia\WPLib\Carousel;
+use ModernMedia\WPLib\HTML;
 /**
  * @var $item
  * @var $n

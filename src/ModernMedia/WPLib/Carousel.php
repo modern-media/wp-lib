@@ -1,11 +1,9 @@
 <?php
-namespace ModernMedia\WPLib\Carousel;
-use ModernMedia\WPLib\Carousel\Admin\CarouselItemsMetaBox;
-use ModernMedia\WPLib\Carousel\Admin\CarouselSettingsMetaBox;
-use ModernMedia\WPLib\Scripts;
-use ModernMedia\WPLib\Utils;
-use ModernMedia\WPLib\Carousel\Data\CarouselSettingsData;
-use ModernMedia\WPLib\Carousel\Data\CarouselItemData;
+namespace ModernMedia\WPLib;
+use ModernMedia\WPLib\Admin\MetaBox\CarouselItemsMetaBox;
+use ModernMedia\WPLib\Admin\MetaBox\CarouselSettingsMetaBox;
+use ModernMedia\WPLib\Data\CarouselSettingsData;
+use ModernMedia\WPLib\Data\CarouselItemData;
 class Carousel {
 
 	const PT_CAROUSEL = 'mm_wp_lib_carousel';

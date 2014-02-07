@@ -1,9 +1,8 @@
 <?php
-namespace ModernMedia\WPLib\MetaTags\Data;
-use ModernMedia\WPLib\Data\BaseData;
-use ModernMedia\WPLib\MetaTags\MetaTags;
+namespace ModernMedia\WPLib\Data;
+use ModernMedia\WPLib\MetaTags;
 
-class PostMetaData extends BaseData {
+class PostMetaTagsData extends BaseData {
 
 	/**
 	 * @var string

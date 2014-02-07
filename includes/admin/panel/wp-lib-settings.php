@@ -1,7 +1,6 @@
 <?php
 namespace ModernMedia\WPLib;
-use ModernMedia\WPLib\Helper\HTML;
-use ModernMedia\WPLib\Admin\WPLibSettingsPanel;
+use ModernMedia\WPLib\Admin\Panel\WPLibSettingsPanel;
 /**
  * @var WPLibSettingsPanel $this
  */
@@ -144,34 +143,52 @@ $settings = $wp_lib->get_settings();
 		<h3><?php _e('Network: Shared Sidebars')?></h3>
 		<p>
 			<?php
-			echo HTML::input_single_check('component_enabled_shared_sidebars', $settings->component_enabled_shared_sidebars);
+			echo HTML::input_single_check('component_enabled_shared_sidebars', $settings->component_enabled_shared_sidebars, array('class' => 'component_enabled_shared_sidebars'));
 			?>
 			<label for="component_enabled_shared_sidebars">
 				<?php _e('Enable shared sidebars between sites on the network.')?>
 			</label>
 		</p>
-		<p>
-			<?php _e('Shared:')?>
-		</p>
+		<div class="component_enabled_shared_sidebars-shared">
+			<p>
+
 			<?php
 			foreach($shareable as $id){
 				?>
-				<p>
-					<label>
-						<?php
-						echo HTML::input_check('shared_sidebars[]', $id, in_array($id,$settings->shared_sidebars));
-						?>
 
-						<span><?php echo $id?></span>
-					</label>
-				</p>
-				<?php
+				<label class="checkbox-inline">
+					<?php
+					echo HTML::input_check('shared_sidebars[]', $id, in_array($id,$settings->shared_sidebars));
+					?>
+
+					<span><?php echo $id?></span>
+				</label>
+
+			<?php
 			}
 			?>
-		</p>
+			</p>
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function($){
+				var check = $('input.component_enabled_shared_sidebars');
+				var ctr = $('.component_enabled_shared_sidebars-shared');
+				var update = function(){
+					if (check.is(':checked')){
+						ctr.slideDown('fast');
+					} else {
+						ctr.slideUp('fast');
+					}
+				};
+				check.change(update);
+				update();
+			});
+		</script>
+
 		<?php
 	}
 	?>
+
 	<?php
 	submit_button('Save');
 	?>

@@ -1,16 +1,15 @@
 <?php
-namespace ModernMedia\WPLib\MetaTags\Admin;
+namespace ModernMedia\WPLib\Admin\Panel;
 use ModernMedia\WPLib\Admin\BaseAdminElement;
 use ModernMedia\WPLib\AjaxQuery;
 use ModernMedia\WPLib\Constants;
-use ModernMedia\WPLib\MetaTags\Data\SiteMetaSettings;
-use ModernMedia\WPLib\MetaTags\MetaTags;
+use ModernMedia\WPLib\Data\SiteMetaTagsData;
+use ModernMedia\WPLib\MetaTags;
 use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 
 /**
  * Class SiteMetaTagsSettingsPanel
- * @package ModernMedia\WPLib\MetaTags\Admin
  *
  * This is an admin panel for editing the site wide
  * meta tags settings. It's instantiated
@@ -37,7 +36,7 @@ class SiteMetaTagsSettingsPanel extends BaseAdminElement {
 	 * @param null $post_id
 	 */
 	protected function html($post_id = null){
-		if (! $this->form_data instanceof SiteMetaSettings){
+		if (! $this->form_data instanceof SiteMetaTagsData){
 			$this->form_data = MetaTags::inst()->get_option_site_meta();
 		}
 		require Utils::get_lib_path('includes/admin/panel/site_meta_options.php');
