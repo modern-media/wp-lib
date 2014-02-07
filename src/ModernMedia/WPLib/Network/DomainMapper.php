@@ -57,7 +57,4 @@ class DomainMapper {
 		$url .= $domain;
 		return $url;
 	}
-
-
-
 } 

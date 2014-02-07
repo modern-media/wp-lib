@@ -291,4 +291,11 @@ class Utils {
 
 		return $opts;
 	}
+
+	public static function get_network_sites(){
+		if (! is_multisite()) return array();
+		global $wpdb;
+		/** @var \wpdb $wpdb */
+		return $wpdb->get_results('SELECT * FROM ' . $wpdb->blogs);
+	}
 } 

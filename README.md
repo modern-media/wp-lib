@@ -135,6 +135,29 @@ namespace ModernMedia\WPLib\MetaTags;
 - ModernMedia\WPLib\MetaTags\Admin\MetaTagsMetaBox
 
 
+## Domain Mapper
+
+This component is a simpler replacement for more complex domain mapping tools.  You need to edit `wp-config.php` and add a `sunrise.php` file to the `wp-content` directory. It allows you to manually map different domains to WordPress blog IDs.
+
+In `wp-config.php`:
+
+```
+$modern_media_domain_map = array(
+	'example.com' => 1,
+	'another-example.com' => 2,
+);
+```
+The array should have the domain names as keys and the blog IDs as values.
+
+In `wp-content/sunrise.php`:
+
+```
+<?php
+use ModernMedia\WPLib\Network\DomainMapper;
+new DomainMapper;
+```
+
+
 
 
 

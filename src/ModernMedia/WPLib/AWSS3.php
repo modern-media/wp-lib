@@ -4,9 +4,9 @@ use Aws\S3\S3Client;
 
 /**
  * Class AWSS3
+ * @package ModernMedia\WPLib
  *
- * @package ModernMedia\WPLib\AWSS3
- *
+ * This class handles storage of uploads on an Amazon S3 Bucket
  */
 class AWSS3{
 
@@ -37,11 +37,6 @@ class AWSS3{
 
 
 
-	public function copy_attachments_to_S3(){
-		$upload_path = wp_upload_dir();
-		return $upload_path;
-
-	}
 
 	/**
 	 * @param $data
@@ -59,7 +54,6 @@ class AWSS3{
 		$key_dir = dirname($key);
 		$client = $this->get_client();
 		$options = WPLib::inst()->get_settings();
-		//$source = ;
 		$meta = array(
 			'Bucket' => $options->awss3_bucket,
 			'Key' => $key,
@@ -136,15 +130,6 @@ class AWSS3{
 		}
 	}
 
-
-
-	/**
-	 * @return bool
-	 */
-	public function is_option_aws_keys_valid(){
-		$opts = WPLib::inst()->get_settings();
-		return ! empty($opts->awss3_id) && ! empty($opts->awss3_secret);
-	}
 
 	/**
 	 * @param $opts

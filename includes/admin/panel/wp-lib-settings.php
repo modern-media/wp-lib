@@ -111,6 +111,67 @@ $settings = $wp_lib->get_settings();
 		</tr>
 		</tbody>
 	</table>
+
+	<?php
+	if (is_multisite()){
+		$blogs = Utils::get_network_sites();
+		$sidebars = array();
+		$sidebar_ids = array();
+		$curr = get_current_blog_id();
+		foreach($blogs as $blog){
+			switch_to_blog($blog->blog_id);
+			$ids = array_keys(wp_get_sidebars_widgets());
+			$sidebar_ids = array_merge($sidebar_ids, $ids);
+			$sidebars[$blog->blog_id] = $ids;
+		}
+		$shareable = array();
+		switch_to_blog($curr);
+
+		foreach($sidebar_ids as $id){
+			if ('wp_inactive_widgets' == $id) continue;
+			$in_all = true;
+			foreach($sidebars as $arr){
+				if (! in_array($id, $arr)){
+					$in_all = false;
+				}
+			}
+			if ($in_all){
+				$shareable = array_merge($shareable, array($id));
+			}
+		}
+		$shareable = array_unique($shareable);
+		?>
+		<h3><?php _e('Network: Shared Sidebars')?></h3>
+		<p>
+			<?php
+			echo HTML::input_single_check('component_enabled_shared_sidebars', $settings->component_enabled_shared_sidebars);
+			?>
+			<label for="component_enabled_shared_sidebars">
+				<?php _e('Enable shared sidebars between sites on the network.')?>
+			</label>
+		</p>
+		<p>
+			<?php _e('Shared:')?>
+		</p>
+			<?php
+			foreach($shareable as $id){
+				?>
+				<p>
+					<label>
+						<?php
+						echo HTML::input_check('shared_sidebars[]', $id, in_array($id,$settings->shared_sidebars));
+						?>
+
+						<span><?php echo $id?></span>
+					</label>
+				</p>
+				<?php
+			}
+			?>
+		</p>
+		<?php
+	}
+	?>
 	<?php
 	submit_button('Save');
 	?>

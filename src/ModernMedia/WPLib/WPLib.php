@@ -1,5 +1,6 @@
 <?php
 namespace ModernMedia\WPLib;
+use ModernMedia\WPLib\Admin\SidebarInspectorPanel;
 use ModernMedia\WPLib\Admin\WPLibSettingsPanel;
 use ModernMedia\WPLib\MetaTags\MetaTags;
 use ModernMedia\WPLib\Widget\Widgets;
@@ -7,6 +8,7 @@ use ModernMedia\WPLib\Carousel\Carousel;
 use ModernMedia\WPLib\SocialSharing\SocialSharing;
 use ModernMedia\WPLib\SocialSharing\ShareThis;
 use ModernMedia\WPLib\Data\WPLibSettings;
+
 class WPLib {
 
 	const OK = 'mm-wp-lib-settings';
@@ -50,6 +52,11 @@ class WPLib {
 		SocialSharing::inst();
 		AWSS3::inst();
 		ShareThis::inst();
+		Debugger::inst();
+
+		if ($this->settings->component_enabled_shared_sidebars){
+			NetworkSidebarSharing::inst();
+		}
 
 	}
 
