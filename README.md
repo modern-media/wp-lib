@@ -35,8 +35,8 @@ This script updates an element of class `.mm-wp-lib-char-count` with the charact
     <input
 		type="text"
 		class="widefat"
-		name="default_site_og_description"
-		id="default_site_og_description"
+		name="meta_tags_og_description"
+		id="meta_tags_og_description"
 		placeholder="Default og:description of your site"
 		value="foo bar"
 	>
@@ -44,7 +44,7 @@ This script updates an element of class `.mm-wp-lib-char-count` with the charact
 	    Characters: 
 	    <span 
 	        class="mm-wp-lib-char-count" 
-	        data-target="#default_site_og_description"
+	        data-target="#meta_tags_og_description"
 	    ></span>
 	</p>
 

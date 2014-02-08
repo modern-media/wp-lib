@@ -1,6 +1,7 @@
 <?php
 namespace ModernMedia\WPLib\Admin\Panel;
 use ModernMedia\WPLib\Admin\BaseAdminElement;
+use ModernMedia\WPLib\AjaxQuery;
 use ModernMedia\WPLib\AWSS3;
 use ModernMedia\WPLib\Data\WPLibSettings;
 use ModernMedia\WPLib\WPLib;
@@ -11,6 +12,7 @@ class WPLibSettingsPanel extends BaseAdminElement {
 
 
 	public function __construct(){
+		AjaxQuery::inst();
 		$init = array(
 			'title' => 'Modern Media WP Library Settings',
 			'id' => 'mm-wp-lib-settings',

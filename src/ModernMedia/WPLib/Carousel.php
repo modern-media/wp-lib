@@ -77,7 +77,7 @@ class Carousel {
 	 * add the widget
 	 */
 	public function _action_widgets_init(){
-		register_widget('\\ModernMedia\\WPLib\\Carousel\\CarouselWidget');
+		register_widget('\\ModernMedia\\WPLib\\CarouselWidget');
 
 	}
 

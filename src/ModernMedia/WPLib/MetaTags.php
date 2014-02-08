@@ -2,9 +2,7 @@
 namespace ModernMedia\WPLib;
 
 use ModernMedia\WPLib\Admin\MetaBox\MetaTagsMetaBox;
-use ModernMedia\WPLib\Admin\Panel\SiteMetaTagsSettingsPanel;
 use ModernMedia\WPLib\Data\PostMetaTagsData;
-use ModernMedia\WPLib\Data\SiteMetaTagsData;
 
 class MetaTags {
 
@@ -36,9 +34,7 @@ class MetaTags {
 	 */
 	private function __construct(){
 		new MetaTagsMetaBox();
-		new SiteMetaTagsSettingsPanel();
 		add_action('plugins_loaded', array($this, '_action_plugins_loaded'));
-
 	}
 
 	/**
@@ -53,8 +49,8 @@ class MetaTags {
 	 *  add the og image size
 	 */
 	public function _action_after_setup_theme(){
-		$o = $this->get_option_site_meta();
-		add_image_size(self::OG_IMAGE_SIZE_ID, $o->og_image_width, $o->og_image_height, false);
+		$o = WPLib::inst()->get_settings();
+		add_image_size(self::OG_IMAGE_SIZE_ID, $o->meta_tags_og_image_width, $o->meta_tags_og_image_height, false);
 	}
 
 	/**
@@ -76,12 +72,12 @@ class MetaTags {
 	 * Add the meta tags according to the page context...
 	 */
 	public function _action_wp_head(){
-		$options = $this->get_option_site_meta();
+		$options = WPLib::inst()->get_settings();
 		$ogs = array(
 			'og:site_name' => $this->clean_string(get_bloginfo('name'))
 		);
-		if ($options->default_site_og_image_id > 0){
-			$arr = wp_get_attachment_image_src($options->default_site_og_image_id, self::OG_IMAGE_SIZE_ID);
+		if ($options->meta_tags_og_image_id > 0){
+			$arr = wp_get_attachment_image_src($options->meta_tags_og_image_id, self::OG_IMAGE_SIZE_ID);
 			if (! empty($arr[0])){
 				$ogs['og:image'] = $arr[0];
 				$ogs['og:image:width'] = isset($arr[1]) ? $arr[1] : '';
@@ -124,8 +120,8 @@ class MetaTags {
 
 		} elseif(is_home() || is_front_page()){
 			$default_desc = get_bloginfo('description');
-			$metas['description'] = $this->clean_string($options->default_site_meta_description, $default_desc);
-			$ogs['og:description'] = $this->clean_string($options->default_site_og_description, $default_desc);
+			$metas['description'] = $this->clean_string($options->meta_tags_default_site_description, $default_desc);
+			$ogs['og:description'] = $this->clean_string($options->meta_tags_og_description, $default_desc);
 			$ogs['og:type'] = 'website';
 		} elseif(is_tax()){
 			$term = get_queried_object();
@@ -134,8 +130,8 @@ class MetaTags {
 			$ogs['og:type'] = 'website';
 		} else {
 			$default_desc = get_bloginfo('description');
-			$metas['description'] = $this->clean_string($options->default_site_meta_description, $default_desc);
-			$ogs['og:description'] = $this->clean_string($options->default_site_og_description, $default_desc);
+			$metas['description'] = $this->clean_string($options->meta_tags_default_site_description, $default_desc);
+			$ogs['og:description'] = $this->clean_string($options->meta_tags_og_description, $default_desc);
 			$ogs['og:type'] = 'website';
 		}
 
@@ -174,25 +170,6 @@ class MetaTags {
 		}
 	}
 
-	/**
-	 * @return SiteMetaTagsData
-	 */
-	public function get_option_site_meta(){
-		$o = get_option(self::OK_SITE_META);
-		if (! $o instanceof SiteMetaTagsData){
-			$o = new SiteMetaTagsData;
-		}
-		return $o;
-	}
-
-	/**
-	 * @param $arr
-	 */
-	public function set_option_site_meta($arr){
-		$o = $this->get_option_site_meta();
-		$o->init_from_user_data($arr);
-		update_option(self::OK_SITE_META, $o);
-	}
 
 	/**
 	 * @param $post_id
