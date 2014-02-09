@@ -1,11 +1,9 @@
 <?php
-namespace ModernMedia\WPLib\SocialSharing;
-use ModernMedia\WPLib\Scripts;
+namespace ModernMedia\WPLib;
 use ModernMedia\WPLib\SocialSharing\Data\GooglePlusShareParams;
 use ModernMedia\WPLib\SocialSharing\Data\SocialSharingOptions;
 use ModernMedia\WPLib\SocialSharing\Admin\SocialSharingOptionsPanel;
 use ModernMedia\WPLib\SocialSharing\Data\TweetButtonParams;
-use ModernMedia\WPLib\Utils;
 
 class SocialSharing {
 	const PLUGIN_NAMESPACE = "SocialSharing";

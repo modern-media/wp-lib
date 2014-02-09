@@ -15,10 +15,7 @@ class WPLibSettings extends BaseData{
 
 	public $component_enabled_carousel = false;
 
-	public $component_enabled_socialsharing = false;
 
-
-	public $facebook_app_id = '';
 
 
 	//meta tags settings...
@@ -53,5 +50,27 @@ class WPLibSettings extends BaseData{
 	 * @var int
 	 */
 	public $meta_tags_og_image_height = 630;
+
+	//Social...
+
+	/**
+	 * @var bool
+	 */
+	public $component_enabled_socialsharing = false;
+
+	/**
+	 * @var string
+	 */
+	public $facebook_app_id = '';
+
+
+	/**
+	 * @var bool
+	 */
+	public $enable_share_this = false;
+	/**
+	 * @var string
+	 */
+	public $share_this_publisher_key = '';
 
 } 

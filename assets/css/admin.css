@@ -197,3 +197,45 @@
   display: inline-block;
   margin: 0 20px 20px 0;
 }
+.mm-wp-lib-panel-form-section {
+  border: 1px solid #EEE;
+  padding: 12px;
+  background-color: #FFF;
+  border-radius: 6px;
+  width: 400px;
+  max-width: 95%;
+  margin: 1em 10px 1em 0;
+}
+.mm-wp-lib-panel-form-section .mm-form-field {
+  margin-bottom: 1em;
+}
+.mm-wp-lib-panel-form-section .mm-form-field .form-controls .checkbox-block {
+  display: block;
+  margin: 3px 0;
+}
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal:before,
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal:after {
+  content: " ";
+  display: table;
+}
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal:after {
+  clear: both;
+}
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal .form-label,
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal .form-controls {
+  width: 66%;
+  float: left;
+}
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal .form-label {
+  width: 33%;
+}
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal .form-label label {
+  display: block;
+  padding-right: 1em;
+  text-align: right;
+  padding-top: 3px;
+}
+.mm-submit {
+  clear: both;
+  margin: 1em 0;
+}

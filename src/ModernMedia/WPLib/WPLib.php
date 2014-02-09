@@ -46,7 +46,7 @@ class WPLib {
 		Widgets::inst();
 		Carousel::inst();
 		Stylesheet::inst();
-		SocialSharing::inst();
+		//SocialSharing::inst();
 		AWSS3::inst();
 		ShareThis::inst();
 		Debugger::inst();

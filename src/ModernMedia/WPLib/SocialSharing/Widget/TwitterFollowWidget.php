@@ -10,16 +10,7 @@ class TwitterFollowWidget extends BaseWidget {
 	 * @return array
 	 */
 	public function get_instance_defaults() {
-		/**
-		 * User to follow	(in the anchor URL)
-		Followers count display	data-show-count
-		Language	data-lang
-		Width	data-width
-		Alignment	data-align
-		Show Screen Name	data-show-screen-name
-		Size	data-size
-		Opt Out	data-dnt
-		 */
+
 		return array(
 			'screen_name' => '',
 			'show-count' => false,
