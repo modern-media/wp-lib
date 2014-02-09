@@ -342,6 +342,13 @@ $settings = $wp_lib->get_settings();
 	<div class="mm-wp-lib-panel-form-section">
 		<h3><?php _e('SMTP Mail Settings')?></h3>
 
+		<div class="mm-form-field horizontal check">
+			<label>
+				<?php echo HTML::input_single_check('component_enabled_mailer', $settings->component_enabled_mailer);?>
+				<span><?php _e('Enable the mailing component.')?></span>
+			</label>
+		</div>
+
 		<div class="mm-form-field horizontal">
 			<div class="form-label">
 				<label for="smtp_server"><?php _e('Server')?></label>
@@ -427,6 +434,8 @@ $settings = $wp_lib->get_settings();
 					>
 			</div>
 		</div>
+
+
 		<div class="help horizontal">
 			<p><a href="#" class="check-smtp"><?php _e('Check these settings')?></a></p>
 			<div class="ajax-msg" style="display:none;"></div>

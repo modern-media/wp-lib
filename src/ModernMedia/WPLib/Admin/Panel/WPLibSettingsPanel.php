@@ -56,9 +56,20 @@ class WPLibSettingsPanel extends BaseAdminElement {
 				break;
 			case 'check_smtp_settings':
 				$d = Carbon::now('UTC');
+				$opts = new WPLibSettings($_POST);
+				if (! $opts->component_enabled_mailer){
+					$response->respond_with_error('enabled', __('You must enable the component first.'));
+				}
 				try{
-					Mailer::inst()->mail_it('chris@modernmedia.co', 'Test Message on ' . $d->format('r'), 'test');
-					$response->respond_with_data(__('Your SMTP settings are valid.'));
+					$email = get_option('admin_email');
+					Mailer::inst()->mail_it($email, 'Test Message on ' . $d->format('r'), 'test', $opts);
+					$response->respond_with_data(
+						sprintf(
+							__('Your SMTP settings seem to be valid. A test has been sent to %s.'),
+							$email
+						)
+
+					);
 				} catch (\Exception $e) {
 					$response->respond_with_error('smtp' , __( 'Your SMTP settings appear to be invalid. SwiftMailer said:') . $e->getMessage());
 				}
