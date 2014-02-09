@@ -12,7 +12,8 @@
 		"ccampbell/chromephp": "*",
 		"phpunit/phpunit": "3.7.*",
 		"aws/aws-sdk-php": "2.*",
-		"swiftmailer/swiftmailer": "v5.0.3"
+		"swiftmailer/swiftmailer": "v5.0.3",
+		"mandrill/mandrill": "1.0.52"
 	},
 	"require-dev": {
 

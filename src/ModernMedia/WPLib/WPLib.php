@@ -39,10 +39,16 @@ class WPLib {
 		}
 	}
 	public function _action_muplugins_loaded(){
-		Mailer::inst();
+
+
 		if (is_admin()){
 			new WPLibSettingsPanel;
 		}
+
+		if ($this->settings->component_enabled_mailer){
+			Mailer::inst();
+		}
+
 		MetaTags::inst();
 		Widgets::inst();
 		Carousel::inst();

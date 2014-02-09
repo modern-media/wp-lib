@@ -399,6 +399,34 @@ $settings = $wp_lib->get_settings();
 					>
 			</div>
 		</div>
+		<div class="mm-form-field horizontal">
+			<div class="form-label">
+				<label for="from_name"><?php _e('From Name')?></label>
+			</div>
+			<div class="form-controls">
+				<input
+					placeholder="<?php echo esc_attr( __('Your Brand or Actual Name'))?>"
+					type="text"
+					name="from_name"
+					id="from_name"
+					value="<?php echo esc_attr($settings->from_name)?>"
+					>
+			</div>
+		</div>
+		<div class="mm-form-field horizontal">
+			<div class="form-label">
+				<label for="from_name"><?php _e('From Email Address')?></label>
+			</div>
+			<div class="form-controls">
+				<input
+					placeholder="<?php echo esc_attr( __('you@example.com'))?>"
+					type="text"
+					name="from_email"
+					id="from_email"
+					value="<?php echo esc_attr($settings->from_email)?>"
+					>
+			</div>
+		</div>
 		<div class="help horizontal">
 			<p><a href="#" class="check-smtp"><?php _e('Check these settings')?></a></p>
 			<div class="ajax-msg" style="display:none;"></div>

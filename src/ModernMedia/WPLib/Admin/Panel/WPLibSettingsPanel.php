@@ -10,6 +10,7 @@ use ModernMedia\WPLib\Debugger;
 use ModernMedia\WPLib\WPLib;
 use ModernMedia\WPLib\Utils;
 use ModernMedia\WPLib\Scripts;
+use ModernMedia\WPLib\Mailer;
 
 class WPLibSettingsPanel extends BaseAdminElement {
 
@@ -56,18 +57,12 @@ class WPLibSettingsPanel extends BaseAdminElement {
 			case 'check_smtp_settings':
 				$d = Carbon::now('UTC');
 				try{
-					$success = wp_mail('chris@modernmedia.co', 'Test Message on ' . $d->format('r'), 'test');
-					if (! $success){
-						$response->respond_with_error('smtp' , __( 'Your Mail settings appear to be invalid'));
-					} else {
-						$response->respond_with_data(__('Your SMTP settings are valid.'));
-					}
-
+					Mailer::inst()->mail_it('chris@modernmedia.co', 'Test Message on ' . $d->format('r'), 'test');
+					$response->respond_with_data(__('Your SMTP settings are valid.'));
 				} catch (\Exception $e) {
-					$response->respond_with_error('smtp' , __( 'Your SMTP settings appear to be invalid. PHPMailer said:') . $e->getMessage());
+					$response->respond_with_error('smtp' , __( 'Your SMTP settings appear to be invalid. SwiftMailer said:') . $e->getMessage());
 				}
 				break;
-
 		}
 		die();
 
