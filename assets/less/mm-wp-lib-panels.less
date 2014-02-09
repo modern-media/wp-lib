@@ -3,9 +3,13 @@
 	padding: 12px;
 	background-color: #FFF;
 	border-radius: 6px;
-	width: 400px;
 	max-width: 95%;
 	margin: 1em 10px 1em 0;
+	.help{
+		&.horizontal{
+			padding-left: 33%;
+		}
+	}
 	.mm-form-field{
 		margin-bottom: 1em;
 		.form-label{
@@ -31,6 +35,15 @@
 					padding-right: 1em;
 					text-align: right;
 					padding-top: 3px;
+				}
+			}
+			&.check{
+				label{
+					display: block;
+					padding-right: 0;
+					padding-left: 33%;
+					text-align: left;
+					padding-top: 0px;
 				}
 			}
 		}

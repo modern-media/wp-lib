@@ -39,6 +39,7 @@ class WPLib {
 		}
 	}
 	public function _action_muplugins_loaded(){
+		Mailer::inst();
 		if (is_admin()){
 			new WPLibSettingsPanel;
 		}
@@ -50,6 +51,7 @@ class WPLib {
 		AWSS3::inst();
 		ShareThis::inst();
 		Debugger::inst();
+
 
 		if ($this->settings->component_enabled_shared_sidebars){
 			NetworkSidebarSharing::inst();

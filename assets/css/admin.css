@@ -202,9 +202,11 @@
   padding: 12px;
   background-color: #FFF;
   border-radius: 6px;
-  width: 400px;
   max-width: 95%;
   margin: 1em 10px 1em 0;
+}
+.mm-wp-lib-panel-form-section .help.horizontal {
+  padding-left: 33%;
 }
 .mm-wp-lib-panel-form-section .mm-form-field {
   margin-bottom: 1em;
@@ -234,6 +236,13 @@
   padding-right: 1em;
   text-align: right;
   padding-top: 3px;
+}
+.mm-wp-lib-panel-form-section .mm-form-field.horizontal.check label {
+  display: block;
+  padding-right: 0;
+  padding-left: 33%;
+  text-align: left;
+  padding-top: 0px;
 }
 .mm-submit {
   clear: both;

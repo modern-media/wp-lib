@@ -73,4 +73,12 @@ class WPLibSettings extends BaseData{
 	 */
 	public $share_this_publisher_key = '';
 
+
+	//SMTP
+	public $smtp_server = '';
+	public $smtp_username = '';
+	public $smtp_password = '';
+	public $smtp_port = 587;
+
+
 } 
