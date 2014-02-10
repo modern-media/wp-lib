@@ -2,7 +2,6 @@
 namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\HTML;
 use ModernMedia\WPLib\Scripts;
-use ModernMedia\WPLib\SocialSharing\ShareThis;
 use ModernMedia\WPLib\Utils;
 
 /**
@@ -171,7 +170,7 @@ class SinglePostWidget extends BaseWidget{
 				$html .= ' ' . $btn;
 			}
 			if ($instance['include_social']){
-				$html .= ShareThis::inst()->get_sharebar($instance['id']);
+				//$html .= ShareThis::inst()->get_sharebar($instance['id']);
 			}
 
 		}

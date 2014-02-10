@@ -1,12 +1,10 @@
 <?php
 namespace ModernMedia\WPLib\Admin\Panel;
-use Aws\CloudFront\Exception\Exception;
 use Carbon\Carbon;
 use ModernMedia\WPLib\Admin\BaseAdminElement;
 use ModernMedia\WPLib\AjaxQuery;
 use ModernMedia\WPLib\AWSS3;
 use ModernMedia\WPLib\Data\WPLibSettings;
-use ModernMedia\WPLib\Debugger;
 use ModernMedia\WPLib\WPLib;
 use ModernMedia\WPLib\Utils;
 use ModernMedia\WPLib\Scripts;

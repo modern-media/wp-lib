@@ -80,6 +80,7 @@ class HTML {
 
 	/**
 	 * @param $name
+	 * @param $val
 	 * @param array $attrs
 	 * @return string
 	 */

@@ -1,8 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\Data;
 
-use ModernMedia\WPLib\Utils;
-
 class WPLibSettings extends BaseData{
 
 

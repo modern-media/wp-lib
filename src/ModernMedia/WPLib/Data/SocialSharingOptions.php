@@ -1,5 +1,5 @@
 <?php
-namespace ModernMedia\WPLib\SocialSharing\Data;
+namespace ModernMedia\WPLib\Data;
 use ModernMedia\WPLib\Data\BaseData;
 
 class SocialSharingOptions extends BaseData {
