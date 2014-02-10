@@ -90,7 +90,7 @@ class MetaTags {
 
 		if (! empty($options->facebook_app_id)){
 			echo PHP_EOL;
-			printf('<meta property="fb:app_id" content="%s">' . $options->facebook_app_id);
+			printf('<meta property="fb:app_id" content="%s">' , $options->facebook_app_id);
 			echo PHP_EOL;
 		}
 		if (is_singular() && ! is_front_page()){

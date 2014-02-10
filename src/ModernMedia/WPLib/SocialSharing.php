@@ -1,17 +1,13 @@
 <?php
 namespace ModernMedia\WPLib;
-use ModernMedia\WPLib\Data\FacebookShareButtonParams;
-use ModernMedia\WPLib\Data\GooglePlusShareButtonParams;
-use ModernMedia\WPLib\Data\TwitterShareButtonParams;
-use ModernMedia\WPLib\Data\LinkedInShareButtonParams;
 
 class SocialSharing {
 
-	const STUMBLEUPON = 'stumbleupon';
+	const STUMBLEUPON = 'stumbeleupon';
 	const FACEBOOK = 'facebook';
 	const TWITTER = 'twitter';
 	const LINKEDIN = 'linkedin';
-	const GOOGLEPLUS = 'googleplus';
+	const GOOGLEPLUS = 'gooleplus';
 	const PINTEREST = 'pinterest';
 	/**
 	 * @var SocialSharing
@@ -36,6 +32,12 @@ class SocialSharing {
 	private function __construct(){
 		$this->options = WPLib::inst()->get_settings();
 		add_action("plugins_loaded", array($this, "_action_plugins_loaded"));
+	}
+
+	public static function get_platforms(){
+		return array(
+
+		);
 	}
 
 
@@ -97,15 +99,7 @@ class SocialSharing {
 
 
 
-	public static function pinterestShare($url, $img, $excerpt, $options = null){
-		if (is_null($options)) $options = self::get_options();
-		$html = "<a class=\"pin-it-button\" href=\"http://pinterest.com/pin/create/button/?url=" . urlencode($url);
-		$html .= "&media=" . urlencode($img);
-		$html .= "&description=" . urlencode($excerpt);
-		$html .= "\"";
-		$html .= " data-pin-config=\"{$options->pinterest_layout}\">Pin It</a>";
-		return $html;
-	}
+
 
 	public static function get_share_bar($post_id){
 		ob_start();
@@ -127,12 +121,12 @@ class SocialSharing {
 	 * @param array $attrs
 	 * @return string
 	 */
-	public function get_share_button($service, $post, $attrs = array()){
+	public function get_platform_share_button($service, $post, $attrs = array()){
 		$inside = '';
 		switch ($service){
 			case self::STUMBLEUPON:
 				$defaults = array(
-					'layout' => 5,
+					'layout' => 1,
 					'location' => get_permalink($post->ID)
 				);
 				$tag = 'su:badge';
@@ -141,8 +135,11 @@ class SocialSharing {
 				$defaults = array(
 					'class' => 'fb-share-button',
 					'data-href' => get_permalink($post->ID),
-					'data-layout' => '',
-					'data-width' => ''
+					'data-layout' => 'button',
+					'data-colorscheme' => 'light',
+					 'data-action' => 'recommend',
+					 'data-show-faces' => 'false',
+					 'data-share' => 'true',
 				);
 				$tag = 'div';
 				break;
@@ -192,7 +189,7 @@ class SocialSharing {
 					'data-pin-do' => 'buttonPin',
 					'data-pin-config' => 'beside',
 					'data-pin-color' =>'red',
-					'data-pin-height' => '28',
+					'data-pin-height' => '23',
 				);
 				$attrs = array_merge($defaults, $attrs);
 				$href = '//www.pinterest.com/pin/create/button/?url=' .
@@ -212,8 +209,36 @@ class SocialSharing {
 
 		}
 		$attrs = array_merge($defaults, $attrs);
-		return HTML::tag($tag, $attrs) . $inside . HTML::end_tag('script');
+		return '<span class="wp-mm-lib-share-button">' . HTML::tag($tag, $attrs) . $inside . HTML::end_tag($tag) . '</span>';
 	}
+
+
+	public function get_raw_share_link($service, $post){
+		$inside = '';
+		$params = array();
+		switch ($service){
+
+			case self::FACEBOOK:
+				$params['app_id'] = $this->options->facebook_app_id;
+				$params['u'] = get_permalink($post->ID);
+				$params['t'] = get_the_title($post->ID);
+				$url = 'https://www.facebook.com/sharer/sharer.php';
+				break;
+
+			default:
+				return '';
+
+		}
+		$url = add_query_arg($params, $url);
+
+		$attrs = array(
+			'href' => $url,
+			'class' => 'wp-mm-lib-share-link',
+			'target' => '_blank'
+		);
+		return  HTML::tag('a', $attrs) . 'Share' . HTML::end_tag('a');
+	}
+
 
 
 }

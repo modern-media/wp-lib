@@ -22,12 +22,6 @@
 
 (function(d, s, id) {
 	if (! window.mm_wp_lib_social_sharing_facebook_app_id) return;
-	var div = d.getElementById('fb-root');
-	if (! div){
-		div = document.createElement('div');
-		div.id = 'fb-root';
-		d.body.appendChild(div);
-	}
 	var js, fjs = d.getElementsByTagName(s)[0];
 	if (d.getElementById(id)) return;
 	js = d.createElement(s); js.id = id;

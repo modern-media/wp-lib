@@ -77,6 +77,11 @@ class WPLibSettings extends BaseData{
 	/**
 	 * @var string
 	 */
+	public $enabled_social_platforms = array();
+
+	/**
+	 * @var string
+	 */
 	public $facebook_app_id = '';
 
 	/**
