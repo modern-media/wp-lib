@@ -344,6 +344,38 @@ $settings = $wp_lib->get_settings();
 			</div>
 		</div>
 
+		<div class="mm-form-field horizontal">
+			<div class="form-label">
+				<label for="twitter_data_related"><?php _e('Twitter Related Accounts')?></label>
+			</div>
+			<div class="form-controls">
+				<input
+					placeholder="<?php echo esc_attr( __('account1, account2'))?>"
+					type="text"
+					name="twitter_data_related"
+					id="twitter_data_related"
+					value="<?php echo esc_attr($settings->twitter_data_related)?>"
+					class="widefat"
+					>
+			</div>
+		</div>
+
+		<div class="mm-form-field horizontal">
+			<div class="form-label">
+				<label for="twitter_data_hashtags"><?php _e('Twitter Hashtags')?></label>
+			</div>
+			<div class="form-controls">
+				<input
+					placeholder="<?php echo esc_attr( __('#yourhashtag'))?>"
+					type="text"
+					name="twitter_data_hashtags"
+					id="twitter_data_hashtags"
+					value="<?php echo esc_attr($settings->twitter_data_hashtags)?>"
+					class="widefat"
+					>
+			</div>
+		</div>
+
 
 		<div class="mm-form-field check horizontal">
 			<label>

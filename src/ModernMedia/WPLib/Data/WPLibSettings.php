@@ -79,6 +79,18 @@ class WPLibSettings extends BaseData{
 	 */
 	public $facebook_app_id = '';
 
+	/**
+	 * @var string
+	 */
+	public $twitter_data_related = '';
+
+	/**
+	 * @var string
+	 */
+	public $twitter_data_hashtags = '';
+
+
+
 
 	/**
 	 * @var bool
