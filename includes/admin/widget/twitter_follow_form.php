@@ -1,10 +1,10 @@
 <?php
-namespace ModernMedia\WPLib\SocialSharing\Widget;
+namespace ModernMedia\WPLib\Widget;
 /**
  * @var TwitterFollowWidget $this
  * @var $instance
  */
-use ModernMedia\WPLib\SocialSharing\SocialSharing;
+use ModernMedia\WPLib\SocialSharing;
 
 $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instance['widget_opened_form_sections']) : array();
 
@@ -46,7 +46,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 			</label>
 		</div>
 		<div class="controls">
-			<?php $this->select($instance, 'size', SocialSharing::inst()->get_twitter_button_size_options(), array('class' => 'widefat'))?>
+			<?php $this->select($instance, 'size', array('medium' => 'medium', 'large'=> 'large'), array('class' => 'widefat'))?>
 		</div>
 	</div>
 	<div class="form-field">

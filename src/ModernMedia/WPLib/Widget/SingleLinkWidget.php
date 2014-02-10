@@ -5,7 +5,7 @@ use ModernMedia\WPLib\Scripts;
 use ModernMedia\WPLib\Utils;
 
 /**
- * Class SingleLink
+ * Class SingleLinkWidget
  * @package ModernMedia\WPLib\Widget
  *
  * A widget that displays a single link
