@@ -1,6 +1,5 @@
 <?php
-namespace ModernMedia\WPLib\SocialSharing\Data;
-use ModernMedia\WPLib\Data\BaseData;
+namespace ModernMedia\WPLib\Data;
 
 /**
  * Class TweetButtonParams
@@ -17,7 +16,7 @@ use ModernMedia\WPLib\Data\BaseData;
  * size	The size of the rendered button
  * dnt	See this section for information
  */
-class TweetButtonParams extends BaseData {
+class TwitterShareButtonParams extends BaseData {
 
 	/**
 	 * @var string

@@ -1,18 +1,19 @@
 <?php
 namespace ModernMedia\WPLib;
-use ModernMedia\WPLib\SocialSharing\Data\GooglePlusShareParams;
-use ModernMedia\WPLib\SocialSharing\Data\SocialSharingOptions;
-use ModernMedia\WPLib\SocialSharing\Admin\SocialSharingOptionsPanel;
-use ModernMedia\WPLib\SocialSharing\Data\TweetButtonParams;
+use ModernMedia\WPLib\Data\GooglePlusShareButtonParams;
+use ModernMedia\WPLib\Data\TwitterShareButtonParams;
 
 class SocialSharing {
-	const PLUGIN_NAMESPACE = "SocialSharing";
-	const OK = 'mm_wp_lib_social_sharing';
 
 	/**
 	 * @var SocialSharing
 	 */
 	private static $instance;
+
+	/**
+	 * @var Data\WPLibSettings
+	 */
+	protected $options;
 
 	/**
 	 * @return SocialSharing
@@ -25,27 +26,46 @@ class SocialSharing {
 	}
 
 	private function __construct(){
-		if (is_admin()) new SocialSharingOptionsPanel;
+		$this->options = WPLib::inst()->get_settings();
 		add_action("plugins_loaded", array($this, "_action_plugins_loaded"));
 	}
 
-	/**
-	 * @return SocialSharingOptions
-	 */
-	public function get_options(){
-		$o = get_option(self::OK);
-		if(! $o instanceof SocialSharingOptions){
-			$o = new SocialSharingOptions();
-		}
-		return $o;
-	}
+
 
 	public function _action_plugins_loaded(){
-		add_action('widgets_init',  array($this, '_action_widgets_init'));
+		//add_action('widgets_init',  array($this, '_action_widgets_init'));
 		add_action('wp_enqueue_scripts', function(){
 			Scripts::inst()->enqueue(Scripts::SOCIAL_SHARING_ASYNC);
 			Scripts::inst()->enqueue(Scripts::LINKED_IN);
 		});
+		add_action('wp_head', array($this, '_action_wp_head'));
+	}
+
+	public function _action_wp_head(){
+		if ($this->options->enable_share_this && ! empty($this->options->share_this_publisher_key)){
+			printf(
+				'
+
+				<script type="text/javascript">var switchTo5x=true;</script>
+				<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+				<script type="text/javascript">stLight.options({publisher: "%s", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
+
+				',
+				$this->options->share_this_publisher_key
+			);
+		}
+		if (! empty($this->options->facebook_app_id)){
+			printf(
+				'
+				<script type="text/javascript">var mm_wp_lib_social_sharing_facebook_app_id = "%s";</script>
+
+				',
+				$this->options->facebook_app_id
+			);
+		}
+
+		return;
+
 	}
 
 	public function _action_widgets_init(){
@@ -60,15 +80,15 @@ class SocialSharing {
 
 
 	/**
-	 * @param null|array|TweetButtonParams $params
+	 * @param null|array|TwitterShareButtonParams $params
 	 * @param string $text
 	 * @return string
 	 */
 	public function get_tweet_button($params = null, $text = ''){
 		if (is_array($params)){
-			$params = new TweetButtonParams($params);
-		} elseif (! $params instanceof TweetButtonParams){
-			$params = new TweetButtonParams();
+			$params = new TwitterShareButtonParams($params);
+		} elseif (! $params instanceof TwitterShareButtonParams){
+			$params = new TwitterShareButtonParams();
 		}
 		$defaults = $this->get_options()->tweet_button;
 		$attrs = array(
@@ -105,7 +125,7 @@ class SocialSharing {
 	}
 	public function get_tweet_button_for_post($post_id, $params = null){
 		if (is_null($params)){
-			$params = new TweetButtonParams;
+			$params = new TwitterShareButtonParams;
 		}
 		if(empty($params->text)){
 			$params->text = get_the_title($post_id);
@@ -119,9 +139,9 @@ class SocialSharing {
 
 	public function get_google_plus_button($params = null){
 		if (is_array($params)){
-			$params = new GooglePlusShareParams($params);
-		} elseif (! $params instanceof GooglePlusShareParams){
-			$params = new GooglePlusShareParams();
+			$params = new GooglePlusShareButtonParams($params);
+		} elseif (! $params instanceof GooglePlusShareButtonParams){
+			$params = new GooglePlusShareButtonParams();
 		}
 		$attrs = array(
 			'data-href' => $params->href,
@@ -138,7 +158,7 @@ class SocialSharing {
 	}
 	public function get_google_plus_button_for_post($post_id, $params = null){
 		if (is_null($params)){
-			$params = new GooglePlusShareParams;
+			$params = new GooglePlusShareButtonParams;
 		}
 		if(empty($params->text)){
 			$params->href = get_permalink($post_id);
@@ -236,14 +256,14 @@ class SocialSharing {
 
 		);
 	}
-	public static function get_su_badge_layouts(){
+	public function get_su_badge_layouts(){
 		return array(1,2,3,4,5,6);
 	}
 
-	public static function get_fb_colorschemes(){
+	public function get_fb_colorschemes(){
 		return array("light", "dark");
 	}
-	public static function get_fb_actions(){
+	public function get_fb_actions(){
 		return array("like", "recommend");
 	}
 	public static function get_fb_fonts(){
@@ -260,5 +280,36 @@ class SocialSharing {
 	}
 	public  static function get_pinterest_layout_opts(){
 		return array("none", "above", "beside");
+	}
+
+	/**
+	 * @param $post
+	 * @return string
+	 */
+	public function get_share_this_button($post){
+		$options = $this->get_options();
+		if (empty($options->publisher_key)) return '';
+		if (empty($options->share_bar_services)) return '';
+		$url = get_permalink($post);
+		$url = wp_get_shortlink($post);
+		$avail = $this->get_services();
+		$buttons = array();
+		$services = explode("\n", $options->share_bar_services);
+		foreach ($services as $str){
+			$str = trim($str);
+			if (empty($str)) continue;
+			if (! array_key_exists($str, $avail)) continue;
+			$buttons[] = sprintf(
+				'<div class="button-ctr"><span class="st_%s_large" st_url="%s" displayText="%s"></span></div>',
+				$str, $url, $avail[$str]
+			);
+
+		}
+		if (! count($buttons)) return '';
+		return sprintf(
+			'<div class="share-bar">%s</div>',
+			implode(PHP_EOL, $buttons)
+		);
+
 	}
 }

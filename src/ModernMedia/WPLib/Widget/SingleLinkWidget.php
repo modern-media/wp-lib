@@ -10,7 +10,7 @@ use ModernMedia\WPLib\Utils;
  *
  * A widget that displays a single link
  */
-class SingleLink extends BaseWidget  {
+class SingleLinkWidget extends BaseWidget  {
 
 	const TYPE_HOME = 'home';
 	const TYPE_URL 	= 'url';
@@ -292,19 +292,6 @@ class SingleLink extends BaseWidget  {
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return 'Super Powered Single Link';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return 'Displays a link to one af a variety of things.';
-	}
 
 	/**
 	 * @return array

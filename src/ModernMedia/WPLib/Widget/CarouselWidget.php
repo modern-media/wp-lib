@@ -1,9 +1,9 @@
 <?php
-namespace ModernMedia\WPLib;
-use ModernMedia\WPLib\Widget\BaseWidget;
+namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Data\CarouselSettingsData;
-
-
+use ModernMedia\WPLib\Scripts;
+use ModernMedia\WPLib\Carousel;
+use ModernMedia\WPLib\Utils;
 
 class CarouselWidget extends BaseWidget{
 
@@ -76,18 +76,6 @@ class CarouselWidget extends BaseWidget{
 
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return 'Carousel Widget';
-	}
 
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return 'Put a carousel in a widget.';
-	}
 
 }

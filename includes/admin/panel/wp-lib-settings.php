@@ -15,6 +15,35 @@ $settings = $wp_lib->get_settings();
 	?>
 
 	<div class="mm-wp-lib-panel-form-section">
+		<h3><?php _e('Widgets')?></h3>
+
+		<div class="mm-form-field horizontal">
+			<div class="form-label">
+				<label><?php _e('Enabled Widgets')?></label>
+			</div>
+			<div class="form-controls">
+				<?php
+				$available = WPLib::inst()->get_widgets();
+				$enabled = is_array($settings->enabled_widgets) ? $settings->enabled_widgets : array();
+				foreach($available as $key => $arr){
+					?>
+					<label class="checkbox-block">
+						<?php
+						echo HTML::input_check(
+							'enabled_widgets[]',
+							$key,
+							in_array($key, $enabled)
+						);
+						?>
+						<span><?php echo $arr['name']?></span>
+					</label>
+					<?php
+				}
+				?>
+			</div>
+		</div>
+	</div>
+	<div class="mm-wp-lib-panel-form-section">
 		<h3><?php _e('Amazon Web Services S3 Settings')?></h3>
 		<div class="mm-form-field horizontal check">
 			<label>

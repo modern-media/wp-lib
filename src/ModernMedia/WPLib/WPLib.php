@@ -1,9 +1,6 @@
 <?php
 namespace ModernMedia\WPLib;
 use ModernMedia\WPLib\Admin\Panel\WPLibSettingsPanel;
-use ModernMedia\WPLib\Widget\Widgets;
-use ModernMedia\WPLib\SocialSharing\SocialSharing;
-use ModernMedia\WPLib\SocialSharing\ShareThis;
 use ModernMedia\WPLib\Data\WPLibSettings;
 
 class WPLib {
@@ -37,6 +34,7 @@ class WPLib {
 		if (! $this->settings instanceof WPLibSettings){
 			$this->settings = new WPLibSettings;
 		}
+		add_action('widgets_init', array($this, '_action_widgets_init'));
 	}
 	public function _action_muplugins_loaded(){
 
@@ -50,12 +48,10 @@ class WPLib {
 		}
 
 		MetaTags::inst();
-		Widgets::inst();
 		Carousel::inst();
 		Stylesheet::inst();
-		//SocialSharing::inst();
+		SocialSharing::inst();
 		AWSS3::inst();
-		ShareThis::inst();
 		Debugger::inst();
 
 
@@ -63,6 +59,15 @@ class WPLib {
 			NetworkSidebarSharing::inst();
 		}
 
+	}
+
+	public function _action_widgets_init(){
+		$widgets = $this->get_widgets();
+		foreach($widgets as $key => $ignore){
+			if (in_array($key, $this->settings->enabled_widgets)){
+				register_widget('\\ModernMedia\WPLib\\Widget\\' . $key);
+			}
+		}
 	}
 
 	/**
@@ -85,7 +90,44 @@ class WPLib {
 
 	}
 
-	public function get_components(){
 
+	public function get_widgets(){
+		return array(
+			'CarouselWidget' => array(
+				'name' => __('Carousel'),
+				'description' => __('Put a carousel in a widget.')
+			),
+			'CopyrightWidget' => array(
+				'name' => __('Copyright'),
+				'description' => __('Always have an updated copyright.')
+			),
+			'SearchWidget' => array(
+				'name' => __('Super Search'),
+				'description' => __('A slightly better search widget.')
+			),
+			'SingleLinkWidget' => array(
+				'name' => __('Super Powered Single Link'),
+				'description' => __('Displays a link to one af a variety of things.')
+			),
+			'SinglePostWidget' => array(
+				'name' => __('Super Powered Single Post'),
+				'description' => __('Displays a single post or custom post type.')
+			),
+			'TitleAndTaglineWidget' => array(
+				'name' => __('Site Name and Tagline'),
+				'description' => __('Puts your site\'s name and tagline in a widget.')
+			),
+
+			'TextWidget' => array(
+				'name' => __('Super Text'),
+				'description' => __('A much better text widget.')
+			),
+			'TwitterFollowWidget' => array(
+				'name' => __('Twitter Follow Button'),
+				'description' => __('Displays a Twitter follow button.')
+			),
+
+		);
 	}
-} 
+
+}

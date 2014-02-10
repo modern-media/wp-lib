@@ -2,7 +2,7 @@
 namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Utils;
 
-class Text extends BaseWidget {
+class TextWidget extends BaseWidget {
 	/**
 	 * @param $instance
 	 * @param $reason
@@ -16,21 +16,6 @@ class Text extends BaseWidget {
 			return false;
 		}
 		return true;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return 'Super Text Widget';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return 'A much better text widget.';
 	}
 
 

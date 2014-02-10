@@ -11,7 +11,7 @@ use ModernMedia\WPLib\Utils;
  *
  * A widget that displays a single post
  */
-class SinglePost extends BaseWidget{
+class SinglePostWidget extends BaseWidget{
 
 
 	public function __construct(){
@@ -289,19 +289,6 @@ class SinglePost extends BaseWidget{
 
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return 'Single Post Widget';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return 'Displays a single post or custom post type.';
-	}
 
 	/**
 	 * @return array

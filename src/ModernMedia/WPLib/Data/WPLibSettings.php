@@ -12,9 +12,23 @@ class WPLibSettings extends BaseData{
 	public $awss3_bucket = '';
 
 
+	/**
+	 * Shared Sidebars
+	 */
+
+	/**
+	 * @var bool
+	 */
 	public $component_enabled_shared_sidebars = false;
+
+	/**
+	 * @var array
+	 */
 	public $shared_sidebars = array();
 
+	/**
+	 * @var bool
+	 */
 	public $component_enabled_carousel = false;
 
 
@@ -53,7 +67,9 @@ class WPLibSettings extends BaseData{
 	 */
 	public $meta_tags_og_image_height = 630;
 
-	//Social...
+
+
+	//Social Sharing...
 
 	/**
 	 * @var bool
@@ -77,13 +93,39 @@ class WPLibSettings extends BaseData{
 
 
 	//Mailer
+	/**
+	 * @var bool
+	 */
 	public $component_enabled_mailer = false;
+	/**
+	 * @var string
+	 */
 	public $smtp_server = '';
+	/**
+	 * @var string
+	 */
 	public $smtp_username = '';
+	/**
+	 * @var string
+	 */
 	public $smtp_password = '';
+	/**
+	 * @var int
+	 */
 	public $smtp_port = 587;
+	/**
+	 * @var string
+	 */
 	public $from_name = '';
+	/**
+	 * @var string
+	 */
 	public $from_email = '';
+
+
+	//widgets...
+
+	public $enabled_widgets = array();
 
 
 } 

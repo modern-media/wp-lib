@@ -5,12 +5,12 @@ use ModernMedia\WPLib\Data\BaseData;
 class SocialSharingOptions extends BaseData {
 
 	/**
-	 * @var TweetButtonParams
+	 * @var TwitterShareButtonParams
 	 */
 	public $tweet_button;
 
 	/**
-	 * @var GooglePlusShareParams
+	 * @var GooglePlusShareButtonParams
 	 */
 	public $google_plus_one;
 
@@ -34,7 +34,7 @@ class SocialSharingOptions extends BaseData {
 	public $pinterest_include_script = false;
 
 	public function __construct($init = null,  $whitelist = array(), $blacklist = array()){
-		$this->tweet_button = new TweetButtonParams();
+		$this->tweet_button = new TwitterShareButtonParams();
 		parent::__construct($init, $whitelist, $blacklist);
 
 	}
@@ -45,7 +45,7 @@ class SocialSharingOptions extends BaseData {
 	 */
 	public function init_from_user_data($arr, $whitelist = array(), $blacklist = array()){
 		parent::init_from_user_data($arr, $whitelist, $blacklist);
-		$this->tweet_button = new TweetButtonParams(isset($arr['tweet_button']) ? $arr['tweet_button'] : null);
+		$this->tweet_button = new TwitterShareButtonParams(isset($arr['tweet_button']) ? $arr['tweet_button'] : null);
 	}
 
 }

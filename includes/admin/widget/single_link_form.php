@@ -3,7 +3,7 @@ namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Utils;
 use ModernMedia\WPLib\Admin\Controls;
 /**
- * @var SingleLink $this
+ * @var SingleLinkWidget $this
  * @var $instance
  */
 $ctr_id = $this->get_field_id('single_link_controls');
@@ -37,7 +37,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//home...
-		$type = SingleLink::TYPE_HOME;
+		$type = SingleLinkWidget::TYPE_HOME;
 		?>
 		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
 			<p><?php _e('No options available.')?></p>
@@ -45,7 +45,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//url...
-		$type = SingleLink::TYPE_URL;
+		$type = SingleLinkWidget::TYPE_URL;
 		?>
 		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
 			<div class="form-field">
@@ -64,7 +64,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//url...
-		$type = SingleLink::TYPE_POST_TYPE_ARCHIVE;
+		$type = SingleLinkWidget::TYPE_POST_TYPE_ARCHIVE;
 		$options = array_merge(
 			array('post' =>get_post_type_object('post')),
 			get_post_types(array('has_archive'=>true), 'objects')
@@ -91,7 +91,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//term archives...
-		$type = SingleLink::TYPE_TERM_ARCHIVE;
+		$type = SingleLinkWidget::TYPE_TERM_ARCHIVE;
 		$control_id = $this->get_field_id('mm-wp-lib-single-link-term-picker');
 		?>
 		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
@@ -133,7 +133,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//single post...
-		$type = SingleLink::TYPE_POST;
+		$type = SingleLinkWidget::TYPE_POST;
 		?>
 		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>
 			<?php
@@ -150,7 +150,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//author archives...
-		$type = SingleLink::TYPE_AUTHOR_ARCHIVE;
+		$type = SingleLinkWidget::TYPE_AUTHOR_ARCHIVE;
 
 		$users = new \WP_User_Query(
 			array(
@@ -180,7 +180,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//author archives...
-		$type = SingleLink::TYPE_JAVASCRIPT_VOID;
+		$type = SingleLinkWidget::TYPE_JAVASCRIPT_VOID;
 
 
 		?>
@@ -190,7 +190,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//author archives...
-		$type = SingleLink::TYPE_RSS;
+		$type = SingleLinkWidget::TYPE_RSS;
 
 
 		?>
@@ -200,7 +200,7 @@ $opened = isset($instance['widget_opened_form_sections']) ? explode(',', $instan
 
 		<?php
 		//author archives...
-		$type = SingleLink::TYPE_HASH;
+		$type = SingleLinkWidget::TYPE_HASH;
 
 		?>
 		<div class="link-details-section link-details-section-<?php echo $type?>" <?php echo $type == $instance['type'] ? '' : ' style="display:none"'?>>

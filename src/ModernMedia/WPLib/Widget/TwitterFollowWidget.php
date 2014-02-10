@@ -1,8 +1,6 @@
 <?php
-namespace ModernMedia\WPLib\SocialSharing\Widget;
-
+namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Utils;
-use ModernMedia\WPLib\Widget\BaseWidget;
 
 class TwitterFollowWidget extends BaseWidget {
 
@@ -105,18 +103,6 @@ class TwitterFollowWidget extends BaseWidget {
 		$instance['screen_name'] = trim($instance['screen_name'], '@');
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return __('Twitter Follow Button');
-	}
 
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return __('Displays a Twitter Follow Button');
-	}
 
 }

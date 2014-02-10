@@ -2,6 +2,7 @@
 namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\HTML;
 use ModernMedia\WPLib\Utils;
+use ModernMedia\WPLib\WPLib;
 
 /**
  * Class BaseWidget
@@ -69,14 +70,26 @@ abstract class BaseWidget extends \WP_Widget {
 	 *
 	 * @return string
 	 */
-	abstract public function get_name();
+	public function get_name(){
+		$class = explode('\\', get_class($this));
+		$class = array_pop($class);
+		$widgets = WPLib::inst()->get_widgets();
+		if (isset($widgets[$class])) return $widgets[$class]['name'];
+		return __('No widget name available.');
+	}
 
 	/**
 	 * Return the description of the widget...
 	 *
 	 * @return string
 	 */
-	abstract public function get_desc();
+	public function get_desc(){
+		$class = explode('\\', get_class($this));
+		$class = array_pop($class);
+		$widgets = WPLib::inst()->get_widgets();
+		if (isset($widgets[$class])) return $widgets[$class]['description'];
+		return __('No description available.');
+	}
 
 
 
@@ -94,6 +107,10 @@ abstract class BaseWidget extends \WP_Widget {
 	 * @return string
 	 */
 	public function get_id_base(){
+		$class = explode('\\', get_class($this));
+		$class = array_pop($class);
+		$widgets = WPLib::inst()->get_widgets();
+		if (isset($widgets[$class])) return 'mm-wplib-' . $class;
 		return str_replace('\\', '_', get_class($this));
 	}
 

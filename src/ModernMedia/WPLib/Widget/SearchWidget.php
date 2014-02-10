@@ -1,7 +1,7 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
 
-class Search extends BaseWidget {
+class SearchWidget extends BaseWidget {
 
 	/**
 	 * @param $instance
@@ -12,19 +12,7 @@ class Search extends BaseWidget {
 		return true;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return 'MM Search';
-	}
 
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return 'A slightly better search widget';
-	}
 
 	/**
 	 * @return array

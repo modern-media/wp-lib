@@ -68,18 +68,10 @@ class Carousel {
 	public function _action_plugins_loaded(){
 		add_action('init', array($this, '_action_init'));
 		add_shortcode(self::SHORTCODE, array($this, '_shortcode_carousel'));
-		add_action('widgets_init',  array($this, '_action_widgets_init'));
 
 	}
 
 
-	/**
-	 * add the widget
-	 */
-	public function _action_widgets_init(){
-		register_widget('\\ModernMedia\\WPLib\\CarouselWidget');
-
-	}
 
 
 	/**

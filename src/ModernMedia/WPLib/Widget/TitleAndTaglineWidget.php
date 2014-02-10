@@ -1,19 +1,21 @@
 <?php
+
+
 namespace ModernMedia\WPLib\Widget;
 
-class Copyright extends BaseWidget {
+class TitleAndTaglineWidget extends BaseWidget {
 
 	/**
 	 * @return array
 	 */
 	public function get_instance_defaults() {
-		return array(
-			'org' => 'Your Organization'
-		);
+		return array();
 	}
+
 	public function does_widget_have_title_option(){
 		return false;
 	}
+
 
 	/**
 	 * @param $instance
@@ -38,10 +40,17 @@ class Copyright extends BaseWidget {
 	 * @return string
 	 */
 	public function get_widget_content($args, $instance) {
+		$title = get_bloginfo('name');
 		return sprintf(
-			'Copyright &copy; %s %s. All rights reserved.',
-			date('Y'),
-			$args['org']
+			'<hgroup>
+				<h1><a href="%s" title="%s">%s</a></h1>
+				<h2>%s</h2>
+			</hgroup>',
+			get_bloginfo('url'),
+			esc_attr($title),
+			$title,
+			get_bloginfo('description')
+
 		);
 	}
 
@@ -50,16 +59,7 @@ class Copyright extends BaseWidget {
 	 * @return void
 	 */
 	public function print_form_fields($instance) {
-		printf(
-			'<p><label for="%s">Organization</label> %s</p>',
-			$this->get_field_id('content'),
-			$this->text_input(
-				$instance,
-				'org',
-				array('class'=>'widefat', 'placeholder'=>'Your Organization', 'rows' =>10),
-				false
-			)
-		);
+		// TODO: Implement print_form_fields() method.
 	}
 
 	/**
@@ -70,19 +70,6 @@ class Copyright extends BaseWidget {
 		// TODO: Implement validate() method.
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return 'Copyright';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return 'Always have an updated copyright.';
-	}
 
 
 }

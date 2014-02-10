@@ -3,7 +3,7 @@ namespace ModernMedia\WPLib\Widget;
 use ModernMedia\WPLib\Utils;
 use ModernMedia\WPLib\Admin\Controls;
 /**
- * @var SinglePost $this
+ * @var SinglePostWidget $this
  * @var $instance
  */
 ?>

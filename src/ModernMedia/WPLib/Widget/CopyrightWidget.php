@@ -1,21 +1,19 @@
 <?php
-
-
 namespace ModernMedia\WPLib\Widget;
 
-class TitleAndTagline extends BaseWidget {
+class CopyrightWidget extends BaseWidget {
 
 	/**
 	 * @return array
 	 */
 	public function get_instance_defaults() {
-		return array();
+		return array(
+			'org' => 'Your Organization'
+		);
 	}
-
 	public function does_widget_have_title_option(){
 		return false;
 	}
-
 
 	/**
 	 * @param $instance
@@ -40,17 +38,10 @@ class TitleAndTagline extends BaseWidget {
 	 * @return string
 	 */
 	public function get_widget_content($args, $instance) {
-		$title = get_bloginfo('name');
 		return sprintf(
-			'<hgroup>
-				<h1><a href="%s" title="%s">%s</a></h1>
-				<h2>%s</h2>
-			</hgroup>',
-			get_bloginfo('url'),
-			esc_attr($title),
-			$title,
-			get_bloginfo('description')
-
+			'Copyright &copy; %s %s. All rights reserved.',
+			date('Y'),
+			$args['org']
 		);
 	}
 
@@ -59,7 +50,16 @@ class TitleAndTagline extends BaseWidget {
 	 * @return void
 	 */
 	public function print_form_fields($instance) {
-		// TODO: Implement print_form_fields() method.
+		printf(
+			'<p><label for="%s">Organization</label> %s</p>',
+			$this->get_field_id('content'),
+			$this->text_input(
+				$instance,
+				'org',
+				array('class'=>'widefat', 'placeholder'=>'Your Organization', 'rows' =>10),
+				false
+			)
+		);
 	}
 
 	/**
@@ -70,18 +70,7 @@ class TitleAndTagline extends BaseWidget {
 		// TODO: Implement validate() method.
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_name() {
-		return 'Site Name and Tagline';
-	}
 
-	/**
-	 * @return string
-	 */
-	public function get_desc() {
-		return 'Puts your site\'s name and tagline in a widget.';
-	}
+
 
 }
