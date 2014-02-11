@@ -64,7 +64,7 @@ class MetaTags {
 		if (empty($str)){
 			$str = $default;
 			$str = trim(strip_tags($str));
-			$str = preg_replace('/\w+/', ' ', $str);
+			$str = preg_replace('/\W+/', ' ', $str);
 		}
 		return esc_attr($str);
 	}
@@ -101,8 +101,9 @@ class MetaTags {
 			$default_desc = trim(strip_tags($post->post_excerpt));
 			if (empty($default_desc)){
 				$default_desc = trim(strip_tags($post->post_content));
+				$default_desc = substr($default_desc, 0, 160);
 			}
-			$default_desc = substr($default_desc, 0, 160);
+
 
 			$metas['description'] = $this->clean_string($meta->meta_description, $default_desc);
 			$ogs['og:description'] = $this->clean_string($meta->og_description, $default_desc);
