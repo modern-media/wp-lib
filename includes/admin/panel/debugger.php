@@ -45,7 +45,7 @@ $data = Debugger::inst()->get_data();
 					<pre><?php
 						ob_start();
 						var_dump(unserialize($datum->data));
-						echo ob_get_clean();
+						echo htmlentities(ob_get_clean());
 						?></pre>
 					</td>
 				</tr>

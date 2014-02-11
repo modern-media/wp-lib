@@ -1,5 +1,6 @@
 <?php
 namespace ModernMedia\WPLib\Widget;
+use ModernMedia\WPLib\Debugger;
 use ModernMedia\WPLib\HTML;
 use ModernMedia\WPLib\Utils;
 use ModernMedia\WPLib\WPLib;
@@ -186,6 +187,8 @@ abstract class BaseWidget extends \WP_Widget {
 
 		echo $before_widget;
 		echo $this->get_widget_content($args, $instance);
+
+
 		echo  $args['after_widget'];
 	}
 

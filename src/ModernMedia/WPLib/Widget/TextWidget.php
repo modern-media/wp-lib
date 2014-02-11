@@ -26,7 +26,17 @@ class TextWidget extends BaseWidget {
 	 * @return string
 	 */
 	public function get_widget_content($args, $instance) {
-		return $instance['text'];
+		$html = '';
+		if ($instance['display_title']){
+			$html = sprintf(
+				'%s%s%s',
+				$args['before_title'],
+				$instance['title'],
+				$args['after_title']
+			);
+		}
+		$html .= $instance['text'];
+		return $html;
 
 	}
 

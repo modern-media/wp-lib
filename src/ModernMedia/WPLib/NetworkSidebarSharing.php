@@ -116,14 +116,14 @@ class NetworkSidebarSharing {
 						if (! is_numeric($key)) continue;
 						$max = max($max, $key);
 					}
-					if ($max == 0){
-						$max = 1;
-					}
+					$max++;
 					$blog_widget_key = $widget_type . '-' . $max;
 					$blog_sidebars_widgets[$sidebar_key][] = $blog_widget_key;
 					$blog_widgets_to_update[$widget_type][$max] = $widget;
 				}
 			}
+			Debugger::inst()->add($blog_sidebars_widgets, '$blog_sidebars_widgets');
+			Debugger::inst()->add($blog_widgets_to_update, '$blog_widgets_to_update');
 
 
 
