@@ -147,8 +147,9 @@ class SocialSharing {
 				$defaults = array(
 					'href' => 'https://twitter.com/share',
 					'class' => 'twitter-share-button',
-					'data-url' => get_permalink($post->ID),
-					'data-counturl' => wp_get_shortlink($post->ID),
+					'data-url' => wp_get_shortlink($post->ID),
+					'data-counturl' =>  get_permalink($post->ID),
+					'data-text' => get_the_title($post->ID),
 					'data-related' => $this->options->twitter_data_related,
 					'data-hashtags' => $this->options->twitter_data_hashtags,
 					'data-count' => 'none',
@@ -214,7 +215,6 @@ class SocialSharing {
 
 
 	public function get_raw_share_link($service, $post){
-		$inside = '';
 		$params = array();
 		$title = '';
 		switch ($service){
@@ -225,6 +225,9 @@ class SocialSharing {
 				$url = 'https://www.facebook.com/sharer/sharer.php';
 				$title = __('Share on Facebook');
 				break;
+
+			case self::TWITTER:
+
 
 			default:
 				return '';

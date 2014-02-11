@@ -143,4 +143,7 @@ class WPLibSettings extends BaseData{
 	public $enabled_widgets = array();
 
 
+	public $bitly_access_token = '';
+
+
 } 
