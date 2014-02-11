@@ -216,13 +216,14 @@ class SocialSharing {
 	public function get_raw_share_link($service, $post){
 		$inside = '';
 		$params = array();
+		$title = '';
 		switch ($service){
 
 			case self::FACEBOOK:
 				$params['app_id'] = $this->options->facebook_app_id;
 				$params['u'] = get_permalink($post->ID);
-				$params['t'] = get_the_title($post->ID);
 				$url = 'https://www.facebook.com/sharer/sharer.php';
+				$title = __('Share on Facebook');
 				break;
 
 			default:
@@ -233,10 +234,12 @@ class SocialSharing {
 
 		$attrs = array(
 			'href' => $url,
-			'class' => 'wp-mm-lib-share-link',
-			'target' => '_blank'
+			'class' => 'wp-mm-lib-share-link ' . $service,
+			'target' => '_blank',
+			'title' => $title,
+
 		);
-		return  HTML::tag('a', $attrs) . 'Share' . HTML::end_tag('a');
+		return  HTML::tag('a', $attrs) . '<span>' . $title . '</span>' . HTML::end_tag('a');
 	}
 
 
