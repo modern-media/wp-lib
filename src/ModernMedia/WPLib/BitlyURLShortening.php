@@ -37,7 +37,7 @@ class BitlyURLShortening {
 	/**
 	 * Queries the db or bit.ly for a short url...
 	 * @see wp_get_shortlink()
-	 * 
+	 *
 	 * @param $link
 	 * @param int $id
 	 * @param string $context
