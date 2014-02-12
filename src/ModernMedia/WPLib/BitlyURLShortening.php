@@ -30,10 +30,19 @@ class BitlyURLShortening {
 	}
 
 	public function _action_plugins_loaded(){
-		//wp_get_shortlink()
+
 		add_filter('pre_get_shortlink', array($this, '_filter_pre_get_shortlink'), 10, 4);
 	}
 
+	/**
+	 * Queries the db or bit.ly for a short url...
+	 * @see wp_get_shortlink()
+	 * 
+	 * @param $link
+	 * @param int $id
+	 * @param string $context
+	 * @return mixed|string
+	 */
 	public function _filter_pre_get_shortlink($link, $id = 0, $context = 'post'){
 		global $wp_query;
 
