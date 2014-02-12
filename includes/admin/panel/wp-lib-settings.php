@@ -542,6 +542,40 @@ $settings = $wp_lib->get_settings();
 
 	</div>
 
+	<div class="mm-wp-lib-panel-form-section">
+		<h3><?php _e('Bit.ly URL Shortening')?></h3>
+
+		<div class="mm-form-field horizontal check">
+			<label>
+				<?php echo HTML::input_single_check('component_enabled_bitly_url_shortening', $settings->component_enabled_bitly_url_shortening);?>
+				<span><?php _e('Enable Bit.ly URL Shortening.')?></span>
+			</label>
+		</div>
+
+		<div class="mm-form-field horizontal">
+			<div class="form-label">
+				<label for="bitly_access_token"><?php _e('Bit.ly Access Token')?></label>
+			</div>
+			<div class="form-controls">
+				<input
+					placeholder="<?php echo esc_attr( __('Access Token'))?>"
+					type="text"
+					name="bitly_access_token"
+					id="bitly_access_token"
+					value="<?php echo esc_attr($settings->bitly_access_token)?>"
+					>
+
+			</div>
+		</div>
+		<div class="help horizontal">
+			<p>
+			<?php
+			_e('You can get your Access Token <a href="https://bitly.com/a/oauth_apps">here</a>, under <strong>Generic Access Token</strong>.');
+			?>
+			</p>
+		</div>
+	</div>
+
 	<div class="mm-submit">
 		<?php
 		submit_button('Save');

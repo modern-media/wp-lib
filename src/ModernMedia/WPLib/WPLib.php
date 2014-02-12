@@ -47,6 +47,10 @@ class WPLib {
 			Mailer::inst();
 		}
 
+		if ($this->settings->component_enabled_bitly_url_shortening){
+			BitlyURLShortening::inst();
+		}
+
 		MetaTags::inst();
 		Carousel::inst();
 		Stylesheet::inst();
