@@ -105,6 +105,11 @@ class WPLib {
 				'name' => __('Copyright'),
 				'description' => __('Always have an updated copyright.')
 			),
+			'ThumbnailWidget' => array(
+				'name' => __('Thumbnail'),
+				'description' => __('An image, some text.')
+			),
+
 			'SearchWidget' => array(
 				'name' => __('Super Search'),
 				'description' => __('A slightly better search widget.')

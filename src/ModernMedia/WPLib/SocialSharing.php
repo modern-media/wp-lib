@@ -7,7 +7,7 @@ class SocialSharing {
 	const FACEBOOK = 'facebook';
 	const TWITTER = 'twitter';
 	const LINKEDIN = 'linkedin';
-	const GOOGLEPLUS = 'gooleplus';
+	const GOOGLEPLUS = 'googleplus';
 	const PINTEREST = 'pinterest';
 	/**
 	 * @var SocialSharing
@@ -227,8 +227,20 @@ class SocialSharing {
 				break;
 
 			case self::TWITTER:
+				$params['text'] = get_the_title($post);
+				$params['url'] = get_permalink($post);
+				$url = 'https://twitter.com/share';
+				$title = __('Tweet');
+				break;
 
-
+			case self::LINKEDIN:
+				$url = 'http://www.linkedin.com/cws/share';
+				$params['url'] = get_permalink($post);
+				break;
+			case self::GOOGLEPLUS:
+				$url = 'https://plus.google.com/share';
+				$params['url'] = get_permalink($post);
+				break;
 			default:
 				return '';
 

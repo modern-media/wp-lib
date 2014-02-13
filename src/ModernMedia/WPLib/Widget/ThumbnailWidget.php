@@ -11,7 +11,7 @@ use ModernMedia\WPLib\Utils;
  *
  * A widget that displays a single post
  */
-class SinglePostWidget extends BaseWidget{
+class ThumbnailWidget extends BaseWidget{
 
 
 	public function __construct(){
@@ -19,7 +19,6 @@ class SinglePostWidget extends BaseWidget{
 			global $pagenow;
 			if ('widgets.php' == $pagenow ){
 				$s = Scripts::inst();
-				$s->enqueue(Scripts::POST_PICKER);
 				$s->enqueue(Scripts::WIDGET_GENERAL);
 				$s->enqueue(Scripts::WIDGET_SINGLE_POST);
 				$s->enqueue(Scripts::UPLOADER);
@@ -36,10 +35,9 @@ class SinglePostWidget extends BaseWidget{
 	 */
 	public function get_instance_defaults() {
 		return array(
-			'id' => 0,
 			'title' => '',
-			'image_display' => 'featured',
-			'image_size' => 'medium',
+			'link' => '',
+			'image_size' => 'large',
 			'custom_image_id' => 0,
 			'excerpt' => '',
 			'include_read_button' => false,
@@ -66,12 +64,7 @@ class SinglePostWidget extends BaseWidget{
 		);
 	}
 
-	public function get_image_display_options(){
-		return array(
-			'featured' => __('Use featured image'),
-			'custom' => __('Use another image')
-		);
-	}
+
 
 
 
@@ -92,11 +85,7 @@ class SinglePostWidget extends BaseWidget{
 	 * @return bool
 	 */
 	public function is_widget_displayed($instance, &$reason) {
-		$post = get_post($instance['id']);
-		if(! $post){
-			$reason = __('No post selected.');
-			return false;
-		}
+
 		return true;
 	}
 
@@ -109,15 +98,13 @@ class SinglePostWidget extends BaseWidget{
 	 */
 	public function get_widget_content($args, $instance) {
 
-		$post = get_post($instance['id']);
-		if (! $post) return '';
 
 		$elements = array();
-		$post_title = get_the_title($post->ID);
-		$permalink = get_permalink($post->ID);
-		$elements['title'] = $this->get_widget_title_html($args, $instance, $post_title, $permalink);
-		$elements['image'] = $this->get_widget_image_html($args, $instance, $post_title, $permalink);
-		$elements['excerpt'] = $this->get_widget_excerpt_html($args, $instance, $post_title, $permalink);
+		$title = $instance['title'];
+		$link = $instance['link'];
+		$elements['title'] = $this->get_widget_title_html($args, $instance);
+		$elements['image'] = $this->get_widget_image_html($args, $instance);
+		$elements['excerpt'] = $this->get_widget_excerpt_html($args, $instance);
 		$divs = array();
 		foreach($instance['included_elements'] as $key){
 			if ($elements[$key]){
@@ -130,32 +117,22 @@ class SinglePostWidget extends BaseWidget{
 
 
 
-	private function get_widget_excerpt_html($args, $instance, $post_title, $permalink){
+	private function get_widget_excerpt_html($args, $instance){
 		if (! in_array('excerpt', $instance['included_elements'])) {
 			return false;
 		}
-		$post = get_post($instance['id']);
-		if (! empty($instance['excerpt'])){
-			$html = $instance['excerpt'];
-		} else {
-			$html = $post->post_excerpt;
-		}
-		if (empty($html)){
-			$html = strip_tags($post->post_content);
-			$html = substr($html, 0, 240);
-			$html .= '...';
-		}
+		$html = $instance['excerpt'];
+
+
 		$meta = '';
 		if ($instance['include_read_button']){
 			$attrs = is_array($instance['read_button_attributes']) ? $instance['read_button_attributes'] : array();
 			$attrs = $this->attribute_field_to_keyed_array($attrs);
-			$attrs['href'] = $permalink;
+			$attrs['href'] = $instance['link'];
 			$btn = ! empty($instance['read_button_text']) ? $instance['read_button_text'] : __('Read...');
 			if (! isset($attrs['title']) || empty($attrs['title'])){
 				if (! empty($instance['title'])){
 					$attrs['title'] = $instance['title'];
-				} else {
-					$attrs['title'] = $post_title;
 				}
 			}
 			$btn = sprintf('<a %s>%s</a>', HTML::attr_array_to_string($attrs), $btn);
@@ -166,39 +143,21 @@ class SinglePostWidget extends BaseWidget{
 			}
 
 
-
-
 		}
 		$html = sprintf('<div class="excerpt">%s</div>', $html);
-		if ($instance['include_social']){
-			$meta .= '<p class="share">';
-			$meta .=  SocialSharing::inst()->get_raw_share_link(SocialSharing::FACEBOOK, $post);
-			$meta .=  SocialSharing::inst()->get_raw_share_link(SocialSharing::TWITTER, $post);
-			$meta .=  SocialSharing::inst()->get_raw_share_link(SocialSharing::GOOGLEPLUS, $post);
-			$meta .=  SocialSharing::inst()->get_raw_share_link(SocialSharing::LINKEDIN, $post);
-			$meta .= '</p>';
-		}
+
 		if (! empty ($meta)){
 			$html.= sprintf('<div class="meta">%s</div>', $meta);
 		}
 		return sprintf('<div class="widget-excerpt">%s</div>', wpautop($html));
 	}
 
-	private function get_widget_image_html($args, $instance, $post_title, $permalink){
+	private function get_widget_image_html($args, $instance){
 		if (! in_array('image', $instance['included_elements'])) {
 			return false;
 		}
-		$image = false;
-		switch($instance['image_display']){
-			case 'featured':
-				if (has_post_thumbnail($instance['id'])){
-					$image = wp_get_attachment_image_src(get_post_thumbnail_id($instance['id']), $instance['image_size']);
-				}
-				break;
-			case 'custom':
-				$image = wp_get_attachment_image_src($instance['custom_image_id'], $instance['image_size']);
-				break;
-		}
+		$image = wp_get_attachment_image_src($instance['custom_image_id'], $instance['image_size']);
+
 		if (! $image) {
 			return false;
 		}
@@ -212,34 +171,31 @@ class SinglePostWidget extends BaseWidget{
 			if (! isset($attrs['title']) || empty($attrs['title'])){
 				if (! empty($instance['title'])){
 					$attrs['title'] = $instance['title'];
-				} else {
-					$attrs['title'] = $post_title;
 				}
 			}
-			$attrs['href'] = $permalink;
+			$attrs['href'] = $instance['link'];
 			$html = sprintf('<a %s>%s</a>', HTML::attr_array_to_string($attrs), $html);
 		}
 		return sprintf('<div class="widget-image">%s</div>',$html);
 	}
 
 
-	private function get_widget_title_html($args, $instance, $post_title, $permalink){
+	private function get_widget_title_html($args, $instance){
 		if (! in_array('title', $instance['included_elements'])) {
 			return false;
 		}
 
-		$html = empty($instance['title']) ? $instance['title'] : $post_title;
+
+		$html =  $instance['title'];
 		if($instance['link_title']){
 			$attrs = is_array($instance['title_link_attributes']) ? $instance['title_link_attributes'] : array();
 			$attrs = $this->attribute_field_to_keyed_array($attrs);
 			if (! isset($attrs['title']) || empty($attrs['title'])){
 				if (! empty($instance['title'])){
 					$attrs['title'] = $instance['title'];
-				} else {
-					$attrs['title'] = $post_title;
 				}
 			}
-			$attrs['href'] = $permalink;
+			$attrs['href'] = $instance['link'];
 			$html = sprintf('<a %s>%s</a>', HTML::attr_array_to_string($attrs), $html);
 		}
 		$html = $args['before_title'] . $html . $args['after_title'];
@@ -264,7 +220,7 @@ class SinglePostWidget extends BaseWidget{
 	 * @return void
 	 */
 	public function print_form_fields($instance) {
-		require Utils::get_lib_path('includes/admin/widget/single_post_form.php');
+		require Utils::get_lib_path('includes/admin/widget/thumbnail_form.php');
 	}
 
 
@@ -273,10 +229,7 @@ class SinglePostWidget extends BaseWidget{
 	 * @return void
 	 */
 	public function validate(&$instance) {
-		$post = get_post($instance['post_id']);
-		if ($post){
-			$instance['title'] = $post->post_title;
-		}
+
 		if (! is_array($instance['image_attributes'])){
 			$instance['image_attributes'] = array();
 		}
